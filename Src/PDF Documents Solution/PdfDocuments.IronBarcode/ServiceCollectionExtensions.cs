@@ -22,7 +22,7 @@
 	SOFTWARE.
 */
 using Microsoft.Extensions.DependencyInjection;
-using PdfDocuments.Barcode.Abstractions;
+using PdfDocuments.Barcode;
 
 namespace PdfDocuments.IronBarcode
 {

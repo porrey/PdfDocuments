@@ -23,7 +23,7 @@
 */
 using System;
 
-namespace PdfDocuments.Abstractions
+namespace PdfDocuments
 {
 	public interface IPdfModel
 	{

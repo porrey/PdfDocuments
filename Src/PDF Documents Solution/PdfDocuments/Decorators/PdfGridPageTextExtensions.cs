@@ -21,10 +21,7 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using System;
-using PdfDocuments.Abstractions;
 using PdfSharp.Drawing;
-using PdfSharp.Drawing.BarCodes;
 using PdfSharp.Drawing.Layout;
 
 namespace PdfDocuments
@@ -67,7 +64,7 @@ namespace PdfDocuments
 				IPdfSize textSize = source.MeasureText(debugFont, font.FontFamily.Name);
 				IPdfBounds labelBounds = new PdfBounds(bounds.LeftColumn + (int)((bounds.Columns - textSize.Columns) / 2.0), bounds.TopRow + (int)((bounds.Rows - textSize.Rows) / 2.0), textSize.Columns + 2, textSize.Rows + 2);
 				source.DrawFilledRectangle(labelBounds, XColors.Black);
-				XRect labelLayout = new(source.Grid.Left(labelBounds.LeftColumn), source.Grid.Top(labelBounds.TopRow), source.Grid.ColumnsWidth(labelBounds.Columns), source.Grid.RowsHeight(labelBounds.Rows));
+				XRect labelLayout = new XRect(source.Grid.Left(labelBounds.LeftColumn), source.Grid.Top(labelBounds.TopRow), source.Grid.ColumnsWidth(labelBounds.Columns), source.Grid.RowsHeight(labelBounds.Rows));
 				XBrush labelBrush = new XSolidBrush(XColors.Wheat);
 				source.Graphics.DrawString(font.FontFamily.Name, debugFont, labelBrush, labelLayout, XStringFormats.Center);
 			}

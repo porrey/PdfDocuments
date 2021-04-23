@@ -22,7 +22,6 @@
 	SOFTWARE.
 */
 using System;
-using PdfDocuments.Abstractions;
 
 namespace PdfDocuments.Example
 {

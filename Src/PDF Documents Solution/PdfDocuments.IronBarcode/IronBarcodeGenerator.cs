@@ -23,7 +23,7 @@
 */
 using System.Drawing;
 using IronBarCode;
-using PdfDocuments.Barcode.Abstractions;
+using PdfDocuments.Barcode;
 
 namespace PdfDocuments.IronBarcode
 {

@@ -26,7 +26,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using PdfDocuments.Abstractions;
 
 namespace PdfDocuments
 {

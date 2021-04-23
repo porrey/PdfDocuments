@@ -24,10 +24,9 @@
 using Diamond.Core.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 using PdfDocument.Theme.Basic;
 using PdfDocuments.IronBarcode;
-using PdfDocuments.Abstractions;
+using Serilog;
 
 namespace PdfDocuments.Example
 {

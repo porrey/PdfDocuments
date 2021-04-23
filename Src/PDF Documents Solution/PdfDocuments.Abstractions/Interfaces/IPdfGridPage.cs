@@ -21,12 +21,12 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using PdfDocuments.Barcode.Abstractions;
+using PdfDocuments.Barcode;
 using PdfDocuments.Theme.Abstractions;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
-namespace PdfDocuments.Abstractions
+namespace PdfDocuments
 {
 	public interface IPdfGridPage
 	{

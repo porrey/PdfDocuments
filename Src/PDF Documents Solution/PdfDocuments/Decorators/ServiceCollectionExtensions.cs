@@ -22,7 +22,6 @@
 	SOFTWARE.
 */
 using Microsoft.Extensions.DependencyInjection;
-using PdfDocuments.Abstractions;
 
 namespace PdfDocuments
 {

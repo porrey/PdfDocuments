@@ -24,7 +24,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using PdfDocuments.Abstractions;
 using PdfSharp.Drawing;
 
 namespace PdfDocuments

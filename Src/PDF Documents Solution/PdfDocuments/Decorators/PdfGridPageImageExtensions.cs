@@ -24,8 +24,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using PdfDocuments.Abstractions;
-using PdfDocuments.Barcode.Abstractions;
+using PdfDocuments.Barcode;
 using PdfDocuments.Theme.Abstractions;
 using PdfSharp.Drawing;
 

@@ -23,7 +23,7 @@
 */
 using System.Threading.Tasks;
 
-namespace PdfDocuments.Abstractions
+namespace PdfDocuments
 {
 	public interface IPdfGeneratorFactory
 	{

@@ -22,7 +22,6 @@
 	SOFTWARE.
 */
 using System.Threading.Tasks;
-using PdfDocuments.Abstractions;
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.Layout;
 

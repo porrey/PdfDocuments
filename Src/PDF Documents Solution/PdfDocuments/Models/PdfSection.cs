@@ -25,7 +25,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using PdfDocuments.Abstractions;
 using PdfDocuments.Theme.Abstractions;
 using PdfSharp.Drawing;
 

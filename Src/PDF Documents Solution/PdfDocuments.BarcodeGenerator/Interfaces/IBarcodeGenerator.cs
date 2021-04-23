@@ -23,7 +23,7 @@
 */
 using System.Drawing;
 
-namespace PdfDocuments.Barcode.Abstractions
+namespace PdfDocuments.Barcode
 {
 	public enum BarCodeType
 	{

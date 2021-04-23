@@ -24,7 +24,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace PdfDocuments.Abstractions
+namespace PdfDocuments
 {
 	public interface IPdfSection<TModel>
 	{

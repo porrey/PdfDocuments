@@ -24,8 +24,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using PdfDocuments.Abstractions;
-using PdfDocuments.Barcode.Abstractions;
+using PdfDocuments.Barcode;
 using PdfDocuments.Theme.Abstractions;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;

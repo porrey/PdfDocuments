@@ -23,7 +23,7 @@
 */
 using System.Threading.Tasks;
 
-namespace PdfDocuments.Abstractions
+namespace PdfDocuments
 {
 	public delegate TResult BindPropertyAction<TResult, TModel>(IPdfGridPage gp, TModel m);
 

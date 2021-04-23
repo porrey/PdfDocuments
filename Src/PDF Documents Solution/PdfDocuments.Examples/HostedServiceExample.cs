@@ -26,11 +26,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Diamond.Core.Extensions.Hosting.Models;
+using Diamond.Core.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using PdfDocuments.Abstractions;
 
 namespace PdfDocuments.Example
 {
