@@ -20,7 +20,7 @@ namespace PdfDocuments.Example
 
 		protected override string OnGetDocumentTitle(Invoice model)
 		{
-			return $"Invoice";
+			return "Invoice";
 		}
 
 		protected override Task<int> OnGetPageCountAsync(Invoice model)
@@ -53,9 +53,11 @@ namespace PdfDocuments.Example
 			section.LogoPath = "./Images/logo.jpg";
 			section.RelativeHeight = .12;
 			section.BackgroundColor = XColors.White;
-			section.Title = "INVOICE";
-			section.ForegroundColor = XColors.DarkGray;
-			section.Font = new BindProperty<XFont, Invoice>((gp, m) => { return new XFont(gp.Theme.FontFamily.TitleLight, 44); });
+			section.Title = "INVOICE ";
+			section.ForegroundColor = XColor.FromArgb(37, 32, 98);
+			section.Font = new((gp, m) => { return new XFont(gp.Theme.FontFamily.TitleLight, 44); });
+			section.BorderWidth = 1;
+			section.BorderColor = XColor.FromArgb(215, 35, 44);
 			return section;
 		}
 
@@ -76,7 +78,7 @@ namespace PdfDocuments.Example
 				{
 
 				},
-				WaterMarkImagePath = new BindProperty<string, Invoice>((gp, m) => { return m.Paid ? "./images/paid.png" : string.Empty; })
+				WaterMarkImagePath = new((gp, m) => { return m.Paid ? "./images/paid.png" : string.Empty; })
 			};
 		}
 	}

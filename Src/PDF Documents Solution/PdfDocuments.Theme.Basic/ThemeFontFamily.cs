@@ -41,13 +41,13 @@ namespace PdfDocuments.Theme.Basic
 		TisaPro-MediIta
 		*/
 
-		public string Body => "TisaPro";
-		public string BodyLight => "TisaPro-Light";
-		public string BodyMedium => "TisaPro-Medi";
-		public string Title => "Gotham Narrow Book";
-		public string TitleLight => "Gotham Narrow Light";
-		public string Debug => "Arial Narrow";
-		public string HeaderFooter => "TisaPro-Light";
-		public string SubTitle => "Gotham Narrow Book";
+		public virtual string Body => "TisaPro";
+		public virtual string BodyLight => "TisaPro-Light";
+		public virtual string BodyMedium => "TisaPro-Medi";
+		public virtual string Title => "Gotham Narrow Book";
+		public virtual string TitleLight => "Gotham Narrow Light";
+		public virtual string Debug => "Arial Narrow";
+		public virtual string HeaderFooter => "TisaPro-Light";
+		public virtual string SubTitle => "Gotham Narrow Book";
 	}
 }

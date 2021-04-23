@@ -25,7 +25,7 @@ using PdfSharp.Drawing;
 
 namespace PdfDocuments.Theme.Basic
 {
-	public static class ThemeColors
+	public static class ColorPalette
 	{
 		//
 		// Luminosity = 100%

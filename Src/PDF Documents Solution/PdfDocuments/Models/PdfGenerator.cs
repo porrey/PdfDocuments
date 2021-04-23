@@ -261,7 +261,7 @@ namespace PdfDocuments
 							//
 							// Draw the grid for debugging.
 							//
-							gridPage.DrawGrid(XColor.FromArgb(60, XColors.Red), this.Theme.Drawing.LineWeight / 2.0);
+							gridPage.DrawGrid(XColor.FromArgb(60, XColors.Red), this.Theme.Drawing.LineWeightNormal / 2.0);
 						}
 						#endregion
 

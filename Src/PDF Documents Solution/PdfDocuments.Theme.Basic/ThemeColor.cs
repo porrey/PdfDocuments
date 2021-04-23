@@ -28,27 +28,27 @@ namespace PdfDocuments.Theme.Basic
 {
 	public class ThemeColor : IThemeColor
 	{
-		public XColor TitleColor => ThemeColors.DarkGray;
-		public XColor TitleBackgroundColor => ThemeColors.White;
+		public virtual XColor TitleColor => ColorPalette.DarkGray;
+		public virtual XColor TitleBackgroundColor => ColorPalette.White;
 		
-		public XColor SubTitleColor => ThemeColors.White;
-		public XColor SubTitleBackgroundColor => ThemeColors.BlueGray;
+		public virtual XColor SubTitleColor => ColorPalette.White;
+		public virtual XColor SubTitleBackgroundColor => ColorPalette.BlueGray;
 		
-		public XColor HeaderFooterColor => ThemeColors.DarkGray.WithLuminosity(.18);
-		public XColor HeaderFooterBackgroundColor => ThemeColors.LightGray.WithLuminosity(.90);
+		public virtual XColor HeaderFooterColor => ColorPalette.DarkGray.WithLuminosity(.18);
+		public virtual XColor HeaderFooterBackgroundColor => ColorPalette.LightGray.WithLuminosity(.90);
 		
-		public XColor BodyColor => ThemeColors.DarkGray.WithLuminosity(.16);
-		public XColor BodyLightColor => ThemeColors.DarkGray.WithLuminosity(.20);
-		public XColor BodySubtleColor => ThemeColors.DarkGray.WithLuminosity(.24);
-		public XColor BodyVeryLightColor => ThemeColors.DarkGray.WithLuminosity(.64);
-		public XColor BodyEmphasisColor => ThemeColors.GreenishBlue.WithLuminosity(.40);
-		public XColor BodyHighlightColor => ThemeColors.Orange.WithLuminosity(.40);
-		public XColor BodyBoldColor => ThemeColors.DarkGray.WithLuminosity(.11);
+		public virtual XColor BodyColor => ColorPalette.DarkGray.WithLuminosity(.16);
+		public virtual XColor BodyLightColor => ColorPalette.DarkGray.WithLuminosity(.20);
+		public virtual XColor BodySubtleColor => ColorPalette.DarkGray.WithLuminosity(.24);
+		public virtual XColor BodyVeryLightColor => ColorPalette.DarkGray.WithLuminosity(.64);
+		public virtual XColor BodyEmphasisColor => ColorPalette.GreenishBlue.WithLuminosity(.40);
+		public virtual XColor BodyHighlightColor => ColorPalette.Orange.WithLuminosity(.40);
+		public virtual XColor BodyBoldColor => ColorPalette.DarkGray.WithLuminosity(.11);
 
-		public XColor BodyBackgroundColor => ThemeColors.White;
-		public XColor AlternateBackgroundColor1 => ThemeColors.LightBlue;
-		public XColor AlternateBackgroundColor2 => ThemeColors.Brown;
-		public XColor AlternateBackgroundColor3 => ThemeColors.BrownishOrange;
-		public XColor AlternateBackgroundColor4 => ThemeColors.Tan;
+		public virtual XColor BodyBackgroundColor => ColorPalette.White;
+		public virtual XColor AlternateBackgroundColor1 => ColorPalette.LightBlue;
+		public virtual XColor AlternateBackgroundColor2 => ColorPalette.Brown;
+		public virtual XColor AlternateBackgroundColor3 => ColorPalette.BrownishOrange;
+		public virtual XColor AlternateBackgroundColor4 => ColorPalette.Tan;
 	}
 }

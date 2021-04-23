@@ -27,8 +27,8 @@ namespace PdfDocuments.Theme.Basic
 {
 	public class ThemeDrawing : IThemeDrawing
 	{
-		public double LineWeight => 0.6;
-		public double LineWeightMedium => 0.9;
-		public double LineWeightHeavy => 1.2;
+		public virtual double LineWeightNormal => 0.6;
+		public virtual double LineWeightMedium => 0.9;
+		public virtual double LineWeightHeavy => 1.2;
 	}
 }

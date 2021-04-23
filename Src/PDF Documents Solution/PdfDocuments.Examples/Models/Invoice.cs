@@ -27,7 +27,7 @@ namespace PdfDocuments.Example
 {
 	public class Invoice : IPdfModel
 	{
-		public string Id { get; }
+		public string Id { get; set; }
 		public bool Paid { get; set; } = true;
 		public DateTime CreateDateTime { get; set; }
 	}

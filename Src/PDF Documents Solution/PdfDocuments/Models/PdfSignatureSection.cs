@@ -51,7 +51,7 @@ namespace PdfDocuments
 			// Draw the signature line.
 			//
 			int top = this.ActualBounds.BottomRow - (usePadding ? 2 * this.Padding.Bottom : 0);
-			gridPage.DrawHorizontalLine(top, this.ActualBounds.LeftColumn, this.ActualBounds.RightColumn, RowEdge.Bottom, gridPage.Theme.Drawing.LineWeight, gridPage.Theme.Color.BodyBoldColor);
+			gridPage.DrawHorizontalLine(top, this.ActualBounds.LeftColumn, this.ActualBounds.RightColumn, RowEdge.Bottom, gridPage.Theme.Drawing.LineWeightNormal, gridPage.Theme.Color.BodyBoldColor);
 
 			//
 			// Draw the text.

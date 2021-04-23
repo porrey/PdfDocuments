@@ -21,15 +21,36 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
+using System;
 using PdfDocuments.Theme.Abstractions;
 
 namespace PdfDocuments.Theme.Basic
 {
 	public class BasicTheme : ITheme
 	{
-		public IThemeColor Color { get; }= new ThemeColor();
-		public IThemeFontFamily FontFamily { get; } = new ThemeFontFamily();
-		public IThemeFontSize FontSize { get; } = new ThemeFontSize();
-		public IThemeDrawing Drawing { get; } = new ThemeDrawing();
+		public virtual IThemeColor Color => this.OnGetThemeColor();
+		public virtual IThemeFontFamily FontFamily => this.OnGetThemeFontFamily();
+		public virtual IThemeFontSize FontSize => this.OnGetThemeFontSize();
+		public virtual IThemeDrawing Drawing => this.OnGetThemeDrawing();
+
+		protected virtual IThemeColor OnGetThemeColor()
+		{
+			return new ThemeColor();
+		}
+
+		protected virtual IThemeFontFamily OnGetThemeFontFamily()
+		{
+			return new ThemeFontFamily();
+		}
+
+		protected virtual IThemeFontSize OnGetThemeFontSize()
+		{
+			return new ThemeFontSize();
+		}
+
+		protected virtual IThemeDrawing OnGetThemeDrawing()
+		{
+			return new ThemeDrawing();
+		}
 	}
 }

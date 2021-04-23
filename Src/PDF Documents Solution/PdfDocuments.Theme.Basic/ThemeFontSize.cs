@@ -27,16 +27,16 @@ namespace PdfDocuments.Theme.Basic
 {
 	public class ThemeFontSize : IThemeFontSize
 	{
-		public double Title1 => 20.25;
-		public double Title2 => 14.0;
-		public double Title3 => 9.75;
-		public double BodyExtraSmall => 6.25;
-		public double BodySmall => 7.50;
-		public double Body => 7.75;
-		public double BodyLarge => 9.25;
-		public double BodyExtraLarge => 11.75;
-		public double Legal => 6.75;
-		public double HeaderFooter => 6.25;
-		public double Debug => 6.50;
+		public virtual double Title1 => 20.25;
+		public virtual double Title2 => 14.0;
+		public virtual double Title3 => 9.75;
+		public virtual double BodyExtraSmall => 6.25;
+		public virtual double BodySmall => 7.50;
+		public virtual double Body => 7.75;
+		public virtual double BodyLarge => 9.25;
+		public virtual double BodyExtraLarge => 11.75;
+		public virtual double Legal => 6.75;
+		public virtual double HeaderFooter => 6.25;
+		public virtual double Debug => 6.50;
 	}
 }

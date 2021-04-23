@@ -45,7 +45,7 @@ namespace PdfDocuments.Example
 			//
 			// Create a sample Invoice document.
 			//
-			Invoice model = new();
+			Invoice model = new() { Id = "12345678" };
 			await this.CreatePdfAsync(model);
 		}
 
@@ -104,7 +104,7 @@ namespace PdfDocuments.Example
 
 			if (result)
 			{
-				string fileName = $@"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\{model.Id}.pdf";
+				string fileName = $@"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\{model.GetType().Name}[{model.Id}].pdf";
 				File.WriteAllBytes(fileName, fileData);
 				this.Logger.LogInformation($"Saved PDF to '{fileName}'.");
 
@@ -119,6 +119,7 @@ namespace PdfDocuments.Example
 					}))
 					{
 						this.Logger.LogInformation($"PDF opened successfully.");
+						this.HostApplicationLifetime.StopApplication();
 					}
 				}
 				catch (Exception ex)

@@ -27,6 +27,6 @@ namespace PdfDocuments.Theme.Abstractions
 	{
 		double LineWeightHeavy { get; }
 		double LineWeightMedium { get; }
-		double LineWeight { get; }
+		double LineWeightNormal { get; }
 	}
 }
