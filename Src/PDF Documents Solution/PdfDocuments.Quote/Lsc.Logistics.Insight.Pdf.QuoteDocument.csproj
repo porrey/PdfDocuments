@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>2.3.5</Version>
+    <FileVersion>2.3.5</FileVersion>
+    <AssemblyVersion>2.3.5</AssemblyVersion>
+    <Authors>Daniel Porrey</Authors>
+    <Company>LSC Communications</Company>
+    <Copyright>Copyright © 2020 LSC Communications MCL, LLC. All rights reserved.</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Config\PdfDocument.QuoteDocument.config" />
+    <None Remove="Images\approved.png" />
+    <None Remove="Images\expired.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Config\PdfDocument.QuoteDocument.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\approved.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\expired.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lsc.Logistics.Insight.Shared.Rating.Abstractions" Version="3.2.0" />
+    <PackageReference Include="PDFsharpNetStandard2" Version="1.51.4845" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PdfDocument.DocumentShared\PdfDocument.DocumentShared.csproj" />
+    <ProjectReference Include="..\PdfDocument\PdfDocument.csproj" />
+  </ItemGroup>
+
+</Project>
