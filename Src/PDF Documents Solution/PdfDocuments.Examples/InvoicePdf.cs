@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using PdfDocuments.Barcode;
 using PdfDocuments.Theme.Abstractions;
 using PdfSharp.Drawing;
@@ -41,10 +42,10 @@ namespace PdfDocuments.Example
 				   .WithLogoPath("./Images/logo.jpg")
 				   .WithBackgroundColor(XColors.White)
 				   .WithForegroundColor(XColor.FromArgb(37, 32, 98))
-				   .WithFont((g, m) => new XFont(g.Theme.FontFamily.TitleLight, 44))
+				   .WithFont((g, m) => new XFont(g.Theme.FontFamily.TitleLight, 48))
 				   .WithBorderWidth(1)
 				   .WithBorderColor(XColor.FromArgb(215, 35, 44))
-				   .WithPadding((0, 0, 2, 0)),
+				   .WithPadding(0, 0, 2, 0),
 
 				//
 				// Invoice number and date.
@@ -60,10 +61,11 @@ namespace PdfDocuments.Example
 					)
 					.WithFont((g, m) => new XFont(g.Theme.FontFamily.TitleLight, 10, XFontStyle.Bold))
 					.WithValueFont((g, m) => new XFont(g.Theme.FontFamily.TitleLight, 10, XFontStyle.Regular))
-					.WithPadding((0, 0, 0, 0))
-					.WithRelativeWidth(.35)
+					.WithPadding(0, 0, 0, 0)
+					.WithKeyRelativeWidth(.4)
+					.WithRelativeWidth(.40)
 				).WithRelativeHeight(.095)
-				 .WithMargin((0, 5, 0, 9)),
+				 .WithMargin(0, 5, 0, 9),
 
 				//
 				// Reference numbers section.
@@ -71,8 +73,8 @@ namespace PdfDocuments.Example
 				Pdf.HorizontalStackSection<Invoice>
 				(
 					Pdf.HeaderContentSection<Invoice>()
-						.WithMargin((0, 0, 1, 0))
-						.WithPadding((1, 2, 1, 2))
+						.WithMargin(0, 0, 1, 0)
+						.WithPadding(1, 2, 1, 2)
 						.WithText("Payment Method")
 						.WithHeaderBackgroundColor(XColor.FromArgb(37, 32, 98))
 						.WithContentSection(Pdf.TextBlockSection<Invoice>()
@@ -85,8 +87,8 @@ namespace PdfDocuments.Example
 											   .WithBorderColor(XColor.FromArgb(37, 32, 98))),
 
 					Pdf.HeaderContentSection<Invoice>()
-						.WithMargin((1, 0, 1, 0))
-						.WithPadding((1, 2, 1, 2))
+						.WithMargin(1, 0, 1, 0)
+						.WithPadding(1, 2, 1, 2)
 						.WithText("Check Number")
 						.WithHeaderBackgroundColor(XColor.FromArgb(37, 32, 98))
 						.WithContentSection(Pdf.TextBlockSection<Invoice>()
@@ -99,8 +101,8 @@ namespace PdfDocuments.Example
 											   .WithBorderColor(XColor.FromArgb(37, 32, 98))),
 
 					Pdf.HeaderContentSection<Invoice>()
-						.WithMargin((1, 0, 0, 0))
-						.WithPadding((1, 2, 1, 2))
+						.WithMargin(1, 0, 0, 0)
+						.WithPadding(1, 2, 1, 2)
 						.WithText("Job Number")
 						.WithHeaderBackgroundColor(XColor.FromArgb(37, 32, 98))
 						.WithContentSection(Pdf.TextBlockSection<Invoice>()
@@ -112,7 +114,7 @@ namespace PdfDocuments.Example
 											   .WithBorderWidth(1)
 											   .WithBorderColor(XColor.FromArgb(37, 32, 98)))
 				).WithRelativeHeight(.065)
-				 .WithPadding((0, 0, 0, 0)),
+				 .WithPadding(0, 0, 0, 0),
 
 				//
 				// Bill to/from.
@@ -120,8 +122,8 @@ namespace PdfDocuments.Example
 				Pdf.HorizontalStackSection<Invoice>
 				(
 					Pdf.HeaderContentSection<Invoice>()
-						.WithMargin((0, 0, 1, 0))
-						.WithPadding((1, 2, 1, 2))
+						.WithMargin(0, 0, 1, 0)
+						.WithPadding(1, 2, 1, 2)
 						.WithText("Bill To")
 						.WithHeaderBackgroundColor(XColor.FromArgb(215, 35, 44))
 						.WithContentSection(Pdf.KeyValueSection<Invoice>
@@ -136,12 +138,12 @@ namespace PdfDocuments.Example
 											   .WithValueFont((g, m) => g.SubTitleFont().WithSize(11))
 											   .WithBorderWidth(1)
 											   .WithBorderColor(XColor.FromArgb(37, 32, 98))
-											   .WithMargin((0, 3, 0, 3)))
-											   .WithPadding((2, 2, 2, 2)),
+											   .WithKeyRelativeWidth(.4)
+											   .WithMargin(0, 3, 0, 3)),
 
 					Pdf.HeaderContentSection<Invoice>()
-						.WithMargin((0, 0, 1, 0))
-						.WithPadding((1, 2, 1, 2))
+						.WithMargin(0, 0, 0, 0)
+						.WithPadding(1, 2, 1, 2)
 						.WithText("From")
 						.WithHeaderBackgroundColor(XColor.FromArgb(215, 35, 44))
 						.WithContentSection(Pdf.KeyValueSection<Invoice>
@@ -156,11 +158,12 @@ namespace PdfDocuments.Example
 											   .WithValueFont((g, m) => g.SubTitleFont().WithSize(11))
 											   .WithBorderWidth(1)
 											   .WithBorderColor(XColor.FromArgb(37, 32, 98))
-											   .WithMargin((0, 3, 0, 3)))
+											   .WithKeyRelativeWidth(.4)
+											   .WithMargin(0, 3, 0, 3))
 
 				).WithRelativeHeight(.16)
-				 .WithPadding((0, 0, 0, 0))
-				 .WithMargin((0, 5, 0, 5)),
+				 .WithPadding(0, 0, 0, 0)
+				 .WithMargin(0, 5, 0, 5),
 
 				//
 				// Invoice details
@@ -171,12 +174,34 @@ namespace PdfDocuments.Example
 				   .AddColumn<Invoice, InvoiceItem, decimal>("Unit Price", t => t.UnitPrice, .25, "{0:C}", XStringFormats.CenterRight)
 				   .AddColumn<Invoice, InvoiceItem, decimal>("Amount", t => t.Amount, .30, "{0:C}", XStringFormats.CenterRight)
 				   .UseItems((g, m) => m.Items)
-				   .WithCellPadding<Invoice, InvoiceItem>((2, 2, 2, 2))
-				   .WithPadding((0, 2, 1, 2))
-				   .WithColumnHeaderFont<Invoice, InvoiceItem>((g, m) => g.BodyMediumFont(XFontStyle.Bold).WithSize(12))
-				   .WithColumnHeaderColor<Invoice, InvoiceItem>(XColor.FromArgb(215, 35, 44))
-				   .WithColumnValueFont<Invoice, InvoiceItem>((g, m) => g.BodyLightFont(XFontStyle.Bold).WithSize(12))
-				   .WithColumnValueColor<Invoice, InvoiceItem>(XColor.FromArgb(99, 99, 99)),
+				   .WithCellPadding<Invoice, InvoiceItem>(2, 3, 2, 5)
+				   .WithPadding(0, 2, 1, 2)
+				   .WithColumnHeaderFont<Invoice, InvoiceItem>((g, m) => g.BodyMediumFont(XFontStyle.Bold).WithSize(13))
+				   .WithColumnHeaderForegroundColor<Invoice, InvoiceItem>(XColor.FromArgb(215, 35, 44))
+				   .WithColumnHeaderBackgroundColor<Invoice, InvoiceItem>(XColor.FromArgb(215, 35, 44).WithLuminosity(.95))
+				   .WithColumnValueFont<Invoice, InvoiceItem>((g, m) => g.BodyLightFont(XFontStyle.Regular).WithSize(13))
+				   .WithColumnValueForegroundColor<Invoice, InvoiceItem>(XColor.FromArgb(99, 99, 99))
+				   .WithColumnValueBackgroundColor<Invoice, InvoiceItem>(XColor.FromArgb(37, 32, 98).WithLuminosity(.98)),
+
+				//
+				//
+				//
+				Pdf.HorizontalStackSection<Invoice>
+				(
+					Pdf.EmptySection<Invoice>().WithRelativeWidth(.55),
+					Pdf.KeyValueSection<Invoice>
+						(
+							new PdfKeyValueItem<Invoice>() { Key = "Sub Total:", Value = new BindProperty<string, Invoice>((g, m) => m.Items.Sum(t => t.Amount).ToString("C")), KeyAlignment = XStringFormats.CenterRight, ValueAlignment = XStringFormats.CenterRight },
+							new PdfKeyValueItem<Invoice>() { Key = "Tax (6.0%):", Value = new BindProperty<string, Invoice>((g, m) => (m.Items.Sum(t => t.Amount) * .06M).ToString("C")), KeyAlignment = XStringFormats.CenterRight, ValueAlignment = XStringFormats.CenterRight },
+							new PdfKeyValueItem<Invoice>() { Key = "Total:", Value = new BindProperty<string, Invoice>((g, m) => (m.Items.Sum(t => t.Amount) * 1.06M).ToString("C")), KeyAlignment = XStringFormats.CenterRight, ValueAlignment = XStringFormats.CenterRight })
+						.WithForegroundColor(XColor.FromArgb(37, 32, 98))
+						.WithFont((g, m) => g.SubTitleFont().WithSize(14))
+						.WithValueFont((g, m) => g.SubTitleFont(XFontStyle.Bold).WithSize(14))
+						.WithMargin(0, 2, 0, 2)
+						.WithPadding(1, 1, 1, 1)
+						.WithCellBackgroundColor(XColor.FromArgb(215, 35, 44).WithLuminosity(.98))
+						.WithKeyRelativeWidth(.45)
+				).WithRelativeHeight(.1),
 
 				//
 				// Signature section will display only on the last page.
@@ -184,6 +209,8 @@ namespace PdfDocuments.Example
 				Pdf.SignatureSection<Invoice>()
 				   .WithRelativeHeight(.05)
 				   .WithText("Approved by")
+				   .WithForegroundColor(XColor.FromArgb(99, 99, 99))
+				   .WithFont((g, m) => g.SubTitleFont(XFontStyle.Bold).WithSize(10))
 				   .WithRenderCondition((g, m) => g.PageNumber == g.Document.PageCount),
 
 				//
@@ -191,7 +218,7 @@ namespace PdfDocuments.Example
 				//
 				Pdf.TextBlockSection<Invoice>()
 					.WithText("Thank you for your business!")
-					.WithMargin((0, 15, 0, 0))
+					.WithMargin(0, 15, 0, 0)
 					.WithFont((g, m) => g.TitleLightFont().WithSize(14))
 					.WithForegroundColor(XColor.FromArgb(215, 35, 44))
 					.WithTextAlignment(XStringFormats.Center)

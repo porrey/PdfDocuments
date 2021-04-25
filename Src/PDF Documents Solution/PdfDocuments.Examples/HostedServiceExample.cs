@@ -55,16 +55,16 @@ namespace PdfDocuments.Example
 				CreateDateTime = DateTime.Now,
 				BillTo = new Address()
 				{
-					Name = "ACME Widgets",
-					AddressLine = "123 MAIN ST STE 1",
-					CityStateZip = "TOONTOWNE, NV 88901",
+					Name = "GROVER INDUSTRIES",
+					AddressLine = "123 SESAME ST STE 11",
+					CityStateZip = "YELLOWTOWN, NY 10015",
 					Phone = "(800)555-0101"
 				},
 				BillFrom = new Address()
 				{
-					Name = "MY BUSINESS",
-					AddressLine = "456 CENTE AVE STE 1101",
-					CityStateZip = "SOMEPALCE, NJ 10015",
+					Name = "ACME WIDGETS",
+					AddressLine = "456 MAROON AVE STE 1947",
+					CityStateZip = "TOONTOWN, CA 98901",
 					Phone = "(888)333-1010"
 				},
 				Items = new InvoiceItem[]
@@ -74,7 +74,7 @@ namespace PdfDocuments.Example
 					new () { Id = 10711, Quantity = 54, UnitPrice = 2.21M },
 					new () { Id = 10112, Quantity = 6531, UnitPrice = 3.15M },
 					new () { Id = 10912, Quantity = 252, UnitPrice = 10.82M },
-					new () { Id = 10132, Quantity = 34321, UnitPrice = 11.45M }
+					new () { Id = 10132, Quantity = 4321, UnitPrice = 11.45M }
 				}
 			};
 

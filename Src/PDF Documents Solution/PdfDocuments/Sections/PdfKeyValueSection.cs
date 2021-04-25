@@ -41,9 +41,11 @@ namespace PdfDocuments
 	{
 		public PdfKeyValueSection()
 		{
+			this.BackgroundColor = XColor.Empty;
 		}
 
 		public PdfKeyValueSection(params PdfKeyValueItem<TModel>[] values)
+			: this()
 		{
 			foreach (PdfKeyValueItem<TModel> value in values)
 			{
@@ -51,8 +53,9 @@ namespace PdfDocuments
 			}
 		}
 
+		public virtual BindProperty<XColor, TModel> CellBackgroundColor { get; set; } = new BindProperty<XColor, TModel>((g, m) => XColor.Empty);
 		public virtual BindProperty<XFont, TModel> ValueFont { get; set; } = new BindProperty<XFont, TModel>((gp, m) => gp.BodyFont());
-		public virtual BindProperty<double, TModel> NameColumnRelativeWidth { get; set; } = 0;
+		public virtual BindProperty<double, TModel> KeyRelativeWidth { get; set; } = 0;
 		public virtual IList<PdfKeyValueItem<TModel>> Items { get; } = new List<PdfKeyValueItem<TModel>>();
 
 		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
@@ -78,7 +81,15 @@ namespace PdfDocuments
 			//
 			// Determine the width
 			//
-			int width = bounds.Columns / 2;
+			double relativeWidth = this.KeyRelativeWidth.Resolve(gridPage, model);
+			int keyWidth = bounds.Columns / 2;
+			int valueWidth = bounds.Columns / 2;
+
+			if (relativeWidth > 0)
+			{
+				keyWidth = (int)(bounds.Columns * relativeWidth);
+				valueWidth = (int)(bounds.Columns * (1 - relativeWidth));
+			}
 
 			//
 			// Determine the height.
@@ -96,20 +107,22 @@ namespace PdfDocuments
 			foreach (PdfKeyValueItem<TModel> item in this.Items)
 			{
 				//
-				// Draw the Key value
+				// Draw the Key
 				//
 				{
-					PdfBounds textBounds = new PdfBounds(bounds.LeftColumn, top, width, height);
+					PdfBounds textBounds = new PdfBounds(bounds.LeftColumn, top, keyWidth, height);
 					PdfBounds paddedBounds = this.ApplyPadding(gridPage, model, textBounds, this.Padding);
+					gridPage.DrawFilledRectangle(paddedBounds, this.CellBackgroundColor.Resolve(gridPage, model));
 					gridPage.DrawText(item.Key, nameFont, paddedBounds, item.KeyAlignment, this.ForegroundColor.Resolve(gridPage, model));
 				}
 
 				//
-				// Draw the Key value
+				// Draw the Value
 				//
 				{
-					PdfBounds textBounds = new PdfBounds(bounds.LeftColumn + width, top, width, height);
+					PdfBounds textBounds = new PdfBounds(bounds.LeftColumn + keyWidth, top, valueWidth, height);
 					PdfBounds paddedBounds = this.ApplyPadding(gridPage, model, textBounds, this.Padding);
+					gridPage.DrawFilledRectangle(paddedBounds, this.CellBackgroundColor.Resolve(gridPage, model));
 					gridPage.DrawText(item.Value.Resolve(gridPage, model), valueFont, paddedBounds, item.ValueAlignment, this.ForegroundColor.Resolve(gridPage, model));
 				}
 

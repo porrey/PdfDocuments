@@ -47,5 +47,10 @@ namespace PdfDocuments
 		{
 			return new PdfSpacing(item.Left, item.Top, item.Right, item.Bottom);
 		}
+
+		public override string ToString()
+		{
+			return $"{this.Left}, {this.Top}, {this.Right}, {this.Bottom}";
+		}
 	}
 }

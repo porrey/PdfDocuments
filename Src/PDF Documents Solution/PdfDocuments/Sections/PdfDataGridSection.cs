@@ -37,16 +37,24 @@ namespace PdfDocuments
 		public PdfDataGridSection()
 		{
 			this.ColumnHeaderFont = new BindProperty<XFont, TModel>((g, m) => g.BodyMediumFont(XFontStyle.Regular).WithSize(10));
+			this.ColumnHeaderForegroundColor = new BindProperty<XColor, TModel>((g, m) => g.Theme.Color.BodyColor);
+			this.ColumnHeaderBackgroundColor = new BindProperty<XColor, TModel>((g, m) => XColors.Transparent);
+
 			this.ColumnValueFont = new BindProperty<XFont, TModel>((g, m) => g.BodyLightFont(XFontStyle.Bold).WithSize(10));
-			this.ColumnHeaderColor = new BindProperty<XColor, TModel>((g, m) => g.Theme.Color.BodyColor);
-			this.ColumnValueColor = new BindProperty<XColor, TModel>((g, m) => g.Theme.Color.BodyColor);
+			this.ColumnValueForegroundColor = new BindProperty<XColor, TModel>((g, m) => g.Theme.Color.BodyColor);
+			this.ColumnValueBackgroundColor = new BindProperty<XColor, TModel>((g, m) => XColors.Transparent);
 		}
 
 		public PdfSpacing CellPadding { get; set; } = new PdfSpacing(1, 1, 1, 1);
+
 		public BindProperty<XFont, TModel> ColumnHeaderFont { get; set; }
+		public BindProperty<XColor, TModel> ColumnHeaderForegroundColor { get; set; }
+		public BindProperty<XColor, TModel> ColumnHeaderBackgroundColor { get; set; }
+
 		public BindProperty<XFont, TModel> ColumnValueFont { get; set; }
-		public BindProperty<XColor, TModel> ColumnHeaderColor { get; set; }
-		public BindProperty<XColor, TModel> ColumnValueColor { get; set; }
+		public BindProperty<XColor, TModel> ColumnValueForegroundColor { get; set; }
+		public BindProperty<XColor, TModel> ColumnValueBackgroundColor { get; set; }
+
 		public IList<PdfDataGridColumn> DataColumns { get; } = new List<PdfDataGridColumn>();
 
 		public BindProperty<IEnumerable<TItem>, TModel> Items { get; set; } = new TItem[0];
@@ -144,12 +152,15 @@ namespace PdfDocuments
 						PdfBounds paddedBounds = this.ApplyPadding(gridPage, model, textBounds, this.Padding);
 						PdfBounds cellPaddedBounds = this.ApplyPadding(gridPage, model, paddedBounds, this.CellPadding);
 
-						gridPage.DrawFilledRectangle(paddedBounds, XColors.LightGray);
+						//
+						// Draw the background
+						//
+						gridPage.DrawFilledRectangle(paddedBounds, this.ColumnHeaderBackgroundColor.Resolve(gridPage, model));
 
 						//
 						// Draw the text.
 						//
-						gridPage.DrawText(column.ColumnHeader, this.ColumnHeaderFont.Resolve(gridPage, model), cellPaddedBounds, column.Alignment, this.ColumnHeaderColor.Resolve(gridPage, model));
+						gridPage.DrawText(column.ColumnHeader, this.ColumnHeaderFont.Resolve(gridPage, model), cellPaddedBounds, column.Alignment, this.ColumnHeaderForegroundColor.Resolve(gridPage, model));
 						columnIndex++;
 					}
 
@@ -172,9 +183,14 @@ namespace PdfDocuments
 							PdfBounds cellPaddedBounds = this.ApplyPadding(gridPage, model, paddedBounds, this.CellPadding);
 
 							//
+							// Draw the background
+							//
+							gridPage.DrawFilledRectangle(paddedBounds, this.ColumnValueBackgroundColor.Resolve(gridPage, model));
+
+							//
 							// Draw the text.
 							//
-							gridPage.DrawText(this.FormattedValue(column, item), this.ColumnValueFont.Resolve(gridPage, model), cellPaddedBounds, column.Alignment, this.ColumnValueColor.Resolve(gridPage, model));
+							gridPage.DrawText(this.FormattedValue(column, item), this.ColumnValueFont.Resolve(gridPage, model), cellPaddedBounds, column.Alignment, this.ColumnValueForegroundColor.Resolve(gridPage, model));
 							columnIndex++;
 						}
 

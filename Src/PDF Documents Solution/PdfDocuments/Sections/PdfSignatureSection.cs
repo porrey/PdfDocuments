@@ -56,7 +56,7 @@ namespace PdfDocuments
 			// Draw the signature line.
 			//
 			int top = bounds.BottomRow - (usePadding ? 2 * this.Padding.Bottom : 0);
-			gridPage.DrawHorizontalLine(top, bounds.LeftColumn, bounds.RightColumn, RowEdge.Bottom, gridPage.Theme.Drawing.LineWeightNormal, gridPage.Theme.Color.BodyBoldColor);
+			gridPage.DrawHorizontalLine(top, bounds.LeftColumn, bounds.RightColumn, RowEdge.Bottom, gridPage.Theme.Drawing.LineWeightNormal, this.ForegroundColor.Resolve(gridPage, model));
 
 			//
 			// Draw the text.
@@ -68,7 +68,7 @@ namespace PdfDocuments
 				top,
 				bounds.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0)),
 				bodyFontSize.Rows,
-				XStringFormats.TopLeft, gridPage.Theme.Color.BodyBoldColor);
+				XStringFormats.TopLeft, this.ForegroundColor.Resolve(gridPage, model));
 
 			int left = bounds.RightColumn - this.RightDateColumnPadding.Resolve(gridPage, model);
 
@@ -77,7 +77,7 @@ namespace PdfDocuments
 				top,
 				bounds.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0)),
 				bodyFontSize.Rows,
-				XStringFormats.TopLeft, gridPage.Theme.Color.BodyBoldColor);
+				XStringFormats.TopLeft, this.ForegroundColor.Resolve(gridPage, model));
 
 			return Task.FromResult(returnValue);
 		}

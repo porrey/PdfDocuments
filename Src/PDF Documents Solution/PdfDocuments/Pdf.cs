@@ -137,42 +137,82 @@ namespace PdfDocuments
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithColumnHeaderColor<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
+		public static IPdfSection<TModel> WithColumnHeaderForegroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
 			if (section is PdfDataGridSection<TModel, TItem> s)
 			{
-				s.ColumnHeaderColor = value;
+				s.ColumnHeaderForegroundColor = value;
 			}
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithColumnHeaderColor<TModel, TItem>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
+		public static IPdfSection<TModel> WithColumnHeaderForegroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
 			if (section is PdfDataGridSection<TModel, TItem> s)
 			{
-				s.ColumnHeaderColor = value;
+				s.ColumnHeaderForegroundColor = value;
 			}
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithColumnValueColor<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
+		public static IPdfSection<TModel> WithColumnValueForegroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
 			if (section is PdfDataGridSection<TModel, TItem> s)
 			{
-				s.ColumnValueColor = value;
+				s.ColumnValueForegroundColor = value;
 			}
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithColumnValueColor<TModel, TItem>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
+		public static IPdfSection<TModel> WithColumnValueForegroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
 			if (section is PdfDataGridSection<TModel, TItem> s)
 			{
-				s.ColumnValueColor = value;
+				s.ColumnValueForegroundColor = value;
+			}
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithColumnHeaderBackgroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfDataGridSection<TModel, TItem> s)
+			{
+				s.ColumnHeaderBackgroundColor = value;
+			}
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithColumnHeaderBackgroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfDataGridSection<TModel, TItem> s)
+			{
+				s.ColumnHeaderBackgroundColor = value;
+			}
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithColumnValueBackgroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfDataGridSection<TModel, TItem> s)
+			{
+				s.ColumnValueBackgroundColor = value;
+			}
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithColumnValueBackgroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfDataGridSection<TModel, TItem> s)
+			{
+				s.ColumnValueBackgroundColor = value;
 			}
 			return section;
 		}
@@ -183,6 +223,16 @@ namespace PdfDocuments
 			if (section is PdfDataGridSection<TModel, TItem> s)
 			{
 				s.CellPadding = value;
+			}
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithCellPadding<TModel, TItem>(this IPdfSection<TModel> section, int left, int top, int right, int bottom)
+			where TModel : IPdfModel
+		{
+			if (section is PdfDataGridSection<TModel, TItem> s)
+			{
+				s.CellPadding = (left, top, right, bottom);
 			}
 			return section;
 		}
@@ -403,10 +453,24 @@ namespace PdfDocuments
 			return section;
 		}
 
+		public static IPdfSection<TModel> WithPadding<TModel>(this IPdfSection<TModel> section, int left, int top, int right, int bottom)
+			where TModel : IPdfModel
+		{
+			section.Padding = (left, top, right, bottom);
+			return section;
+		}
+
 		public static IPdfSection<TModel> WithMargin<TModel>(this IPdfSection<TModel> section, PdfSpacing value)
 			where TModel : IPdfModel
 		{
 			section.Margin = value;
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithMargin<TModel>(this IPdfSection<TModel> section, int left, int top, int right, int bottom)
+			where TModel : IPdfModel
+		{
+			section.Margin = (left, top, right, bottom);
 			return section;
 		}
 
@@ -519,6 +583,36 @@ namespace PdfDocuments
 			where TModel : IPdfModel
 		{
 			section.TextAlignment = value;
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithCellBackgroundColor<TModel>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfKeyValueSection<TModel> s)
+			{
+				s.CellBackgroundColor = value;
+			}
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithCellBackgroundColor<TModel>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfKeyValueSection<TModel> s)
+			{
+				s.CellBackgroundColor = value;
+			}
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithKeyRelativeWidth<TModel>(this IPdfSection<TModel> section, BindProperty<double, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfKeyValueSection<TModel> s)
+			{
+				s.KeyRelativeWidth = value;
+			}
 			return section;
 		}
 
