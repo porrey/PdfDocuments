@@ -21,39 +21,19 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using Diamond.Core.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using PdfDocuments.Example.Theme;
-using PdfDocuments.IronBarcode;
-using Serilog;
+using PdfDocuments.Theme.Abstractions;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments.Example.Theme
 {
-	public class ConsoleStartup : IStartupConfigureServices, IStartupAppConfiguration
+	public class ThemeFontFamily : IThemeFontFamily
 	{
-		public void ConfigureAppConfiguration(IConfigurationBuilder builder)
-		{
-			//
-			// Build the configuration so Serilog can read from it.
-			//
-			IConfigurationRoot configuration = builder.Build();
-
-			//
-			// Create a logger from the configuration.
-			//
-			Log.Logger = new LoggerConfiguration()
-					  .ReadFrom.Configuration(configuration)
-					  .CreateLogger();
-		}
-
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddExampleTheme()
-					.AddPdfDocuments()
-					.AddIronBarcodeSupport()
-					.AddScoped<IPdfGenerator, InvoicePdf>()
-					.AddHostedService<HostedServiceExample>();
-		}
+		public string Title => "Gotham Narrow Book";
+		public string TitleLight => "Gotham Narrow Light";
+		public string SubTitle => "Gotham Narrow Book";
+		public string Body => "TisaPro";
+		public string BodyLight => "TisaPro-Light";
+		public string BodyMedium => "TisaPro-Medi";
+		public string Debug => "Arial Narrow";
+		public string HeaderFooter => "TisaPro-Light";
 	}
 }

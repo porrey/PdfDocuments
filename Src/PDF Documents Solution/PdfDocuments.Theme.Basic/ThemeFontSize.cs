@@ -30,6 +30,9 @@ namespace PdfDocuments.Theme.Basic
 		public virtual double Title1 => 20.25;
 		public virtual double Title2 => 14.0;
 		public virtual double Title3 => 9.75;
+		public virtual double SubTitle1 => 18;
+		public virtual double SubTitle2 => 14;
+		public virtual double SubTitle3 => 10;
 		public virtual double BodyExtraSmall => 6.25;
 		public virtual double BodySmall => 7.50;
 		public virtual double Body => 7.75;

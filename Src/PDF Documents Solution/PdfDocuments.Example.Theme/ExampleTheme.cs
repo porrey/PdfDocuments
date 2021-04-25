@@ -21,39 +21,35 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using Diamond.Core.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using PdfDocuments.Example.Theme;
-using PdfDocuments.IronBarcode;
-using Serilog;
+using PdfDocuments.Theme.Abstractions;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments.Example.Theme
 {
-	public class ConsoleStartup : IStartupConfigureServices, IStartupAppConfiguration
+	public class ExampleTheme : ITheme
 	{
-		public void ConfigureAppConfiguration(IConfigurationBuilder builder)
-		{
-			//
-			// Build the configuration so Serilog can read from it.
-			//
-			IConfigurationRoot configuration = builder.Build();
+		public IThemeColor Color => this.OnGetThemeColor();
+		public IThemeFontFamily FontFamily => this.OnGetThemeFontFamily();
+		public IThemeFontSize FontSize => this.OnGetThemeFontSize();
+		public IThemeDrawing Drawing => this.OnGetThemeDrawing();
 
-			//
-			// Create a logger from the configuration.
-			//
-			Log.Logger = new LoggerConfiguration()
-					  .ReadFrom.Configuration(configuration)
-					  .CreateLogger();
+		protected IThemeColor OnGetThemeColor()
+		{
+			return new ThemeColor();
 		}
 
-		public void ConfigureServices(IServiceCollection services)
+		protected IThemeFontFamily OnGetThemeFontFamily()
 		{
-			services.AddExampleTheme()
-					.AddPdfDocuments()
-					.AddIronBarcodeSupport()
-					.AddScoped<IPdfGenerator, InvoicePdf>()
-					.AddHostedService<HostedServiceExample>();
+			return new ThemeFontFamily();
+		}
+
+		protected IThemeFontSize OnGetThemeFontSize()
+		{
+			return new ThemeFontSize();
+		}
+
+		protected IThemeDrawing OnGetThemeDrawing()
+		{
+			return new ThemeDrawing();
 		}
 	}
 }

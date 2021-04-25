@@ -73,7 +73,7 @@ namespace PdfDocuments
 		public virtual BindProperty<double, TModel> BorderWidth { get; set; } = 0.0;
 		public virtual BindProperty<XColor, TModel> BorderColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyColor; });
 
-		public virtual BindProperty<XColor, TModel> BackgroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return XColor.Empty; });
+		public virtual BindProperty<XColor, TModel> BackgroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyBackgroundColor; });
 		public virtual BindProperty<XColor, TModel> ForegroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyColor; });
 
 		public BindProperty<string, TModel> WaterMarkImagePath { get; set; } = string.Empty;

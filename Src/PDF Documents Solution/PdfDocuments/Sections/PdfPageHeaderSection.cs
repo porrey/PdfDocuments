@@ -30,11 +30,6 @@ namespace PdfDocuments
 	public class PdfPageHeaderSection<TModel> : PdfSection<TModel>, IPdfTitle<TModel>, IPdfLogoPath<TModel>
 		where TModel : IPdfModel
 	{
-		public PdfPageHeaderSection()
-		{
-			this.RelativeHeight = .03;
-		}
-
 		public BindProperty<string, TModel> LogoPath { get; set; } = string.Empty;
 		public BindProperty<string, TModel> Title { get; set; } = string.Empty;
 

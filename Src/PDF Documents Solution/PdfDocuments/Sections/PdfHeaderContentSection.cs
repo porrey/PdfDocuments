@@ -21,7 +21,6 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using PdfSharp.Drawing;
@@ -33,9 +32,9 @@ namespace PdfDocuments
 	{
 		public PdfHeaderContentSection()
 		{
+			this.Font = new BindPropertyAction<XFont, TModel>((g, m) => g.SubTitle2Font());
 		}
 
-		public virtual BindProperty<XFont, TModel> HeaderFont { get; set; } = new BindPropertyAction<XFont, TModel>((g, m) => g.SubTitleFont());
 		public virtual BindProperty<XColor, TModel> HeaderForegroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((g, m) => g.Theme.Color.SubTitleColor);
 		public virtual BindProperty<XColor, TModel> HeaderBackgroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((g, m) => g.Theme.Color.SubTitleBackgroundColor);
 
@@ -90,7 +89,7 @@ namespace PdfDocuments
 			//
 			// Draw the text.
 			//
-			gridPage.DrawText(this.Text.Resolve(gridPage, model).ToUpper(), this.HeaderFont.Resolve(gridPage, model),
+			gridPage.DrawText(this.Text.Resolve(gridPage, model).ToUpper(), this.Font.Resolve(gridPage, model),
 						headerRect.LeftColumn + (usePadding ? this.Padding.Left : 0),
 						headerRect.TopRow + (usePadding ? this.Padding.Top : 0),
 						headerRect.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Left : 0)),
@@ -115,7 +114,7 @@ namespace PdfDocuments
 			//
 			// Get the size of the text.
 			//
-			PdfSize size = gridPage.MeasureText(this.HeaderFont.Resolve(gridPage, model), text);
+			PdfSize size = gridPage.MeasureText(this.Font.Resolve(gridPage, model), text);
 			size.Rows += (usePadding ? this.Padding.Top : 0) + (usePadding ? this.Padding.Bottom : 0);
 			size.Columns += (usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0);
 

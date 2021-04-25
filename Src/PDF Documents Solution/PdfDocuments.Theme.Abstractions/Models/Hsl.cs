@@ -16,11 +16,6 @@ namespace PdfDocuments.Theme.Abstractions
 		public double S { get; set; }
 		public double L { get; set; }
 
-		public override string ToString()
-		{
-			return string.Format("{0:N1}, {1:P0}, {2:P0}", this.H, this.S, this.L);
-		}
-
 		public Color ToColor()
 		{
 			double v;
@@ -82,6 +77,10 @@ namespace PdfDocuments.Theme.Abstractions
 
 			return Color.FromArgb(Convert.ToByte(r * 255.0), Convert.ToByte(g * 255.0), Convert.ToByte(b * 255.0));
 		}
-	}
 
+		public override string ToString()
+		{
+			return string.Format("{0:N1}, {1:P0}, {2:P0}", this.H, this.S, this.L);
+		}
+	}
 }

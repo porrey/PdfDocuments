@@ -25,6 +25,13 @@ namespace PdfDocuments.Theme.Abstractions
 {
 	public interface IThemeFontSize
 	{
+		double Title1 { get; }
+		double Title2 { get; }
+		double Title3 { get; }
+		double SubTitle1 { get; }
+		double SubTitle2 { get; }
+		double SubTitle3 { get; }
+		double Legal { get; }
 		double BodyExtraSmall { get; }
 		double BodySmall { get; }
 		double Body { get; }
@@ -32,9 +39,5 @@ namespace PdfDocuments.Theme.Abstractions
 		double BodyExtraLarge { get; }
 		double Debug { get; }
 		double HeaderFooter { get; }
-		double Legal { get; }
-		double Title1 { get; }
-		double Title2 { get; }
-		double Title3 { get; }
 	}
 }

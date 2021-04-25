@@ -22,11 +22,13 @@
 	SOFTWARE.
 */
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Diamond.Core.Extensions.Hosting;
+using Ghostscript.NET.Processor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -144,12 +146,13 @@ namespace PdfDocuments.Example
 				{
 					this.Logger.LogInformation($"Opening PDF.");
 
-					using (Process.Start(new ProcessStartInfo()
+					using (Process.Start(new ProcessStartInfo(fileName)
 					{
 						UseShellExecute = true,
-						FileName = fileName
+						//Verb = "Print"
 					}))
 					{
+						this.Print(fileName, "HP OfficeJet Pro 8725");
 						this.Logger.LogInformation($"PDF opened successfully.");
 						this.HostApplicationLifetime.StopApplication();
 					}
@@ -158,6 +161,26 @@ namespace PdfDocuments.Example
 				{
 					this.Logger.LogError(ex, $"Exception");
 				}
+			}
+		}
+
+		protected void Print(string inputFile,string printerName)
+		{
+			using (GhostscriptProcessor processor = new())
+			{
+				List<string> switches = new();
+				switches.Add("-empty");
+				switches.Add("-dPrinted");
+				switches.Add("-dBATCH");
+				switches.Add("-dNOPAUSE");
+				switches.Add("-dNOSAFER");
+				switches.Add("-dNumCopies=1");
+				switches.Add("-sDEVICE=mswinpr2");
+				switches.Add("-sOutputFile=%printer%" + printerName);
+				switches.Add("-f");
+				switches.Add(inputFile);
+
+				processor.StartProcessing(switches.ToArray(), null);
 			}
 		}
 	}

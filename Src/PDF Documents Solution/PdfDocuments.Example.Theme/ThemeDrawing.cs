@@ -21,39 +21,14 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using Diamond.Core.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using PdfDocuments.Example.Theme;
-using PdfDocuments.IronBarcode;
-using Serilog;
+using PdfDocuments.Theme.Abstractions;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments.Example.Theme
 {
-	public class ConsoleStartup : IStartupConfigureServices, IStartupAppConfiguration
+	public class ThemeDrawing : IThemeDrawing
 	{
-		public void ConfigureAppConfiguration(IConfigurationBuilder builder)
-		{
-			//
-			// Build the configuration so Serilog can read from it.
-			//
-			IConfigurationRoot configuration = builder.Build();
-
-			//
-			// Create a logger from the configuration.
-			//
-			Log.Logger = new LoggerConfiguration()
-					  .ReadFrom.Configuration(configuration)
-					  .CreateLogger();
-		}
-
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddExampleTheme()
-					.AddPdfDocuments()
-					.AddIronBarcodeSupport()
-					.AddScoped<IPdfGenerator, InvoicePdf>()
-					.AddHostedService<HostedServiceExample>();
-		}
+		public double LineWeightNormal => 0.6;
+		public double LineWeightMedium => 0.9;
+		public double LineWeightHeavy => 1.2;
 	}
 }

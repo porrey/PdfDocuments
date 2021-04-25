@@ -21,39 +21,25 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using Diamond.Core.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using PdfDocuments.Example.Theme;
-using PdfDocuments.IronBarcode;
-using Serilog;
+using PdfDocuments.Theme.Abstractions;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments.Example.Theme
 {
-	public class ConsoleStartup : IStartupConfigureServices, IStartupAppConfiguration
+	public class ThemeFontSize : IThemeFontSize
 	{
-		public void ConfigureAppConfiguration(IConfigurationBuilder builder)
-		{
-			//
-			// Build the configuration so Serilog can read from it.
-			//
-			IConfigurationRoot configuration = builder.Build();
-
-			//
-			// Create a logger from the configuration.
-			//
-			Log.Logger = new LoggerConfiguration()
-					  .ReadFrom.Configuration(configuration)
-					  .CreateLogger();
-		}
-
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddExampleTheme()
-					.AddPdfDocuments()
-					.AddIronBarcodeSupport()
-					.AddScoped<IPdfGenerator, InvoicePdf>()
-					.AddHostedService<HostedServiceExample>();
-		}
+		public double Title1 => 48;
+		public double Title2 => 24;
+		public double Title3 => 12;
+		public double SubTitle1 => 28;
+		public double SubTitle2 => 14;
+		public double SubTitle3 => 11;
+		public double BodyExtraSmall => 6.25;
+		public double BodySmall => 7.50;
+		public double Body => 7.75;
+		public double BodyLarge => 9.25;
+		public double BodyExtraLarge => 11.75;
+		public double Legal => 6.75;
+		public double HeaderFooter => 6.25;
+		public double Debug => 6.50;
 	}
 }
