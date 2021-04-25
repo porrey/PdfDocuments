@@ -21,6 +21,7 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
+using System.Runtime.CompilerServices;
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.Layout;
 
@@ -28,9 +29,9 @@ namespace PdfDocuments
 {
 	public static class PdfGridPageTextExtensions
 	{
-		public static IPdfSize MeasureText(this IPdfGridPage source, string familyName, double emSize, XFontStyle style, string text = "Test")
+		public static PdfSize MeasureText(this PdfGridPage source, string familyName, double emSize, XFontStyle style, string text = "Test")
 		{
-			IPdfSize returnValue = new PdfSize();
+			PdfSize returnValue = new PdfSize();
 
 			XFont font = new XFont(familyName, emSize, style);
 			returnValue = source.MeasureText(font, text);
@@ -38,7 +39,7 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		public static IPdfSize MeasureText(this IPdfGridPage source, XFont font, string text = "Test")
+		public static PdfSize MeasureText(this PdfGridPage source, XFont font, string text = "Test")
 		{
 			PdfSize returnValue = new PdfSize();
 
@@ -50,21 +51,22 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		public static IPdfSize DrawText(this IPdfGridPage source, string text, XFont font, IPdfBounds bounds, XStringFormat formats, XColor color, bool forceNoDebug = false)
+		public static PdfSize DrawText(this PdfGridPage source, string text, XFont font, PdfBounds bounds, XStringFormat formats, XColor color, bool forceNoDebug = false)
 		{
-			IPdfSize returnValue = source.MeasureText(font, text);
+			PdfSize returnValue = source.MeasureText(font, text);
 
-			XRect layout = new XRect(source.Grid.Left(bounds.LeftColumn), source.Grid.Top(bounds.TopRow), source.Grid.ColumnsWidth(bounds.Columns), source.Grid.RowsHeight(bounds.Rows));
+			XRect layout = source.GetRect(bounds);
+
 			XBrush brush = new XSolidBrush(color);
 			source.Graphics.DrawString(text ?? string.Empty, font, brush, layout, formats);
 
 			if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.RevealFontDetails))
 			{
 				XFont debugFont = source.DebugFont();
-				IPdfSize textSize = source.MeasureText(debugFont, font.FontFamily.Name);
-				IPdfBounds labelBounds = new PdfBounds(bounds.LeftColumn + (int)((bounds.Columns - textSize.Columns) / 2.0), bounds.TopRow + (int)((bounds.Rows - textSize.Rows) / 2.0), textSize.Columns + 2, textSize.Rows + 2);
+				PdfSize textSize = source.MeasureText(debugFont, font.FontFamily.Name);
+				PdfBounds labelBounds = new PdfBounds(bounds.LeftColumn + (int)((bounds.Columns - textSize.Columns) / 2.0), bounds.TopRow + (int)((bounds.Rows - textSize.Rows) / 2.0), textSize.Columns + 2, textSize.Rows + 2);
 				source.DrawFilledRectangle(labelBounds, XColors.Black);
-				XRect labelLayout = new XRect(source.Grid.Left(labelBounds.LeftColumn), source.Grid.Top(labelBounds.TopRow), source.Grid.ColumnsWidth(labelBounds.Columns), source.Grid.RowsHeight(labelBounds.Rows));
+				XRect labelLayout = source.GetRect(labelBounds);
 				XBrush labelBrush = new XSolidBrush(XColors.Wheat);
 				source.Graphics.DrawString(font.FontFamily.Name, debugFont, labelBrush, labelLayout, XStringFormats.Center);
 			}
@@ -72,25 +74,25 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		public static IPdfSize DrawText(this IPdfGridPage source, string text, string familyName, double emSize, XFontStyle style, IPdfBounds bounds, XStringFormat formats, XColor color)
+		public static PdfSize DrawText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyle style, PdfBounds bounds, XStringFormat formats, XColor color)
 		{
 			XFont font = new XFont(familyName, emSize, style);
 			return source.DrawText(text, font, bounds, formats, color);
 		}
 
-		public static IPdfSize DrawText(this IPdfGridPage source, string text, string familyName, double emSize, XFontStyle style, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color)
+		public static PdfSize DrawText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyle style, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color)
 		{
 			PdfBounds bounds = new PdfBounds(leftColumn, topRow, columns, rows);
 			return source.DrawText(text, familyName, emSize, style, bounds, formats, color);
 		}
 
-		public static IPdfSize DrawText(this IPdfGridPage source, string text, XFont font, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color)
+		public static PdfSize DrawText(this PdfGridPage source, string text, XFont font, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color)
 		{
 			PdfBounds bounds = new PdfBounds(leftColumn, topRow, columns, rows);
 			return source.DrawText(text, font, bounds, formats, color);
 		}
 
-		public static void DrawWrappingText(this IPdfGridPage source, string text, XFont font, IPdfBounds bounds, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
+		public static void DrawWrappingText(this PdfGridPage source, string text, XFont font, PdfBounds bounds, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
 		{
 			XRect layout = new XRect(source.Grid.Left(bounds.LeftColumn), source.Grid.Top(bounds.TopRow), source.Grid.ColumnsWidth(bounds.Columns), source.Grid.RowsHeight(bounds.Rows));
 
@@ -103,22 +105,22 @@ namespace PdfDocuments
 			formatter.DrawString(text, font, brush, layout, formats);
 		}
 
-		public static void DrawWrappingText(this IPdfGridPage source, string text, string familyName, double emSize, XFontStyle style, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
+		public static void DrawWrappingText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyle style, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
 		{
 			PdfBounds bounds = new PdfBounds(leftColumn, topRow, columns, rows);
 			XFont font = new XFont(familyName, emSize, style);
 			source.DrawWrappingText(text, font, bounds, formats, color, paragraphAlignment);
 		}
 
-		public static void DrawWrappingText(this IPdfGridPage source, string text, XFont font, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
+		public static void DrawWrappingText(this PdfGridPage source, string text, XFont font, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
 		{
 			PdfBounds bounds = new PdfBounds(leftColumn, topRow, columns, rows);
 			source.DrawWrappingText(text, font, bounds, formats, color, paragraphAlignment);
 		}
 
-		public static IPdfSize ApplyPadding(this IPdfSize textSize, IPdfGridPage source, IPdfSpacing padding, bool usePadding)
+		public static PdfSize ApplyPadding(this PdfSize textSize, PdfGridPage source, PdfSpacing padding, bool usePadding)
 		{
-			IPdfSize returnValue = textSize;
+			PdfSize returnValue = textSize;
 
 			if (usePadding)
 			{
@@ -129,9 +131,9 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		public static IPdfSpacing MultipyPadding(this IPdfSpacing padding, double multiplier)
+		public static PdfSpacing MultipyPadding(this PdfSpacing padding, double multiplier)
 		{
-			IPdfSpacing returnValue = new PdfSpacing() { Left = padding.Left, Top = padding.Top, Right = padding.Right, Bottom = padding.Bottom };
+			PdfSpacing returnValue = new PdfSpacing(padding.Left, padding.Top, padding.Right, padding.Bottom);
 
 			returnValue.Left = (int)(returnValue.Left * multiplier);
 			returnValue.Top = (int)(returnValue.Top * multiplier);

@@ -21,11 +21,12 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
+using System;
 using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
-	public delegate TResult BindPropertyAction<TResult, TModel>(IPdfGridPage gp, TModel m);
+	public delegate TResult BindPropertyAction<TResult, TModel>(PdfGridPage gp, TModel m);
 
 	public class BindProperty<TProperty, TModel>
 	{
@@ -40,7 +41,7 @@ namespace PdfDocuments
 
 		public BindPropertyAction<TProperty, TModel> Action { get; set; }
 
-		public TProperty Invoke(IPdfGridPage gp, TModel m)
+		public TProperty Resolve(PdfGridPage gp, TModel m)
 		{
 			TProperty returnValue = default;
 
@@ -52,9 +53,9 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		public Task<TProperty> GetValueAsync(IPdfGridPage gp, TModel m)
+		public Task<TProperty> GetValueAsync(PdfGridPage gp, TModel m)
 		{
-			return Task.FromResult(this.Invoke(gp, m));
+			return Task.FromResult(this.Resolve(gp, m));
 		}
 
 		public void SetAction(BindPropertyAction<TProperty, TModel> action)
@@ -82,6 +83,19 @@ namespace PdfDocuments
 			{
 				Action = source
 			};
+		}
+
+		public static implicit operator BindPropertyAction<TProperty, TModel>(BindProperty<TProperty, TModel> source)
+		{
+			return new BindProperty<TProperty, TModel>()
+			{
+				Action = source
+			};
+		}
+
+		public object First()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -21,15 +21,37 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
+using System.Threading.Tasks;
 using PdfSharp.Drawing;
+using PdfSharp.Drawing.Layout;
 
 namespace PdfDocuments
 {
-	public static class XSizeExtensions
+	public class PdfWrappingTextSection<TModel> : PdfSection<TModel>
+		where TModel : IPdfModel
 	{
-		public static PdfGrid CreateGrid(this XSize bounds, int columns, int rows)
+		public XParagraphAlignment ParagraphAlignment { get; set; } = XParagraphAlignment.Justify;
+
+		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
 		{
-			return new PdfGrid(bounds.Width, bounds.Height, rows, columns);
+			bool returnValue = true;
+
+			//
+			// Check if padding should be used.
+			//
+			bool usePadding = this.UsePadding.Resolve(gridPage, model);
+
+			gridPage.DrawWrappingText(this.Text.Resolve(gridPage, model),
+				this.Font.Resolve(gridPage, model),
+				bounds.LeftColumn + (usePadding ? this.Padding.Left : 0),
+				bounds.TopRow + (usePadding ? this.Padding.Top : 0),
+				bounds.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0)),
+				bounds.Rows - ((usePadding ? this.Padding.Top : 0) + (usePadding ? this.Padding.Bottom : 0)),
+				XStringFormats.TopLeft,
+				this.ForegroundColor.Resolve(gridPage, model),
+				XParagraphAlignment.Justify);
+
+			return Task.FromResult(returnValue);
 		}
 	}
 }

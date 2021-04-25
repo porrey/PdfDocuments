@@ -21,23 +21,34 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments
 {
-	public class Invoice : IPdfModel
+	public class PdfBounds
 	{
-		public string Id { get; set; }
-		public string PaymentMethod { get; set; }
-		public string CheckNumber { get; set; }
-		public string JobNumber { get; set; }
-		public DateTime DueDate { get; set; }
-		public bool Paid { get; set; } = true;
-		public DateTime CreateDateTime { get; set; }
-		public Address BillTo { get; set; }
-		public Address BillFrom { get; set; }
-		public IEnumerable<InvoiceItem> Items { get; set; }
+		public PdfBounds()
+		{
+		}
+
+		public PdfBounds(int leftColumn, int topRow, int columns, int rows)
+		{
+			this.TopRow = topRow;
+			this.LeftColumn = leftColumn;
+			this.Rows = rows;
+			this.Columns = columns;
+		}
+
+		public int TopRow { get; set; }
+		public int LeftColumn { get; set; }
+		public int Rows { get; set; }
+		public int Columns { get; set; }
+
+		public int RightColumn => this.LeftColumn + this.Columns - 1;
+		public int BottomRow => this.TopRow + this.Rows - 1;
+
+		public override string ToString()
+		{
+			return $"{this.LeftColumn}, {this.TopRow}, {this.Columns}, {this.Rows}";
+		}
 	}
 }

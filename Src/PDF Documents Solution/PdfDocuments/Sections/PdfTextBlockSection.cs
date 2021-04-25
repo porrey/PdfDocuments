@@ -21,15 +21,43 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using PdfSharp.Drawing;
+using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
-	public static class XSizeExtensions
+	public class PdfTextBlockSection<TModel> : PdfSection<TModel>
+		where TModel : IPdfModel
 	{
-		public static PdfGrid CreateGrid(this XSize bounds, int columns, int rows)
+		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
 		{
-			return new PdfGrid(bounds.Width, bounds.Height, rows, columns);
+			bool returnValue = true;
+
+			//
+			// Get the padding flagging.
+			//
+			bool usePadding = this.UsePadding.Resolve(gridPage, model);
+
+			//
+			// Determine the bounds.
+			//
+			PdfBounds paddedBounds = new PdfBounds()
+			{
+				LeftColumn = bounds.LeftColumn + (usePadding ? this.Padding.Left : 0),
+				TopRow = bounds.TopRow + (usePadding ? this.Padding.Top : 0),
+				Columns = bounds.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0)),
+				Rows = bounds.Rows - ((usePadding ? this.Padding.Top : 0) + (usePadding ? this.Padding.Bottom : 0)),
+			};
+
+			//
+			// Draw the text.
+			//
+			gridPage.DrawText(this.Text.Resolve(gridPage, model),
+							  this.Font.Resolve(gridPage, model),
+							  paddedBounds,
+							  this.TextAlignment.Resolve(gridPage, model),
+							  this.ForegroundColor.Resolve(gridPage, model));
+
+			return Task.FromResult(returnValue);
 		}
 	}
 }

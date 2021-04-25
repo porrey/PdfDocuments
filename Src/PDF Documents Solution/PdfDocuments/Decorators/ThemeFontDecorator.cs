@@ -27,42 +27,42 @@ namespace PdfDocuments
 {
 	public static class ThemeFontDecorator
 	{
-		public static XFont BodyFont(this IPdfGridPage source, XFontStyle style = XFontStyle.Regular)
+		public static XFont BodyFont(this PdfGridPage source, XFontStyle style = XFontStyle.Regular)
 		{
 			return new XFont(source.Theme.FontFamily.Body, source.Theme.FontSize.Body, style);
 		}
 
-		public static XFont BodyLightFont(this IPdfGridPage source, XFontStyle style = XFontStyle.Regular)
+		public static XFont BodyLightFont(this PdfGridPage source, XFontStyle style = XFontStyle.Regular)
 		{
 			return new XFont(source.Theme.FontFamily.BodyLight, source.Theme.FontSize.BodySmall, style);
 		}
 
-		public static XFont BodyMediumFont(this IPdfGridPage source, XFontStyle style = XFontStyle.Regular)
+		public static XFont BodyMediumFont(this PdfGridPage source, XFontStyle style = XFontStyle.Regular)
 		{
 			return new XFont(source.Theme.FontFamily.BodyMedium, source.Theme.FontSize.Body, style);
 		}
 
-		public static XFont DebugFont(this IPdfGridPage source, XFontStyle style = XFontStyle.Bold)
+		public static XFont DebugFont(this PdfGridPage source, XFontStyle style = XFontStyle.Bold)
 		{
 			return new XFont(source.Theme.FontFamily.Debug, source.Theme.FontSize.Debug, style);
 		}
 
-		public static XFont HeaderFooterFont(this IPdfGridPage source, XFontStyle style = XFontStyle.Regular)
+		public static XFont HeaderFooterFont(this PdfGridPage source, XFontStyle style = XFontStyle.Regular)
 		{
 			return new XFont(source.Theme.FontFamily.HeaderFooter, source.Theme.FontSize.HeaderFooter, style);
 		}
 
-		public static XFont TitleFont(this IPdfGridPage source, XFontStyle style = XFontStyle.Regular)
+		public static XFont TitleFont(this PdfGridPage source, XFontStyle style = XFontStyle.Regular)
 		{
 			return new XFont(source.Theme.FontFamily.Title, source.Theme.FontSize.Title1, style);
 		}
 
-		public static XFont TitleLightFont(this IPdfGridPage source, XFontStyle style = XFontStyle.Regular)
+		public static XFont TitleLightFont(this PdfGridPage source, XFontStyle style = XFontStyle.Regular)
 		{
 			return new XFont(source.Theme.FontFamily.TitleLight, source.Theme.FontSize.Title1, style);
 		}
 
-		public static XFont SubTitleFont(this IPdfGridPage source, XFontStyle style = XFontStyle.Regular)
+		public static XFont SubTitleFont(this PdfGridPage source, XFontStyle style = XFontStyle.Regular)
 		{
 			return new XFont(source.Theme.FontFamily.SubTitle, source.Theme.FontSize.Title3, style);
 		}

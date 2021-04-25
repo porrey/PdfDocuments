@@ -21,23 +21,25 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using PdfDocuments.Barcode;
+using PdfDocuments.Theme.Abstractions;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments
 {
-	public class Invoice : IPdfModel
+	public class PdfGridPage
 	{
-		public string Id { get; set; }
-		public string PaymentMethod { get; set; }
-		public string CheckNumber { get; set; }
-		public string JobNumber { get; set; }
-		public DateTime DueDate { get; set; }
-		public bool Paid { get; set; } = true;
-		public DateTime CreateDateTime { get; set; }
-		public Address BillTo { get; set; }
-		public Address BillFrom { get; set; }
-		public IEnumerable<InvoiceItem> Items { get; set; }
+		public string CurrentService { get; set; }
+		public ITheme Theme { get; set; }
+		public string DocumentTitle { get; set; }
+		public PdfDocument Document { get; set; }
+		public PdfPage Page { get; set; }
+		public PdfGrid Grid { get; set; }
+		public int PageNumber { get; set; }
+		public XGraphics Graphics { get; set; }
+		public string ImagePath { get; set; }
+		public DebugMode DebugMode { get; set; }
+		public IBarcodeGenerator BarcodeGenerator { get; set; }
 	}
 }

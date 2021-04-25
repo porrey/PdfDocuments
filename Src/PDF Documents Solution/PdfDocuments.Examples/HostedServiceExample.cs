@@ -45,7 +45,39 @@ namespace PdfDocuments.Example
 			//
 			// Create a sample Invoice document.
 			//
-			Invoice model = new() { Id = "12345678" };
+			Invoice model = new()
+			{
+				Id = "12345678",
+				PaymentMethod = "ACH",
+				CheckNumber = "123481819",
+				JobNumber = "123456",
+				DueDate = DateTime.Now.AddDays(30),
+				CreateDateTime = DateTime.Now,
+				BillTo = new Address()
+				{
+					Name = "ACME Widgets",
+					AddressLine = "123 MAIN ST STE 1",
+					CityStateZip = "TOONTOWNE, NV 88901",
+					Phone = "(800)555-0101"
+				},
+				BillFrom = new Address()
+				{
+					Name = "MY BUSINESS",
+					AddressLine = "456 CENTE AVE STE 1101",
+					CityStateZip = "SOMEPALCE, NJ 10015",
+					Phone = "(888)333-1010"
+				},
+				Items = new InvoiceItem[]
+				{
+					new () { Id = 10112, Quantity = 2321, UnitPrice = 1.43M },
+					new () { Id = 10115, Quantity = 1211, UnitPrice = 5.411M },
+					new () { Id = 10711, Quantity = 54, UnitPrice = 2.21M },
+					new () { Id = 10112, Quantity = 6531, UnitPrice = 3.15M },
+					new () { Id = 10912, Quantity = 252, UnitPrice = 10.82M },
+					new () { Id = 10132, Quantity = 34321, UnitPrice = 11.45M }
+				}
+			};
+
 			await this.CreatePdfAsync(model);
 		}
 

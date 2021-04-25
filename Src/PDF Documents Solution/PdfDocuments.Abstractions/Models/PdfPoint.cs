@@ -21,23 +21,12 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments
 {
-	public class Invoice : IPdfModel
+	public class PdfPoint
 	{
-		public string Id { get; set; }
-		public string PaymentMethod { get; set; }
-		public string CheckNumber { get; set; }
-		public string JobNumber { get; set; }
-		public DateTime DueDate { get; set; }
-		public bool Paid { get; set; } = true;
-		public DateTime CreateDateTime { get; set; }
-		public Address BillTo { get; set; }
-		public Address BillFrom { get; set; }
-		public IEnumerable<InvoiceItem> Items { get; set; }
+		public int Column { get; set; }
+		public int Row { get; set; }
 	}
 }

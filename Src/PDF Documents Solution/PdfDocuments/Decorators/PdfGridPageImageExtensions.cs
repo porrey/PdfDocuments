@@ -32,7 +32,7 @@ namespace PdfDocuments
 {
 	public static class PdfGridPageImageExtensions
 	{
-		public static void DrawImageWithFixedWidth(this IPdfGridPage source, string imageFile, int leftColumn, int topRow, int columns)
+		public static void DrawImageWithFixedWidth(this PdfGridPage source, string imageFile, int leftColumn, int topRow, int columns)
 		{
 			//
 			// Draw the logo.
@@ -56,7 +56,7 @@ namespace PdfDocuments
 			}
 		}
 
-		public static void DrawImageWithFixedWidth(this IPdfGridPage source, XImage image, int leftColumn, int topRow)
+		public static void DrawImageWithFixedWidth(this PdfGridPage source, XImage image, int leftColumn, int topRow)
 		{
 			//
 			// Draw the image.
@@ -71,7 +71,7 @@ namespace PdfDocuments
 			source.Graphics.DrawImage(image, source.Grid.Left(leftColumn), source.Grid.Top(topRow), actualImageWidth, actualImageHeight);
 		}
 
-		public static void DrawImageWithFixedHeight(this IPdfGridPage source, string imageFile, int leftColumn, int topRow, int rows)
+		public static void DrawImageWithFixedHeight(this PdfGridPage source, string imageFile, int leftColumn, int topRow, int rows)
 		{
 			//
 			// Draw the logo.
@@ -95,7 +95,7 @@ namespace PdfDocuments
 			}
 		}
 
-		public static void DrawImage(this IPdfGridPage source, string imageFile, IPdfBounds bounds, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
+		public static void DrawImage(this PdfGridPage source, string imageFile, PdfBounds bounds, PdfHorizontalAlignment horizontalAlignment, PdfVerticalAlignment verticalAlignment)
 		{
 			using (XImage image = XImage.FromFile(imageFile))
 			{
@@ -103,11 +103,11 @@ namespace PdfDocuments
 			}
 		}
 
-		public static void DrawImage(this IPdfGridPage source, XImage image, IPdfBounds bounds, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
+		public static void DrawImage(this PdfGridPage source, XImage image, PdfBounds bounds, PdfHorizontalAlignment horizontalAlignment, PdfVerticalAlignment verticalAlignment)
 		{
-			IPdfBounds imageBounds = new PdfBounds(0, 0, (int)(image.PointWidth / source.Grid.ColumnWidth), (int)(image.PointHeight / source.Grid.RowHeight));
-			IPdfPoint hPoint = bounds.AlignHorizontally(imageBounds, horizontalAlignment);
-			IPdfPoint vPoint = bounds.AlignVertically(imageBounds, verticalAlignment);
+			PdfBounds imageBounds = new PdfBounds(0, 0, (int)(image.PointWidth / source.Grid.ColumnWidth), (int)(image.PointHeight / source.Grid.RowHeight));
+			PdfPoint hPoint = bounds.AlignHorizontally(imageBounds, horizontalAlignment);
+			PdfPoint vPoint = bounds.AlignVertically(imageBounds, verticalAlignment);
 
 			imageBounds.LeftColumn = hPoint.Column;
 			imageBounds.TopRow = vPoint.Row;
@@ -119,7 +119,7 @@ namespace PdfDocuments
 			source.Graphics.DrawImage(image, xp);
 		}
 
-		public static void DrawBarCode(this IPdfGridPage source, BarCodeType type, IPdfBounds bounds, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment, XColor color, XColor backColor, string data)
+		public static void DrawBarCode(this PdfGridPage source, BarCodeType type, PdfBounds bounds, PdfHorizontalAlignment horizontalAlignment, PdfVerticalAlignment verticalAlignment, XColor color, XColor backColor, string data)
 		{
 			//
 			// Get the height and width of the target image.

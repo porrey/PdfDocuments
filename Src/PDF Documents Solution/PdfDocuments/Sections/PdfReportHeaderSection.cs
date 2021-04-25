@@ -21,23 +21,30 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Threading.Tasks;
+using PdfSharp.Drawing;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments
 {
-	public class Invoice : IPdfModel
+	public class PdfReportHeaderSection<TModel> : PdfSection<TModel>
+		where TModel : IPdfModel
 	{
-		public string Id { get; set; }
-		public string PaymentMethod { get; set; }
-		public string CheckNumber { get; set; }
-		public string JobNumber { get; set; }
-		public DateTime DueDate { get; set; }
-		public bool Paid { get; set; } = true;
-		public DateTime CreateDateTime { get; set; }
-		public Address BillTo { get; set; }
-		public Address BillFrom { get; set; }
-		public IEnumerable<InvoiceItem> Items { get; set; }
+		public PdfReportHeaderSection()
+		{
+			this.RelativeHeight = .05;
+			this.ShouldRender = new BindPropertyAction<bool, TModel>((gp, m) => { return gp.PageNumber == 1; });
+		}
+
+		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		{
+			bool returnValue = true;
+
+			//
+			// Draw the title.
+			//
+			gridPage.DrawText(gridPage.DocumentTitle.ToUpper(), gridPage.Theme.FontFamily.TitleLight, gridPage.Theme.FontSize.Title1, XFontStyle.Regular, bounds.LeftColumn, bounds.TopRow, bounds.Columns, bounds.Rows, XStringFormats.Center, gridPage.Theme.Color.TitleColor);
+
+			return Task.FromResult(returnValue);
+		}
 	}
 }

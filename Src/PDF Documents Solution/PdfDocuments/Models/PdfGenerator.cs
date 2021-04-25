@@ -70,8 +70,8 @@ namespace PdfDocuments
 		public virtual ITheme Theme { get; set; }
 		public virtual string DocumentTitle { get; set; }
 		public virtual DebugMode DebugMode { get; set; } = DebugMode.None;
-		public virtual PdfSpacing Padding { get; } = new PdfSpacing { Top = 1, Bottom = 1, Left = 1, Right = 1 };
-		public virtual IPdfSection<TModel> ReportSection { get; } = new PdfVerticalStackSection<TModel>();
+		public virtual PdfSpacing Padding { get; } = new PdfSpacing(1, 1, 1, 1);
+		public virtual IPdfSection<TModel> ReportSection { get; protected set; }
 		public virtual IBarcodeGenerator BarcodeGenerator { get; set; }
 
 		protected virtual PdfGrid Grid { get; set; }
@@ -115,87 +115,54 @@ namespace PdfDocuments
 			return Task.FromResult(0);
 		}
 
-		protected virtual Task<bool> OnCreateSectionsAsync()
-		{
-			bool returnValue = false;
-
-			//
-			// The report contains one primary section that contains
-			// sub-sections.
-			this.ReportSection.Key = "Document";
-			this.ReportSection.AddChildSection(this.OnCreatePageHeaderSection());
-			this.ReportSection.AddChildSection(this.OnCreateReportHeaderSection());
-			this.ReportSection.AddChildSection(this.OnCreateContentSection());
-			this.ReportSection.AddChildSection(this.OnCreateReportFooterSection());
-			this.ReportSection.AddChildSection(this.OnCreatePageFooterSection());
-
-			return Task.FromResult(returnValue);
-		}
-
-		protected virtual IPdfSection<TModel> OnCreatePageHeaderSection()
-		{
-			return new PageHeaderSection<TModel>();
-		}
-
-		protected virtual IPdfSection<TModel> OnCreateReportHeaderSection()
-		{
-			return new ReportHeaderSection<TModel>();
-		}
-
-		protected virtual IPdfSection<TModel> OnCreateContentSection()
-		{
-			return new ContentSection<TModel>();
-		}
-
-		protected virtual IPdfSection<TModel> OnCreateReportFooterSection()
-		{
-			return new ReportFooterSection<TModel>();
-		}
-
-		protected virtual IPdfSection<TModel> OnCreatePageFooterSection()
-		{
-			return new PageFooterSection<TModel>();
-		}
-
 		protected virtual async Task<bool> OnCreatePdfAsync(PdfDocument document, TModel model)
 		{
 			bool returnValue = false;
 
 			//
-			//
+			// Create the PDF pages.
 			//
 			await this.OnCreatePagesAsync(document, model);
-			int pageNumber = 1;
 
 			//
+			// Create the document sections.
 			//
+			this.ReportSection = this.OnAddContent();
+
 			//
-			await this.OnCreateSectionsAsync();
+			// Render the pages.
+			//
+			int pageNumber = 1;
 
 			foreach (PdfPage page in document.Pages)
 			{
 				//
-				//
+				// Set page layout.
 				//
 				await this.OnSetPageLayoutAsync(page);
 
 				//
-				//
+				// Set grid layout.
 				//
 				this.Grid = await this.OnSetPageGridAsync(page);
 
 				//
-				//
+				// Render the document page.
 				//
 				returnValue = await this.OnRenderDocument(document, page, pageNumber, model);
 
 				//
-				//
+				// Increment the page number.
 				//
 				pageNumber++;
 			}
 
 			return returnValue;
+		}
+
+		protected virtual IPdfSection<TModel> OnAddContent()
+		{
+			return new PdfContentSection<TModel>();
 		}
 
 		protected virtual async Task<bool> OnRenderDocument(PdfDocument document, PdfPage page, int pageNumber, TModel model)
@@ -288,7 +255,7 @@ namespace PdfDocuments
 			//
 			// Call layout on the primary section if it is being rendered.
 			//
-			if (this.ReportSection.ShouldRender.Invoke(gridPage, model))
+			if (this.ReportSection.ShouldRender.Resolve(gridPage, model))
 			{
 				if (await this.ReportSection.LayoutAsync(gridPage, model))
 				{
@@ -311,7 +278,7 @@ namespace PdfDocuments
 			//
 			// Call layout on the primary section if it is being rendered.
 			//
-			if (this.ReportSection.ShouldRender.Invoke(gridPage, model))
+			if (this.ReportSection.ShouldRender.Resolve(gridPage, model))
 			{
 				if (await this.ReportSection.RenderAsync(gridPage, model))
 				{

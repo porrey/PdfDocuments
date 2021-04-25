@@ -21,6 +21,7 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
+using System.Runtime.CompilerServices;
 using PdfSharp.Drawing;
 
 namespace PdfDocuments
@@ -39,12 +40,12 @@ namespace PdfDocuments
 
 	public static class PdfGridPageLineExtensions
 	{
-		public static void DrawFilledRectangle(this IPdfGridPage source, IPdfBounds bounds, XColor color)
+		public static void DrawFilledRectangle(this PdfGridPage source, PdfBounds bounds, XColor color)
 		{
 			source.DrawFilledRectangle(bounds.LeftColumn, bounds.TopRow, bounds.RightColumn, bounds.BottomRow, color);
 		}
 
-		public static void DrawFilledRectangle(this IPdfGridPage source, int leftColumn, int topRow, int rightColumn, int bottomRow, XColor color)
+		public static void DrawFilledRectangle(this PdfGridPage source, int leftColumn, int topRow, int rightColumn, int bottomRow, XColor color)
 		{
 			//
 			// Create the rectangle.
@@ -54,22 +55,38 @@ namespace PdfDocuments
 			//
 			// Draw the rectangle.
 			//
-			XBrush brush = new XSolidBrush(color);
-			source.Graphics.DrawRectangle(brush, rect);
+			source.Graphics.DrawRectangle(new XPen(color, 1), rect);
+			source.Graphics.DrawRectangle(new XSolidBrush(color), rect);
 		}
 
-		public static void DrawRectangle(this IPdfGridPage source, IPdfBounds bounds, double weight, XColor color)
+		public static void DrawRectangle(this PdfGridPage source, PdfBounds bounds, XPen pen)
 		{
-			source.DrawRectangle(bounds.LeftColumn, bounds.TopRow, bounds.Columns, bounds.Rows, weight, color);
+			source.DrawRectangle(bounds.LeftColumn, bounds.TopRow, bounds.RightColumn, bounds.BottomRow, pen);
 		}
 
-		public static void DrawRectangle(this IPdfGridPage source, int leftColumn, int topRow, int columnCount, int rowCount, double weight, XColor color)
+		public static void DrawRectangle(this PdfGridPage source, PdfBounds bounds, double weight, XColor color)
 		{
-			XPen boxPen = new XPen(color, weight);
-			source.Graphics.DrawRectangle(boxPen, source.Grid.Left(leftColumn), source.Grid.Top(topRow), source.Grid.ColumnsWidth(columnCount), source.Grid.RowsHeight(rowCount));
+			XPen pen = new XPen(color, weight);
+			source.DrawRectangle(bounds.LeftColumn, bounds.TopRow, bounds.RightColumn, bounds.BottomRow, pen);
 		}
 
-		public static void DrawVerticalLine(this IPdfGridPage source, int column, int startRow, int endRow, ColumnEdge columnEdge, double weight, XColor color)
+		public static void DrawRectangle(this PdfGridPage source, int leftColumn, int topRow, int rightColumn, int bottomRow, XPen pen)
+		{
+			//
+			// Create the rectangle.
+			//
+			XRect rect = source.GetRect(leftColumn, topRow, rightColumn, bottomRow);
+
+			if (!rect.IsEmpty)
+			{
+				//
+				// Draw the rectangle.
+				//
+				source.Graphics.DrawRectangle(pen, rect);
+			}
+		}
+
+		public static void DrawVerticalLine(this PdfGridPage source, int column, int startRow, int endRow, ColumnEdge columnEdge, double weight, XColor color)
 		{
 			XPen linePen = new XPen(color, weight);
 			XPoint p1 = new XPoint(columnEdge == ColumnEdge.Right ? source.Grid.Right(column) : source.Grid.Left(column), source.Grid.Top(startRow));
@@ -77,7 +94,7 @@ namespace PdfDocuments
 			source.Graphics.DrawLine(linePen, p1, p2);
 		}
 
-		public static void DrawHorizontalLine(this IPdfGridPage source, int row, int startColumn, int endColumn, RowEdge rowEdge, double weight, XColor color)
+		public static void DrawHorizontalLine(this PdfGridPage source, int row, int startColumn, int endColumn, RowEdge rowEdge, double weight, XColor color)
 		{
 			XPen linePen = new XPen(color, weight);
 			XPoint p1 = new XPoint(source.Grid.Left(startColumn), rowEdge == RowEdge.Top ? source.Grid.Top(row) : source.Grid.Bottom(row));
@@ -85,7 +102,7 @@ namespace PdfDocuments
 			source.Graphics.DrawLine(linePen, p1, p2);
 		}
 
-		public static void DrawGrid(this IPdfGridPage source, XColor color, double weight)
+		public static void DrawGrid(this PdfGridPage source, XColor color, double weight)
 		{
 			for (int row = 1; row <= source.Grid.Rows; row++)
 			{
@@ -102,9 +119,30 @@ namespace PdfDocuments
 			source.DrawVerticalLine(source.Grid.Columns, 1, source.Grid.Rows, ColumnEdge.Right, weight, color);
 		}
 
-		public static XRect GetRect(this IPdfGridPage source, PdfBounds bounds)
+		public static XRect GetRect(this PdfGridPage source, PdfBounds bounds)
 		{
-			return new XRect(source.Grid.Left(bounds.LeftColumn), source.Grid.Top(bounds.TopRow), source.Grid.ColumnsWidth(bounds.Columns), source.Grid.RowsHeight(bounds.Rows));
+			//
+			// Create the rectangle.
+			//
+			double x = source.Grid.Left(bounds.LeftColumn);
+			double y = source.Grid.Top(bounds.TopRow);
+			double w = source.Grid.ColumnsWidth(bounds.Columns) > 0 ? source.Grid.ColumnsWidth(bounds.Columns) : 1;
+			double h = source.Grid.RowsHeight(bounds.Rows) > 0 ? source.Grid.RowsHeight(bounds.Rows) : 1;
+
+			return new XRect(x, y, w, h);
+		}
+
+		public static XRect GetRect(this PdfGridPage source, int leftColumn, int topRow, int rightColumn, int bottomRow)
+		{
+			//
+			// Create the rectangle.
+			//
+			double x = source.Grid.Left(leftColumn);
+			double y = source.Grid.Top(topRow);
+			double w = source.Grid.Right(rightColumn) - x > 0 ? source.Grid.Right(rightColumn) - x : 1;
+			double h = source.Grid.Bottom(bottomRow) - y > 0 ? source.Grid.Bottom(bottomRow) - y : 1;
+
+			return new XRect(x, y, w, h);
 		}
 	}
 }

@@ -24,37 +24,23 @@
 
 namespace PdfDocuments
 {
-	public enum HorizontalAlignment
-	{
-		Left,
-		Center,
-		Right
-	}
-
-	public enum VerticalAlignment
-	{
-		Top,
-		Center,
-		Bottom
-	}
-
 	public static class PdfBoundsExtensions
 	{
-		public static IPdfPoint AlignHorizontally(this IPdfBounds outerBounds, IPdfBounds innerBounds, HorizontalAlignment alignment)
+		public static PdfPoint AlignHorizontally(this PdfBounds outerBounds, PdfBounds innerBounds, PdfHorizontalAlignment alignment)
 		{
 			PdfPoint returnValue = new PdfPoint() { Column = innerBounds.LeftColumn, Row = innerBounds.TopRow };
 
 			switch (alignment)
 			{
-				case HorizontalAlignment.Left:
+				case PdfHorizontalAlignment.Left:
 					returnValue.Column = outerBounds.LeftColumn;
 					returnValue.Row = outerBounds.TopRow;
 					break;
-				case HorizontalAlignment.Center:
+				case PdfHorizontalAlignment.Center:
 					returnValue.Column = outerBounds.LeftColumn + (int)((outerBounds.Columns - innerBounds.Columns) / 2.0);
 					returnValue.Row = outerBounds.TopRow;
 					break;
-				case HorizontalAlignment.Right:
+				case PdfHorizontalAlignment.Right:
 					returnValue.Column = outerBounds.RightColumn - innerBounds.Columns;
 					returnValue.Row = outerBounds.TopRow;
 					break;
@@ -63,21 +49,21 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		public static IPdfPoint AlignVertically(this IPdfBounds outerBounds, IPdfBounds innerBounds, VerticalAlignment alignment)
+		public static PdfPoint AlignVertically(this PdfBounds outerBounds, PdfBounds innerBounds, PdfVerticalAlignment alignment)
 		{
 			PdfPoint returnValue = new PdfPoint() { Column = innerBounds.LeftColumn, Row = innerBounds.TopRow };
 
 			switch (alignment)
 			{
-				case VerticalAlignment.Top:
+				case PdfVerticalAlignment.Top:
 					returnValue.Row = outerBounds.TopRow;
 					returnValue.Column = outerBounds.LeftColumn;
 					break;
-				case VerticalAlignment.Center:
+				case PdfVerticalAlignment.Center:
 					returnValue.Row = outerBounds.TopRow + (int)((outerBounds.Rows - innerBounds.Rows) / 2.0);
 					returnValue.Column = outerBounds.LeftColumn;
 					break;
-				case VerticalAlignment.Bottom:
+				case PdfVerticalAlignment.Bottom:
 					returnValue.Row = outerBounds.BottomRow - innerBounds.Rows;
 					returnValue.Column = outerBounds.LeftColumn;
 					break;
@@ -86,49 +72,27 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		public static IPdfBounds WithTopRow(this IPdfBounds bounds, int topRow)
+		public static PdfBounds WithTopRow(this PdfBounds bounds, int topRow)
 		{
 			bounds.TopRow = topRow;
-			return bounds;
+			return bounds.Normalize();
 		}
 
-		public static IPdfBounds WithLeftColumn(this IPdfBounds bounds, int leftColumn)
+		public static PdfBounds WithLeftColumn(this PdfBounds bounds, int leftColumn)
 		{
 			bounds.TopRow = leftColumn;
-			return bounds;
+			return bounds.Normalize();
 		}
 
-		public static IPdfBounds ApplyMargins(this IPdfBounds bounds, IPdfGridPage gridPage, IPdfSpacing spacing)
+		public static PdfBounds Normalize(this PdfBounds bounds)
 		{
-			IPdfBounds returnValue = bounds;
-
-			if (bounds.Columns > (spacing.Left + spacing.Right) &&
-				bounds.Rows > (spacing.Top + spacing.Bottom))
+			return new PdfBounds()
 			{
-				//
-				// Don't apply a margin to an item aligned to the left edge.
-				//
-				int left = bounds.LeftColumn > 1 ? bounds.LeftColumn + spacing.Left : 1;
-
-				//
-				// Don't apply a margin to an item aligned to the top edge.
-				//
-				int top = bounds.TopRow > 1 ? bounds.TopRow + spacing.Top : 1;
-
-				//
-				// Don't apply a margin to an item aligned to the right edge.
-				//
-				int columns = bounds.Columns - spacing.Left - (bounds.RightColumn == gridPage.Grid.Columns ?  0 : spacing.Right);
-
-				//
-				// Don't apply a margin to an item aligned to the bottom edge.
-				//
-				int rows = bounds.Rows - (bounds.BottomRow == gridPage.Grid.Rows ? 0 : spacing.Top) - spacing.Bottom;
-
-				returnValue = new PdfBounds(left, top, columns, rows);
-			}
-
-			return returnValue;
+				LeftColumn = bounds.LeftColumn >= 0 ? bounds.LeftColumn : 0,
+				TopRow = bounds.TopRow >= 0 ? bounds.TopRow : 0,
+				Columns = bounds.Columns > 0 ? bounds.Columns : 1,
+				Rows = bounds.Rows > 0 ? bounds.Rows : 1
+			};
 		}
 	}
 }

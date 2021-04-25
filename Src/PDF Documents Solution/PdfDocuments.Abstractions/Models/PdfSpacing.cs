@@ -21,23 +21,31 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 */
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments
 {
-	public class Invoice : IPdfModel
+	public class PdfSpacing
 	{
-		public string Id { get; set; }
-		public string PaymentMethod { get; set; }
-		public string CheckNumber { get; set; }
-		public string JobNumber { get; set; }
-		public DateTime DueDate { get; set; }
-		public bool Paid { get; set; } = true;
-		public DateTime CreateDateTime { get; set; }
-		public Address BillTo { get; set; }
-		public Address BillFrom { get; set; }
-		public IEnumerable<InvoiceItem> Items { get; set; }
+		public PdfSpacing()
+		{
+		}
+
+		public PdfSpacing(int left, int top, int right, int bottom)
+		{
+			this.Left = left;
+			this.Top = top;
+			this.Right = right;
+			this.Bottom = bottom;
+		}
+
+		public int Top { get; set; }
+		public int Bottom { get; set; }
+		public int Right { get; set; }
+		public int Left { get; set; }
+
+		public static implicit operator PdfSpacing((int Left, int Top, int Right, int Bottom) item)
+		{
+			return new PdfSpacing(item.Left, item.Top, item.Right, item.Bottom);
+		}
 	}
 }
