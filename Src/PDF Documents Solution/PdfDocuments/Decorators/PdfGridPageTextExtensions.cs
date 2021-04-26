@@ -1,27 +1,26 @@
 ﻿/*
-	MIT License
-
-	Copyright (c) 2021 Daniel Porrey
-
-	Permission is hereby granted, free of charge, to any person obtaining a copy
-	of this software and associated documentation files (the "Software"), to deal
-	in the Software without restriction, including without limitation the rights
-	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-	copies of the Software, and to permit persons to whom the Software is
-	furnished to do so, subject to the following conditions:
-
-	The above copyright notice and this permission notice shall be included in all
-	copies or substantial portions of the Software.
-
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-	SOFTWARE.
-*/
-using System.Runtime.CompilerServices;
+ *	MIT License
+ *
+ *	Copyright (c) 2021 Daniel Porrey
+ *
+ *	Permission is hereby granted, free of charge, to any person obtaining a copy
+ *	of this software and associated documentation files (the "Software"), to deal
+ *	in the Software without restriction, including without limitation the rights
+ *	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *	copies of the Software, and to permit persons to whom the Software is
+ *	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all
+ *	copies or substantial portions of the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *	SOFTWARE.
+ */
 using PdfSharp.Drawing;
 using PdfSharp.Drawing.Layout;
 
@@ -55,11 +54,14 @@ namespace PdfDocuments
 		{
 			PdfSize returnValue = source.MeasureText(font, text);
 
-			XRect layout = source.GetRect(bounds);
+			//
+			// Draw the text.
+			//
+			source.Graphics.DrawString(text ?? string.Empty, font, new XSolidBrush(color), source.GetRect(bounds), formats);
 
-			XBrush brush = new XSolidBrush(color);
-			source.Graphics.DrawString(text ?? string.Empty, font, brush, layout, formats);
-
+			//
+			// Draw the name of the font over the text.
+			//
 			if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.RevealFontDetails))
 			{
 				XFont debugFont = source.DebugFont();
@@ -69,6 +71,16 @@ namespace PdfDocuments
 				XRect labelLayout = source.GetRect(labelBounds);
 				XBrush labelBrush = new XSolidBrush(XColors.Wheat);
 				source.Graphics.DrawString(font.FontFamily.Name, debugFont, labelBrush, labelLayout, XStringFormats.Center);
+			}
+
+			//
+			// Draw a dotted line around the area used to draw the text.
+			//
+			if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.OutlineText))
+			{
+				XPen pen = new XPen(XColors.HotPink, .5);
+				pen.DashStyle = XDashStyle.Dot;
+				source.DrawRectangle(bounds, pen);
 			}
 
 			return returnValue;
