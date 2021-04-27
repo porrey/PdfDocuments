@@ -33,8 +33,18 @@ namespace PdfDocuments.Example
 {
 	public class InvoicePdf : PdfGenerator<Invoice>
 	{
-		public InvoicePdf(ITheme theme, IBarcodeGenerator barcodeGenerator)
-			: base(theme, barcodeGenerator)
+		public InvoicePdf(IPdfStyleManager<Invoice> styleManager)
+			: base(styleManager)
+		{
+
+		}
+
+		//public InvoicePdf(ITheme theme, IBarcodeGenerator barcodeGenerator)
+		//	: base(theme, barcodeGenerator)
+		//{
+		//}
+
+		protected override void OnInitializeStyles(IPdfStyleManager<Invoice> styleManager)
 		{
 		}
 

@@ -32,5 +32,17 @@ namespace PdfDocuments
 			services.AddScoped<IPdfGeneratorFactory, PdfGeneratorFactory>();
 			return services;
 		}
+
+		public static IServiceCollection AddPdfStyleManager<TModel>(this IServiceCollection services)
+		{
+			services.AddScoped<IPdfStyleManager<TModel>, PdfStyleManager<TModel>>();
+			return services;
+		}
+
+		public static IServiceCollection AddPdfStyleManager<TModel>(this IServiceCollection services, PdfStyleManager<TModel> styleManager)
+		{
+			services.AddScoped<IPdfStyleManager<TModel>>((s) => styleManager);
+			return services;
+		}
 	}
 }

@@ -23,7 +23,6 @@
  */
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PdfDocuments.Abstraction;
 using PdfSharp.Drawing;
 
 namespace PdfDocuments

@@ -51,8 +51,9 @@ namespace PdfDocuments.Example
 		{
 			services.AddExampleTheme()
 					.AddPdfDocuments()
-					.AddIronBarcodeSupport()
+					//.AddIronBarcodeSupport()
 					.AddScoped<IPdfGenerator, InvoicePdf>()
+					.AddPdfStyleManager<Invoice>()
 					.AddHostedService<HostedServiceExample>();
 		}
 	}

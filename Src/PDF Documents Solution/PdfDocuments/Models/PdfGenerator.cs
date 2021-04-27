@@ -34,6 +34,11 @@ namespace PdfDocuments
 	public abstract class PdfGenerator<TModel> : IPdfGenerator<TModel>
 		where TModel : IPdfModel
 	{
+		public PdfGenerator(IPdfStyleManager<TModel> styleManager)
+		{
+			this.StyleManager = styleManager;
+		}
+
 		public PdfGenerator(ITheme theme, IBarcodeGenerator barcodeGenerator)
 		{
 			this.Theme = theme;
@@ -66,6 +71,7 @@ namespace PdfDocuments
 			return (result, pdf);
 		}
 
+		public IPdfStyleManager<TModel> StyleManager { get; set; }
 		public virtual Type DocumentType => typeof(TModel);
 		public virtual ITheme Theme { get; set; }
 		public virtual string DocumentTitle { get; set; }
@@ -78,46 +84,14 @@ namespace PdfDocuments
 		protected virtual double PageWidth(PdfPage page) => page.Width - page.TrimMargins.Left - page.TrimMargins.Right;
 		protected virtual double PageHeight(PdfPage page) => page.Height - page.TrimMargins.Top - page.TrimMargins.Bottom;
 
-		protected virtual string OnGetDocumentTitle(TModel model)
-		{
-			return "No Document Title";
-		}
-
-		protected virtual Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
-		{
-			return Task.FromResult(new PdfGrid(this.PageWidth(page), this.PageHeight(page), 200, 80));
-		}
-
-		protected virtual Task<int> OnGetPageCountAsync(TModel model)
-		{
-			return Task.FromResult(1);
-		}
-
-		protected virtual async Task OnCreatePagesAsync(PdfDocument document, TModel model)
-		{
-			int pageCount = await this.OnGetPageCountAsync(model);
-
-			for (int pageNumber = 1; pageNumber <= pageCount; pageNumber++)
-			{
-				document.AddPage();
-			}
-		}
-
-		protected virtual Task OnSetPageLayoutAsync(PdfPage page)
-		{
-			page.Orientation = PdfSharp.PageOrientation.Portrait;
-			page.Size = PdfSharp.PageSize.Letter;
-			page.TrimMargins.Left = XUnit.FromInch(.35);
-			page.TrimMargins.Right = XUnit.FromInch(.35);
-			page.TrimMargins.Top = XUnit.FromInch(.32);
-			page.TrimMargins.Bottom = XUnit.FromInch(.32);
-
-			return Task.FromResult(0);
-		}
-
 		protected virtual async Task<bool> OnCreatePdfAsync(PdfDocument document, TModel model)
 		{
 			bool returnValue = false;
+
+			//
+			// Initialize styles.
+			//
+			this.OnInitializeStyles(this.StyleManager);
 
 			//
 			// Create the PDF pages.
@@ -158,6 +132,47 @@ namespace PdfDocuments
 			}
 
 			return returnValue;
+		}
+
+		protected virtual void OnInitializeStyles(IPdfStyleManager<TModel> styleManager)
+		{
+		}
+
+		protected virtual string OnGetDocumentTitle(TModel model)
+		{
+			return "No Document Title";
+		}
+
+		protected virtual Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
+		{
+			return Task.FromResult(new PdfGrid(this.PageWidth(page), this.PageHeight(page), 200, 80));
+		}
+
+		protected virtual Task<int> OnGetPageCountAsync(TModel model)
+		{
+			return Task.FromResult(1);
+		}
+
+		protected virtual async Task OnCreatePagesAsync(PdfDocument document, TModel model)
+		{
+			int pageCount = await this.OnGetPageCountAsync(model);
+
+			for (int pageNumber = 1; pageNumber <= pageCount; pageNumber++)
+			{
+				document.AddPage();
+			}
+		}
+
+		protected virtual Task OnSetPageLayoutAsync(PdfPage page)
+		{
+			page.Orientation = PdfSharp.PageOrientation.Portrait;
+			page.Size = PdfSharp.PageSize.Letter;
+			page.TrimMargins.Left = XUnit.FromInch(.35);
+			page.TrimMargins.Right = XUnit.FromInch(.35);
+			page.TrimMargins.Top = XUnit.FromInch(.32);
+			page.TrimMargins.Bottom = XUnit.FromInch(.32);
+
+			return Task.FromResult(0);
 		}
 
 		protected virtual IPdfSection<TModel> OnAddContent()
