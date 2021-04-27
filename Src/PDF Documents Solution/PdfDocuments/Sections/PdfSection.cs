@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using PdfDocuments.Abstraction;
 using PdfDocuments.Theme.Abstractions;
 using PdfSharp.Drawing;
 
@@ -49,34 +50,26 @@ namespace PdfDocuments
 
 		public virtual string Key { get; set; }
 		public BindProperty<string, TModel> Text { get; set; } = string.Empty;
-		public BindProperty<XStringFormat, TModel> TextAlignment { get; set; } = XStringFormats.CenterLeft;
-
-		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0.0;
-		public virtual BindProperty<double, TModel> RelativeWidth { get; set; } = 0.0;
-
-		public virtual PdfBounds ActualBounds { get; set; } = new PdfBounds(0, 0, 0, 0);
-		public virtual PdfSpacing Padding { get; set; } = new PdfSpacing(1, 1, 1, 1);
-		public virtual PdfSpacing Margin { get; set; } = new PdfSpacing(0, 0, 0, 0);
-
 		public virtual IPdfSection<TModel> ParentSection { get; set; }
-
+		public virtual IList<IPdfSection<TModel>> Children { get; } = new List<IPdfSection<TModel>>();
+		public virtual PdfBounds ActualBounds { get; set; } = new PdfBounds(0, 0, 0, 0);
 		public virtual BindProperty<bool, TModel> UsePadding { get; set; } = true;
 		public virtual BindProperty<bool, TModel> UseMargins { get; set; } = true;
-
 		public virtual BindProperty<bool, TModel> ShouldRender { get; set; } = true;
-
-		public virtual BindProperty<XFont, TModel> Font { get; set; } = new BindPropertyAction<XFont, TModel>((gp, m) => { return gp.BodyFont(); });
 		public virtual BindProperty<XFont, TModel> DebugFont { get; set; } = new BindPropertyAction<XFont, TModel>((gp, m) => { return gp.DebugFont(); });
+		public BindProperty<string, TModel> WaterMarkImagePath { get; set; } = string.Empty;
+		public BindProperty<PdfStyle<TModel>, TModel> DefaultStyle { get; set; }
 
-		public virtual IList<IPdfSection<TModel>> Children { get; } = new List<IPdfSection<TModel>>();
-
+		public BindProperty<XStringFormat, TModel> TextAlignment { get; set; } = XStringFormats.CenterLeft;
+		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0.0;
+		public virtual BindProperty<double, TModel> RelativeWidth { get; set; } = 0.0;
+		public virtual PdfSpacing Padding { get; set; } = new PdfSpacing(1, 1, 1, 1);
+		public virtual PdfSpacing Margin { get; set; } = new PdfSpacing(0, 0, 0, 0);
+		public virtual BindProperty<XFont, TModel> Font { get; set; } = new BindPropertyAction<XFont, TModel>((gp, m) => { return gp.BodyFont(); });
 		public virtual BindProperty<double, TModel> BorderWidth { get; set; } = 0.0;
 		public virtual BindProperty<XColor, TModel> BorderColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyColor; });
-
 		public virtual BindProperty<XColor, TModel> BackgroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyBackgroundColor; });
 		public virtual BindProperty<XColor, TModel> ForegroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyColor; });
-
-		public BindProperty<string, TModel> WaterMarkImagePath { get; set; } = string.Empty;
 
 		public virtual async Task<bool> LayoutAsync(PdfGridPage gridPage, TModel model)
 		{

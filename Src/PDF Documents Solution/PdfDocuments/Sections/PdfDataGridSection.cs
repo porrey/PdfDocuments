@@ -105,7 +105,7 @@ namespace PdfDocuments
 						{
 							LeftColumn = columnIndex > 0 ? headerCellBounds[columnIndex - 1].RightColumn + 1 : bounds.LeftColumn,
 							TopRow = bounds.TopRow,
-							Rows = headerSize.Rows + this.Padding.Top + this.Padding.Bottom,
+							Rows = headerSize.Rows + this.Padding.Top + this.Padding.Bottom + this.CellPadding.Top + this.CellPadding.Bottom,
 							Columns = columnIndex < (this.DataColumns.Count - 1) ? (int)(bounds.Columns * dataColumn.RelativeWidth) : remainingColumns
 						};
 
@@ -128,7 +128,7 @@ namespace PdfDocuments
 						{
 							LeftColumn = columnIndex > 0 ? valueCellBounds[columnIndex - 1].RightColumn + 1 : bounds.LeftColumn,
 							TopRow = headerCellBounds[0].BottomRow,
-							Rows = valueSize.Rows + this.Padding.Top + this.Padding.Bottom,
+							Rows = valueSize.Rows + this.Padding.Top + this.Padding.Bottom + this.CellPadding.Top + this.CellPadding.Bottom,
 							Columns = columnIndex < (this.DataColumns.Count - 1) ? (int)(bounds.Columns * dataColumn.RelativeWidth) : remainingColumns
 						};
 

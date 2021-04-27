@@ -23,6 +23,7 @@
  */
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PdfDocuments.Abstraction;
 using PdfSharp.Drawing;
 
 namespace PdfDocuments
@@ -31,28 +32,30 @@ namespace PdfDocuments
 	{
 		string Key { get; set; }
 		BindProperty<string, TModel> Text { get; set; }
-		BindProperty<XStringFormat, TModel> TextAlignment { get; set; }
-		BindProperty<double, TModel> RelativeHeight { get; set; }
-		BindProperty<double, TModel> RelativeWidth { get; set; }
+		BindProperty<PdfStyle<TModel>, TModel> DefaultStyle { get; set; }
 		PdfBounds ActualBounds { get; set; }
-		PdfSpacing Padding { get; set; }
-		PdfSpacing Margin { get; set; }
 		IPdfSection<TModel> ParentSection { get; set; }
 		BindProperty<bool, TModel> UsePadding { get; set; }
 		BindProperty<bool, TModel> UseMargins { get; set; }
 		BindProperty<bool, TModel> ShouldRender { get; set; }
-		BindProperty<XFont, TModel> Font { get; set; }
 		BindProperty<XFont, TModel> DebugFont { get; set; }
 		IList<IPdfSection<TModel>> Children { get; }
-		BindProperty<double, TModel> BorderWidth { get; set; }
-		BindProperty<XColor, TModel> BorderColor { get; set; }
-		BindProperty<XColor, TModel> BackgroundColor { get; set; }
-		BindProperty<XColor, TModel> ForegroundColor { get; set; }
 		BindProperty<string, TModel> WaterMarkImagePath { get; set; }
 		Task<bool> RenderAsync(PdfGridPage gridPage, TModel model);
 		Task<bool> LayoutAsync(PdfGridPage gridPage, TModel model);
 		Task<bool> RenderDebugAsync(PdfGridPage gridPage, TModel model);
 		Task SetActualRows(int rows);
 		Task SetActualColumns(int columns);
+
+		BindProperty<XStringFormat, TModel> TextAlignment { get; set; }
+		BindProperty<double, TModel> RelativeHeight { get; set; }
+		BindProperty<double, TModel> RelativeWidth { get; set; }
+		PdfSpacing Padding { get; set; }
+		PdfSpacing Margin { get; set; }
+		BindProperty<double, TModel> BorderWidth { get; set; }
+		BindProperty<XColor, TModel> BorderColor { get; set; }
+		BindProperty<XColor, TModel> BackgroundColor { get; set; }
+		BindProperty<XColor, TModel> ForegroundColor { get; set; }
+		BindProperty<XFont, TModel> Font { get; set; }
 	}
 }

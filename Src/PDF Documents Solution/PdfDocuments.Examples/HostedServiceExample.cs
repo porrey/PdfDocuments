@@ -116,8 +116,8 @@ namespace PdfDocuments.Example
 									//.SetFlag(DebugMode.RevealGrid)
 									//.SetFlag(DebugMode.RevealLayout)
 									//.SetFlag(DebugMode.HideDetails)
-									.SetFlag(DebugMode.RevealFontDetails)
-									.SetFlag(DebugMode.OutlineText)
+									//.SetFlag(DebugMode.RevealFontDetails)
+									//.SetFlag(DebugMode.OutlineText)
 									;
 #endif
 

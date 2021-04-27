@@ -203,7 +203,7 @@ namespace PdfDocuments.Example
 				   .AddColumn<Invoice, InvoiceItem, decimal>("Unit Price", t => t.UnitPrice, .25, "{0:C}", XStringFormats.CenterRight)
 				   .AddColumn<Invoice, InvoiceItem, decimal>("Amount", t => t.Amount, .30, "{0:C}", XStringFormats.CenterRight)
 				   .UseItems((g, m) => m.Items)
-				   .WithCellPadding<Invoice, InvoiceItem>(2, 3, 2, 5)
+				   .WithCellPadding<Invoice, InvoiceItem>(2, 2, 2, 2)
 				   .WithPadding(0, 2, 1, 2)
 				   .WithColumnHeaderFont<Invoice, InvoiceItem>((g, m) => g.BodyMediumFont(XFontStyle.Bold).WithSize(13))
 				   .WithColumnHeaderForegroundColor<Invoice, InvoiceItem>(ColorPalette.Red)
