@@ -22,6 +22,7 @@
  *	SOFTWARE.
  */
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using PdfSharp.Drawing;
 
@@ -36,7 +37,7 @@ namespace PdfDocuments
 		public BindProperty<string, TModel> Value { get; set; }
 	}
 
-	public class PdfKeyValueSection<TModel> : PdfSection<TModel>, IPdfValueFont<TModel>
+	public class PdfKeyValueSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
 		public PdfKeyValueSection()
@@ -53,35 +54,31 @@ namespace PdfDocuments
 			}
 		}
 
-		public virtual BindProperty<XColor, TModel> CellBackgroundColor { get; set; } = new BindProperty<XColor, TModel>((g, m) => XColor.Empty);
-		public virtual BindProperty<XFont, TModel> ValueFont { get; set; } = new BindProperty<XFont, TModel>((gp, m) => gp.BodyFont());
 		public virtual BindProperty<double, TModel> KeyRelativeWidth { get; set; } = 0;
 		public virtual IList<PdfKeyValueItem<TModel>> Items { get; } = new List<PdfKeyValueItem<TModel>>();
 
-		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
-			//
-			// Determine if padding should be used.
-			//
-			bool usePadding = this.UsePadding.Resolve(gridPage, model);
+			PdfStyle<TModel> keyStyle = this.StyleManager.GetStyle(this.StyleNames.ElementAt(1));
+			PdfStyle<TModel> valueStyle = this.StyleManager.GetStyle(this.StyleNames.ElementAt(2));
 
 			//
 			// Create the fonts.
 			//
-			XFont nameFont = this.Font.Resolve(gridPage, model);
-			XFont valueFont = this.ValueFont.Resolve(gridPage, model);
+			XFont nameFont = keyStyle.Font.Resolve(g, m);
+			XFont valueFont = valueStyle.Font.Resolve(g, m);
 
 			//
 			// Get the size of the name text.
 			//
-			PdfSize textSize = gridPage.MeasureText(nameFont);
+			PdfSize textSize = g.MeasureText(nameFont);
 
 			//
 			// Determine the width
 			//
-			double relativeWidth = this.KeyRelativeWidth.Resolve(gridPage, model);
+			double relativeWidth = this.KeyRelativeWidth.Resolve(g, m);
 			int keyWidth = bounds.Columns / 2;
 			int valueWidth = bounds.Columns / 2;
 
@@ -111,9 +108,9 @@ namespace PdfDocuments
 				//
 				{
 					PdfBounds textBounds = new PdfBounds(bounds.LeftColumn, top, keyWidth, height);
-					PdfBounds paddedBounds = this.ApplyPadding(gridPage, model, textBounds, this.Padding);
-					gridPage.DrawFilledRectangle(paddedBounds, this.CellBackgroundColor.Resolve(gridPage, model));
-					gridPage.DrawText(item.Key, nameFont, paddedBounds, item.KeyAlignment, this.ForegroundColor.Resolve(gridPage, model));
+					PdfBounds paddedBounds = this.ApplyPadding(g, m, textBounds, keyStyle.Padding.Resolve(g, m));
+					g.DrawFilledRectangle(paddedBounds, keyStyle.BackgroundColor.Resolve(g, m));
+					g.DrawText(item.Key, nameFont, paddedBounds, item.KeyAlignment, keyStyle.ForegroundColor.Resolve(g, m));
 				}
 
 				//
@@ -121,9 +118,9 @@ namespace PdfDocuments
 				//
 				{
 					PdfBounds textBounds = new PdfBounds(bounds.LeftColumn + keyWidth, top, valueWidth, height);
-					PdfBounds paddedBounds = this.ApplyPadding(gridPage, model, textBounds, this.Padding);
-					gridPage.DrawFilledRectangle(paddedBounds, this.CellBackgroundColor.Resolve(gridPage, model));
-					gridPage.DrawText(item.Value.Resolve(gridPage, model), valueFont, paddedBounds, item.ValueAlignment, this.ForegroundColor.Resolve(gridPage, model));
+					PdfBounds paddedBounds = this.ApplyPadding(g, m, textBounds, valueStyle.Padding.Resolve(g, m));
+					g.DrawFilledRectangle(paddedBounds, valueStyle.BackgroundColor.Resolve(g, m));
+					g.DrawText(item.Value.Resolve(g, m), valueFont, paddedBounds, item.ValueAlignment, valueStyle.ForegroundColor.Resolve(g, m));
 				}
 
 				top += height;

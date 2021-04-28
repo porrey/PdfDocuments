@@ -30,8 +30,9 @@ namespace PdfDocuments
 	public interface IPdfSection<TModel>
 	{
 		string Key { get; set; }
+		IPdfStyleManager<TModel> StyleManager { get; set; }
+		IEnumerable<string> StyleNames { get; set; }
 		BindProperty<string, TModel> Text { get; set; }
-		BindProperty<PdfStyle<TModel>, TModel> DefaultStyle { get; set; }
 		PdfBounds ActualBounds { get; set; }
 		IPdfSection<TModel> ParentSection { get; set; }
 		BindProperty<bool, TModel> UsePadding { get; set; }

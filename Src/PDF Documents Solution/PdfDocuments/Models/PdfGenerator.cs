@@ -34,9 +34,10 @@ namespace PdfDocuments
 	public abstract class PdfGenerator<TModel> : IPdfGenerator<TModel>
 		where TModel : IPdfModel
 	{
-		public PdfGenerator(IPdfStyleManager<TModel> styleManager)
+		public PdfGenerator(IPdfStyleManager<TModel> styleManager, ITheme theme)
 		{
 			this.StyleManager = styleManager;
+			this.Theme = theme;
 		}
 
 		public PdfGenerator(ITheme theme, IBarcodeGenerator barcodeGenerator)
@@ -102,6 +103,7 @@ namespace PdfDocuments
 			// Create the document sections.
 			//
 			this.ReportSection = this.OnAddContent();
+			this.ReportSection.StyleManager = this.StyleManager;
 
 			//
 			// Render the pages.

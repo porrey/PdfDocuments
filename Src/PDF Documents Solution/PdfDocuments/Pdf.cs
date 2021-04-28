@@ -114,6 +114,12 @@ namespace PdfDocuments
 			return new PdfPageFooterSection<TModel>();
 		}
 
+		public static IPdfSection<TModel> WithStyles<TModel>(this IPdfSection<TModel> section, params string[] styleNames)
+		{
+			section.StyleNames = styleNames;
+			return section;
+		}
+
 		public static IPdfSection<TModel> DataGridSection<TModel, TItem>()
 			where TModel : IPdfModel
 		{
@@ -421,26 +427,6 @@ namespace PdfDocuments
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithValueFont<TModel>(this IPdfSection<TModel> section, BindProperty<XFont, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is IPdfValueFont<TModel> s)
-			{
-				s.ValueFont = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithValueFont<TModel>(this IPdfSection<TModel> section, BindPropertyAction<XFont, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is IPdfValueFont<TModel> s)
-			{
-				s.ValueFont = value;
-			}
-			return section;
-		}
-
 		public static IPdfSection<TModel> WithBorderColor<TModel>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -609,26 +595,6 @@ namespace PdfDocuments
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithCellBackgroundColor<TModel>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfKeyValueSection<TModel> s)
-			{
-				s.CellBackgroundColor = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithCellBackgroundColor<TModel>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfKeyValueSection<TModel> s)
-			{
-				s.CellBackgroundColor = value;
-			}
-			return section;
-		}
-
 		public static IPdfSection<TModel> WithKeyRelativeWidth<TModel>(this IPdfSection<TModel> section, BindProperty<double, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -638,6 +604,5 @@ namespace PdfDocuments
 			}
 			return section;
 		}
-
 	}
 }

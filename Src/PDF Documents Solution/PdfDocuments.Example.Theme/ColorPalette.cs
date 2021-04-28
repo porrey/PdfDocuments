@@ -28,7 +28,7 @@ namespace PdfDocuments.Example.Theme
 {
 	public static class ColorPalette
 	{
-		public static XColor Empty = XColors.Transparent;
+		public static XColor Transparent = XColors.Transparent;
 		public static XColor White = XColor.FromArgb(255, 255, 255, 255);
 		public static XColor Gray = XColor.FromArgb(255, 99, 99, 99);
 		public static XColor Blue = XColor.FromArgb(255, 37, 32, 98);

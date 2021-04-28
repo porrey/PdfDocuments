@@ -57,7 +57,28 @@ namespace PdfDocuments
 		public virtual BindProperty<bool, TModel> ShouldRender { get; set; } = true;
 		public virtual BindProperty<XFont, TModel> DebugFont { get; set; } = new BindPropertyAction<XFont, TModel>((gp, m) => { return gp.DebugFont(); });
 		public BindProperty<string, TModel> WaterMarkImagePath { get; set; } = string.Empty;
-		public BindProperty<PdfStyle<TModel>, TModel> DefaultStyle { get; set; }
+		public IEnumerable<string> StyleNames { get; set; } = new string[] { PdfStyleManager<TModel>.Default };
+		
+		IPdfStyleManager<TModel> _styleManager = null;
+		public IPdfStyleManager<TModel> StyleManager
+		{
+			get
+			{
+				IPdfSection<TModel> parent = this.ParentSection;
+
+				while (parent != null && _styleManager == null)
+				{
+					_styleManager = parent.StyleManager;
+					parent = parent.ParentSection;
+				}
+
+				return _styleManager;
+			}
+			set
+			{
+				_styleManager = value;
+			}
+		}
 
 		public BindProperty<XStringFormat, TModel> TextAlignment { get; set; } = XStringFormats.CenterLeft;
 		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0.0;
@@ -69,6 +90,7 @@ namespace PdfDocuments
 		public virtual BindProperty<XColor, TModel> BorderColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyColor; });
 		public virtual BindProperty<XColor, TModel> BackgroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyBackgroundColor; });
 		public virtual BindProperty<XColor, TModel> ForegroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyColor; });
+
 
 		public virtual async Task<bool> LayoutAsync(PdfGridPage gridPage, TModel model)
 		{

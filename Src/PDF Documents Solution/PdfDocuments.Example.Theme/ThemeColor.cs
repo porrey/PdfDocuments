@@ -29,13 +29,13 @@ namespace PdfDocuments.Example.Theme
 	public class ThemeColor : IThemeColor
 	{
 		public XColor TitleColor => ColorPalette.Blue;
-		public XColor TitleBackgroundColor => ColorPalette.Empty;
+		public XColor TitleBackgroundColor => ColorPalette.Transparent;
 		
 		public XColor SubTitleColor => ColorPalette.White;
 		public XColor SubTitleBackgroundColor => ColorPalette.MediumRed;
 		
 		public XColor HeaderFooterColor => ColorPalette.Gray;
-		public XColor HeaderFooterBackgroundColor => ColorPalette.Empty;
+		public XColor HeaderFooterBackgroundColor => ColorPalette.Transparent;
 		
 		public XColor BodyColor => ColorPalette.Gray;
 		public XColor BodyLightColor => ColorPalette.Gray.WithLuminosity(.20);
@@ -44,7 +44,7 @@ namespace PdfDocuments.Example.Theme
 		public XColor BodyEmphasisColor => ColorPalette.Blue.WithLuminosity(.40);
 		public XColor BodyHighlightColor => ColorPalette.Red.WithLuminosity(.40);
 		public XColor BodyBoldColor => ColorPalette.Gray.WithLuminosity(.11);
-		public XColor BodyBackgroundColor => ColorPalette.Empty;
+		public XColor BodyBackgroundColor => ColorPalette.Transparent;
 
 		public XColor AlternateBackgroundColor1 => ColorPalette.LightBlue;
 		public XColor AlternateBackgroundColor2 => ColorPalette.MediumBlue;

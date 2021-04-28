@@ -22,8 +22,8 @@
  *	SOFTWARE.
  */
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
@@ -33,31 +33,42 @@ namespace PdfDocuments
 		public BindProperty<string, TModel> LogoPath { get; set; } = string.Empty;
 		public BindProperty<string, TModel> Title { get; set; } = string.Empty;
 
-		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
 			//
+			// Get the first style for this section
+			//
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+
+			//
 			// Draw the background.
 			//
-			gridPage.DrawFilledRectangle(bounds, this.BackgroundColor.Resolve(gridPage, model));
+			g.DrawFilledRectangle(bounds, style.BackgroundColor.Resolve(g, m));
+
+			//
+			// Get the default style for this section
+			//
+			PdfSpacing padding = style.Padding.Resolve(g, m);
 
 			//
 			// Draw the image left aligned and vertically centered in the
 			// header leaving a 1 row margin above and below it. Also 
 			// leave a one column margin on the left.
 			//
-			string path = this.LogoPath.Resolve(gridPage, model);
+			string path = this.LogoPath.Resolve(g, m);
 
 			if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
 			{
-				gridPage.DrawImageWithFixedHeight(path, bounds.LeftColumn + this.Padding.Left, bounds.TopRow + this.Padding.Top, bounds.Rows - (this.Padding.Top + this.Padding.Bottom));
+				g.DrawImageWithFixedHeight(path, bounds.LeftColumn + padding.Left, bounds.TopRow + padding.Top, bounds.Rows - (padding.Top + padding.Bottom));
 			}
 
 			if (this.Title != null)
 			{
-				PdfBounds textBounds = this.ApplyPadding(gridPage, model, bounds, this.Padding);
-				gridPage.DrawText(this.Title.Resolve(gridPage, model), this.Font.Resolve(gridPage, model), textBounds, XStringFormats.CenterRight, this.ForegroundColor.Resolve(gridPage, model));
+				string title = this.Title.Resolve(g, m);
+				PdfBounds textBounds = this.ApplyPadding(g, m, bounds, padding);
+				g.DrawText(title, style.Font.Resolve(g, m), textBounds, style.TextAlignment.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
 			}
 
 			return Task.FromResult(returnValue);
