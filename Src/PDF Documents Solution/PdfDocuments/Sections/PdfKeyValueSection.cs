@@ -61,6 +61,9 @@ namespace PdfDocuments
 		{
 			bool returnValue = true;
 
+			//
+			// Get the styles.
+			//
 			PdfStyle<TModel> keyStyle = this.StyleManager.GetStyle(this.StyleNames.ElementAt(1));
 			PdfStyle<TModel> valueStyle = this.StyleManager.GetStyle(this.StyleNames.ElementAt(2));
 

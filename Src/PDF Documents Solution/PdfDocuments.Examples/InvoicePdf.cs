@@ -76,6 +76,17 @@ namespace PdfDocuments.Example
 				TextAlignment = XStringFormats.CenterRight
 			});
 
+			this.StyleManager.Add("Address.Header", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Arial", 11, XFontStyle.Regular),
+				BorderColor = ColorPalette.Transparent,
+				BorderWidth = 0,
+				Padding = new PdfSpacing(1, 2, 1, 2),
+				BackgroundColor = ColorPalette.Red,
+				ForegroundColor = ColorPalette.White,
+				TextAlignment = XStringFormats.CenterLeft
+			});
+
 			this.StyleManager.Add("Address.Key", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Arial", 11, XFontStyle.Regular),
@@ -118,6 +129,17 @@ namespace PdfDocuments.Example
 				BackgroundColor = ColorPalette.LightRed,
 				ForegroundColor = ColorPalette.Blue,
 				TextAlignment = XStringFormats.CenterRight
+			});
+
+			this.StyleManager.Add("Reference.Header", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Arial", 11, XFontStyle.Regular),
+				BorderColor = ColorPalette.Transparent,
+				BorderWidth = 0,
+				Padding = new PdfSpacing(1, 2, 1, 2),
+				BackgroundColor = ColorPalette.Blue,
+				ForegroundColor = ColorPalette.White,
+				TextAlignment = XStringFormats.CenterLeft
 			});
 		}
 
@@ -174,10 +196,8 @@ namespace PdfDocuments.Example
 				(
 					Pdf.HeaderContentSection<Invoice>()
 						.WithMargin(0, 0, 1, 0)
-						.WithPadding(1, 2, 1, 2)
 						.WithText("Payment Method")
-						.WithFont((g, m) => g.SubTitle3Font())
-						.WithHeaderBackgroundColor(ColorPalette.Blue)
+						.WithStyles("Reference", "Reference.Header")
 						.WithContentSection(Pdf.TextBlockSection<Invoice>()
 											   .WithText((g, m) => m.PaymentMethod)
 											   .WithTextAlignment(XStringFormats.CenterLeft)
@@ -189,10 +209,8 @@ namespace PdfDocuments.Example
 
 					Pdf.HeaderContentSection<Invoice>()
 						.WithMargin(1, 0, 1, 0)
-						.WithPadding(1, 2, 1, 2)
 						.WithText("Check Number")
-						.WithFont((g, m) => g.SubTitle3Font())
-						.WithHeaderBackgroundColor(ColorPalette.Blue)
+						.WithStyles("Reference", "Reference.Header")
 						.WithContentSection(Pdf.TextBlockSection<Invoice>()
 											   .WithText((g, m) => m.CheckNumber)
 											   .WithTextAlignment(XStringFormats.CenterLeft)
@@ -204,10 +222,8 @@ namespace PdfDocuments.Example
 
 					Pdf.HeaderContentSection<Invoice>()
 						.WithMargin(1, 0, 0, 0)
-						.WithPadding(1, 2, 1, 2)
 						.WithText("Job Number")
-						.WithFont((g, m) => g.SubTitle3Font())
-						.WithHeaderBackgroundColor(ColorPalette.Blue)
+						.WithStyles("Reference", "Reference.Header")
 						.WithContentSection(Pdf.TextBlockSection<Invoice>()
 											   .WithText((g, m) => m.JobNumber)
 											   .WithTextAlignment(XStringFormats.CenterLeft)
@@ -226,10 +242,9 @@ namespace PdfDocuments.Example
 				(
 					Pdf.HeaderContentSection<Invoice>()
 						.WithMargin(0, 0, 1, 0)
-						.WithPadding(1, 2, 1, 2)
 						.WithText("Bill To")
 						.WithFont((g, m) => g.SubTitle3Font())
-						.WithHeaderBackgroundColor(ColorPalette.Red)
+						.WithStyles("Address", "Address.Header")
 						.WithContentSection(Pdf.KeyValueSection<Invoice>
 												(
 													new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Name), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterLeft },
@@ -245,10 +260,9 @@ namespace PdfDocuments.Example
 
 					Pdf.HeaderContentSection<Invoice>()
 						.WithMargin(0, 0, 0, 0)
-						.WithPadding(1, 2, 1, 2)
 						.WithText("From")
 						.WithFont((g, m) => g.SubTitle3Font())
-						.WithHeaderBackgroundColor(ColorPalette.Red)
+						.WithStyles("Address", "Address.Header")
 						.WithContentSection(Pdf.KeyValueSection<Invoice>
 												(
 													new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Name), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterLeft },

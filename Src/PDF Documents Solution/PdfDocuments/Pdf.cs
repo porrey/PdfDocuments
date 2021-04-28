@@ -537,50 +537,6 @@ namespace PdfDocuments
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithHeaderBackgroundColor<TModel>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is IHeaderBackgroundColor<TModel> s)
-			{
-				s.HeaderBackgroundColor = value;
-			}
-
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithHeaderBackgroundColor<TModel>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is IHeaderBackgroundColor<TModel> s)
-			{
-				s.HeaderBackgroundColor = value;
-			}
-
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithHeaderForegroundColor<TModel>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is IHeaderForegroundColor<TModel> s)
-			{
-				s.HeaderForegroundColor = value;
-			}
-
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithHeaderForegroundColor<TModel>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is IHeaderForegroundColor<TModel> s)
-			{
-				s.HeaderForegroundColor = value;
-			}
-
-			return section;
-		}
-
 		public static IPdfSection<TModel> WithTextAlignment<TModel>(this IPdfSection<TModel> section, BindProperty<XStringFormat, TModel> value)
 		where TModel : IPdfModel
 		{

@@ -23,22 +23,13 @@
  */
 using System.Linq;
 using System.Threading.Tasks;
-using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
-	public class PdfHeaderContentSection<TModel> : PdfSection<TModel>, IHeaderForegroundColor<TModel>, IHeaderBackgroundColor<TModel>
+	public class PdfHeaderContentSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public PdfHeaderContentSection()
-		{
-			this.Font = new BindPropertyAction<XFont, TModel>((g, m) => g.SubTitle2Font());
-		}
-
-		public virtual BindProperty<XColor, TModel> HeaderForegroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((g, m) => g.Theme.Color.SubTitleColor);
-		public virtual BindProperty<XColor, TModel> HeaderBackgroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((g, m) => g.Theme.Color.SubTitleBackgroundColor);
-
-		protected override Task<bool> OnLayoutChildrenAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
@@ -47,7 +38,7 @@ namespace PdfDocuments
 				//
 				// Get the header rectangle.
 				//
-				PdfBounds headerRect = this.GetHeaderRect(gridPage, model, bounds);
+				PdfBounds headerRect = this.GetHeaderRect(g, m, bounds);
 
 				//
 				// Set the bound of the child section to be just
@@ -61,69 +52,74 @@ namespace PdfDocuments
 				//
 				// Apply the layout.
 				//
-				this.Children.Single().LayoutAsync(gridPage, model);
+				this.Children.Single().LayoutAsync(g, m);
 			}
 
 			return Task.FromResult(returnValue);
 		}
 
-		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
 			//
+			// Get the styles.
+			//
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.ElementAt(1));
+
+			//
 			// Get the header rectangle.
 			//
-			PdfBounds headerRect = this.GetHeaderRect(gridPage, model, bounds);
+			PdfBounds headerRect = this.GetHeaderRect(g, m, bounds);
 
 			//
 			// Draw the filled rectangle.
 			//
-			gridPage.DrawFilledRectangle(headerRect, this.HeaderBackgroundColor.Resolve(gridPage, model));
-
-			//
-			// Check the padding flag.
-			//
-			bool usePadding = this.UsePadding.Resolve(gridPage, model);
+			g.DrawFilledRectangle(headerRect, style.BackgroundColor.Resolve(g, m));
 
 			//
 			// Draw the text.
 			//
-			gridPage.DrawText(this.Text.Resolve(gridPage, model).ToUpper(), this.Font.Resolve(gridPage, model),
-						headerRect.LeftColumn + (usePadding ? this.Padding.Left : 0),
-						headerRect.TopRow + (usePadding ? this.Padding.Top : 0),
-						headerRect.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Left : 0)),
-						headerRect.Rows - ((usePadding ? this.Padding.Top : 0) + (usePadding ? this.Padding.Bottom : 0)),
-						XStringFormats.CenterLeft, this.HeaderForegroundColor.Resolve(gridPage, model));
+			PdfSpacing padding = style.Padding.Resolve(g, m);
+
+			g.DrawText(this.Text.Resolve(g, m).ToUpper(),
+						style.Font.Resolve(g, m),
+						headerRect.LeftColumn + padding.Left,
+						headerRect.TopRow + padding.Top,
+						headerRect.Columns - (padding.Left + padding.Right),
+						headerRect.Rows - (padding.Top + padding.Bottom),
+						style.TextAlignment.Resolve(g, m), 
+						style.ForegroundColor.Resolve(g, m));
 
 			return Task.FromResult(returnValue);
 		}
 
-		protected virtual PdfSize GetHeaderSize(PdfGridPage gridPage, TModel model)
+		protected virtual PdfSize GetHeaderSize(PdfGridPage g, TModel m)
 		{
 			//
-			// Check the padding flag.
+			// Get the styles.
 			//
-			bool usePadding = this.UsePadding.Resolve(gridPage, model);
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.ElementAt(1));
 
 			//
+			// Get the text.
 			//
-			//
-			string text = this.Text.Resolve(gridPage, model).ToUpper();
+			string text = this.Text.Resolve(g, m).ToUpper();
 
 			//
 			// Get the size of the text.
 			//
-			PdfSize size = gridPage.MeasureText(this.Font.Resolve(gridPage, model), text);
-			size.Rows += (usePadding ? this.Padding.Top : 0) + (usePadding ? this.Padding.Bottom : 0);
-			size.Columns += (usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0);
+			PdfSpacing padding = style.Padding.Resolve(g, m);
+			PdfSize size = g.MeasureText(this.Font.Resolve(g, m), text);
+			size.Rows += padding.Top + padding.Bottom;
+			size.Columns += padding.Left + padding.Right;
 
 			return size;
 		}
 
-		protected virtual PdfBounds GetHeaderRect(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected virtual PdfBounds GetHeaderRect(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
-			PdfSize size = this.GetHeaderSize(gridPage, model);
+			PdfSize size = this.GetHeaderSize(g, m);
 			return (new PdfBounds(bounds.LeftColumn, bounds.TopRow, bounds.Columns, size.Rows));
 		}
 	}
