@@ -37,157 +37,96 @@ namespace PdfDocuments.Example
 
 		protected override void OnInitializeStyles(IPdfStyleManager<Invoice> styleManager)
 		{
-			this.StyleManager.Add("Test", Style.Create<Invoice>()
-											   .UseFont(new XFont("Arial", 12))
-											   .UseForegroundColor(ColorPalette.Red)
-											   .UseBackgroundColor(ColorPalette.Transparent)
-											   .UseBorderColor(ColorPalette.LightRed)
-											   .UseBorderWidth(1)
-											   .Build());
-
-			this.StyleManager.GetStyle("").Copy().UseBackgroundColor(ColorPalette.White);
-
 			//
-			// Add page header style.
+			// Build the styles.
 			//
-			this.StyleManager.Add("PageHeader", new PdfStyle<Invoice>()
-			{
-				Font = new XFont("Arial Narrow", 48),
-				BorderColor = ColorPalette.Red,
-				BorderWidth = 1,
-				Padding = new PdfSpacing(0, 0, 2, 0),
-				BackgroundColor = ColorPalette.Transparent,
-				ForegroundColor = ColorPalette.Blue,
-				TextAlignment = XStringFormats.CenterRight
-			});
+			this.StyleManager.Add("PageHeader", Style.Create<Invoice>()
+									.UseFont("Arial Narrow", 48)
+									.UseForegroundColor(ColorPalette.Blue)
+									.UseBackgroundColor(ColorPalette.Transparent)
+									.UseBorderColor(ColorPalette.Red)
+									.UseBorderWidth(1)
+									.UseTextAlignment(XStringFormats.CenterRight)
+									.UsePadding(0, 0, 2, 0)
+									.UseRelativeHeight(.12)
+									.Build());
 
-			this.StyleManager.Add("InvoiceNumber", new PdfStyle<Invoice>()
-			{
-				Margin = new PdfSpacing(0, 5, 0, 7)
-			});
+			this.StyleManager.Add("InvoiceNumber", Style.Create<Invoice>()
+									.UseMargin(0, 5, 0, 7)
+									.UseRelativeHeight(.095)
+									.UseRelativeWidths(.53)
+									.Build());
 
-			this.StyleManager.Add("InvoiceNumber.Key", new PdfStyle<Invoice>()
-			{
-				Font = new XFont("Times New Roman", 11.75, XFontStyle.Bold),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
-				Padding = new PdfSpacing(0, 0, 0, 0),
-				BackgroundColor = ColorPalette.Transparent,
-				ForegroundColor = ColorPalette.Gray,
-				TextAlignment = XStringFormats.CenterRight,
-				RelativeWidths = new double[] { .5 }
-			});
+			this.StyleManager.Add("InvoiceNumber.Key", Style.Create<Invoice>()
+									.UseFont("Times New Roman", 11.75, XFontStyle.Bold)
+									.UseForegroundColor(ColorPalette.Gray)
+									.UseTextAlignment(XStringFormats.CenterRight)
+									.UseRelativeWidths(.5)
+									.Build());
 
-			this.StyleManager.Add("InvoiceNumber.Value", new PdfStyle<Invoice>()
-			{
-				Font = new XFont("Times New Roman", 11.75, XFontStyle.Regular),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
-				Padding = new PdfSpacing(0, 0, 0, 0),
-				BackgroundColor = ColorPalette.Transparent,
-				ForegroundColor = ColorPalette.Gray,
-				TextAlignment = XStringFormats.CenterRight
-			});
+			this.StyleManager.Add("InvoiceNumber.Value", Style.Copy(this.StyleManager.GetStyle("InvoiceNumber.Key"))
+									.UseFont("Times New Roman", 11.75, XFontStyle.Regular)
+									.Build());
 
-			this.StyleManager.Add("Address.Section", new PdfStyle<Invoice>()
-			{
-				Padding = new PdfSpacing(0, 0, 0, 0),
-				Margin = new PdfSpacing(0, 5, 0, 5)
-			});
+			this.StyleManager.Add("Address.Section", Style.Create<Invoice>()
+									.UseMargin(0, 5, 0, 5)
+									.Build());
 
-			this.StyleManager.Add("Address.ContentBlock", new PdfStyle<Invoice>()
-			{
-				Font = new XFont("Arial", 11, XFontStyle.Regular),
-				//BorderColor = ColorPalette.Red,
-				BorderColor = ColorPalette.Blue,
-				BorderWidth = 1,
-				Padding = new PdfSpacing(1, 2, 1, 2),
-				Margin = new PdfSpacing(0, 0, 0, 0),
-				BackgroundColor = ColorPalette.White,
-				ForegroundColor = ColorPalette.Transparent,
-				TextAlignment = XStringFormats.CenterLeft
-			});
+			this.StyleManager.Add("Address.ContentBlock", Style.Create<Invoice>()
+									.UseFont("Arial", 11, XFontStyle.Regular)
+									.UsePadding(1, 2, 1, 2)
+									.UseBorderColor(ColorPalette.Blue)
+									.UseBorderWidth(1)
+									.UseBackgroundColor(ColorPalette.White)
+									.UseForegroundColor(ColorPalette.Transparent)
+									.UseTextAlignment(XStringFormats.CenterLeft)
+									.Build());
 
-			this.StyleManager.Add("Address.Header.Left", new PdfStyle<Invoice>()
-			{
-				Font = new XFont("Arial", 11, XFontStyle.Regular),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
-				Padding = new PdfSpacing(1, 3, 1, 3),
-				Margin = new PdfSpacing(0, 2, 1, 2),
-				BackgroundColor = ColorPalette.Red,
-				ForegroundColor = ColorPalette.White,
-				TextAlignment = XStringFormats.CenterLeft
-			});
+			this.StyleManager.Add("Address.Header.Left", Style.Create<Invoice>()
+									.UseFont("Arial", 11, XFontStyle.Regular)
+									.UsePadding(1, 3, 1, 3)
+									.UseMargin(0, 2, 1, 2)
+									.UseBackgroundColor(ColorPalette.Red)
+									.UseForegroundColor(ColorPalette.White)
+									.UseTextAlignment(XStringFormats.CenterLeft)
+									.Build());
 
-			this.StyleManager.Add("Address.Header.Right", new PdfStyle<Invoice>()
-			{
-				Font = new XFont("Arial", 11, XFontStyle.Regular),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
-				Padding = new PdfSpacing(1, 3, 1, 3),
-				Margin = new PdfSpacing(1, 2, 0, 2),
-				BackgroundColor = ColorPalette.Red,
-				ForegroundColor = ColorPalette.White,
-				TextAlignment = XStringFormats.CenterLeft
-			});
+			this.StyleManager.Add("Address.Header.Right", Style.Copy(this.StyleManager.GetStyle("Address.Header.Left"))
+									.UseMargin(1, 2, 0, 2)
+									.Build());
 
-			this.StyleManager.Add("Address.Key", new PdfStyle<Invoice>()
-			{
-				Font = new XFont("Arial", 11, XFontStyle.Regular),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
-				Padding = new PdfSpacing(1, 1, 1, 1),
-				BackgroundColor = ColorPalette.Transparent,
-				ForegroundColor = ColorPalette.Gray,
-				TextAlignment = XStringFormats.CenterRight,
-				RelativeWidths = new double[] { .3 }
-			});
+			this.StyleManager.Add("Address.Key", Style.Create<Invoice>()
+									.UseFont("Arial", 11, XFontStyle.Regular)
+									.UsePadding(1, 1, 1, 1)
+									.UseForegroundColor(ColorPalette.Gray)
+									.UseTextAlignment(XStringFormats.CenterRight)
+									.UseRelativeWidths(.3)
+									.Build());
 
-			this.StyleManager.Add("Address.Value", new PdfStyle<Invoice>()
-			{
-				Font = new XFont("Arial", 11, XFontStyle.Bold),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
-				Padding = new PdfSpacing(1, 1, 1, 1),
-				BackgroundColor = ColorPalette.Transparent,
-				ForegroundColor = ColorPalette.Gray,
-				TextAlignment = XStringFormats.CenterRight
-			});
+			this.StyleManager.Add("Address.Value", Style.Copy(this.StyleManager.GetStyle("Address.Key"))
+									.UseFont("Arial", 11, XFontStyle.Bold)
+									.Build());
 
-			this.StyleManager.Add("Totals", new PdfStyle<Invoice>()
-			{
-				Padding = new PdfSpacing(0, 2, 0, 2)
-			});
+			this.StyleManager.Add("Totals", Style.Create<Invoice>()
+									.UsePadding(0, 2, 0, 2)
+									.Build());
 
-			this.StyleManager.Add("Totals.Key", new PdfStyle<Invoice>()
-			{
-				Font = new XFont("Arial", 11.75, XFontStyle.Regular),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
-				Padding = new PdfSpacing(1, 1, 1, 1),
-				BackgroundColor = ColorPalette.LightRed,
-				ForegroundColor = ColorPalette.Blue,
-				TextAlignment = XStringFormats.CenterRight,
-				RelativeWidths = new double[] { .45 }
-			});
+			this.StyleManager.Add("Totals.Key", Style.Create<Invoice>()
+									.UseFont("Arial", 11.75, XFontStyle.Regular)
+									.UsePadding(1, 1, 1, 1)
+									.UseForegroundColor(ColorPalette.Blue)
+									.UseBackgroundColor(ColorPalette.LightRed)
+									.UseTextAlignment(XStringFormats.CenterRight)
+									.UseRelativeWidths(.45)
+									.Build());
 
-			this.StyleManager.Add("Totals.Value", new PdfStyle<Invoice>()
-			{
-				Font = new XFont("Arial", 11.75, XFontStyle.Bold),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
-				Padding = new PdfSpacing(1, 1, 1, 1),
-				BackgroundColor = ColorPalette.LightRed,
-				ForegroundColor = ColorPalette.Blue,
-				TextAlignment = XStringFormats.CenterRight
-			});
+			this.StyleManager.Add("Totals.Value", Style.Copy(this.StyleManager.GetStyle("Totals.Key"))
+									.UseFont("Arial", 11, XFontStyle.Bold)
+									.Build());
 
 			this.StyleManager.Add("Reference.Header.1", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Arial", 11, XFontStyle.Regular),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
 				Padding = new PdfSpacing(1, 2, 1, 2),
 				Margin = new PdfSpacing(0, 2, 1, 2),
 				BackgroundColor = ColorPalette.Blue,
@@ -198,8 +137,6 @@ namespace PdfDocuments.Example
 			this.StyleManager.Add("Reference.Header.2", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Arial", 11, XFontStyle.Regular),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
 				Padding = new PdfSpacing(1, 2, 1, 2),
 				Margin = new PdfSpacing(1, 2, 1, 2),
 				BackgroundColor = ColorPalette.Blue,
@@ -210,8 +147,6 @@ namespace PdfDocuments.Example
 			this.StyleManager.Add("Reference.Header.3", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Arial", 11, XFontStyle.Regular),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
 				Padding = new PdfSpacing(1, 2, 1, 2),
 				Margin = new PdfSpacing(1, 2, 0, 2),
 				BackgroundColor = ColorPalette.Blue,
@@ -238,8 +173,6 @@ namespace PdfDocuments.Example
 			this.StyleManager.Add("InvoiceItems.Header", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Times New Roman", 13, XFontStyle.Bold),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
 				Padding = new PdfSpacing(0, 2, 1, 2),
 				CellPadding = new PdfSpacing(2, 2, 2, 2),
 				BackgroundColor = ColorPalette.MediumRed,
@@ -250,8 +183,6 @@ namespace PdfDocuments.Example
 			this.StyleManager.Add("InvoiceItems.Body", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Times New Roman", 13, XFontStyle.Regular),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
 				Padding = new PdfSpacing(0, 2, 1, 2),
 				BackgroundColor = ColorPalette.MediumBlue,
 				ForegroundColor = ColorPalette.Gray,
@@ -265,7 +196,6 @@ namespace PdfDocuments.Example
 				BorderWidth = 1,
 				Padding = new PdfSpacing(0, 0, 0, 0),
 				Margin = new PdfSpacing(0, 0, 0, 0),
-				BackgroundColor = ColorPalette.Transparent,
 				ForegroundColor = ColorPalette.Gray,
 				TextAlignment = XStringFormats.CenterLeft,
 				RelativeWidths = new double[] { .4 }
@@ -274,12 +204,9 @@ namespace PdfDocuments.Example
 			this.StyleManager.Add("ThankYou", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Arial", 12, XFontStyle.Italic),
-				BorderColor = ColorPalette.Transparent,
-				BorderWidth = 0,
 				Padding = new PdfSpacing(0, 2, 1, 2),
 				Margin = new PdfSpacing(0, 15, 0, 0),
 				CellPadding = new PdfSpacing(2, 2, 2, 2),
-				BackgroundColor = ColorPalette.Transparent,
 				ForegroundColor = ColorPalette.Red,
 				TextAlignment = XStringFormats.Center
 			});
@@ -325,7 +252,7 @@ namespace PdfDocuments.Example
 						new PdfKeyValueItem<Invoice>() { Key = "Invoice Date:", Value = new BindProperty<string, Invoice>((g, m) => m.CreateDateTime.ToLongDateString()) },
 						new PdfKeyValueItem<Invoice>() { Key = "Invoice Due Date:", Value = new BindProperty<string, Invoice>((g, m) => m.DueDate.ToLongDateString()) }
 					)
-					.WithStyles("Default", "InvoiceNumber.Key", "InvoiceNumber.Value")
+					.WithStyles("InvoiceNumber", "InvoiceNumber.Key", "InvoiceNumber.Value")
 					.WithRelativeWidth(.53)
 				).WithRelativeHeight(.095)
 				 .WithStyles("InvoiceNumber"),
