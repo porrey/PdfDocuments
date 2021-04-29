@@ -65,7 +65,7 @@ namespace PdfDocuments
 			//
 			// Get the styles.
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.ElementAt(1));
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.ElementAt(0));
 
 			//
 			// Get the header rectangle.
@@ -99,7 +99,7 @@ namespace PdfDocuments
 			//
 			// Get the styles.
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.ElementAt(1));
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.ElementAt(0));
 
 			//
 			// Get the text.
@@ -110,7 +110,7 @@ namespace PdfDocuments
 			// Get the size of the text.
 			//
 			PdfSpacing padding = style.Padding.Resolve(g, m);
-			PdfSize size = g.MeasureText(this.Font.Resolve(g, m), text);
+			PdfSize size = g.MeasureText(style.Font.Resolve(g, m), text);
 			size.Rows += padding.Top + padding.Bottom;
 			size.Columns += padding.Left + padding.Right;
 

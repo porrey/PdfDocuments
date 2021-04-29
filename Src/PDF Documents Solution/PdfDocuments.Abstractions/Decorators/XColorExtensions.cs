@@ -26,7 +26,7 @@ using System.Drawing;
 using System.Linq;
 using PdfSharp.Drawing;
 
-namespace PdfDocuments.Theme.Abstractions
+namespace PdfDocuments
 {
 	public static class XColorExtensions
 	{

@@ -32,39 +32,31 @@ namespace PdfDocuments
 		where TModel : IPdfModel
 	{
 		public IList<BindProperty<string, TModel>> StackedItems { get; } = new List<BindProperty<string, TModel>>();
-		public bool FirstItemDifferent { get; set; }
-		public BindProperty<XFont, TModel> FirstItemFont { get; set; } = new BindPropertyAction<XFont, TModel>((gp, m) => { return gp.BodyMediumFont(XFontStyle.Bold); });
 
-		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
 			//
-			// Use the standard body font.
+			// Get style.
 			//
-			XFont bodyFont = this.Font.Resolve(gridPage, model);
-			PdfSize bodyFontSize = gridPage.MeasureText(bodyFont);
+			PdfStyle<TModel> style1 = this.StyleManager.GetStyle(this.StyleNames.ElementAt(0));
+			PdfStyle<TModel> style2 = this.StyleNames.Count() > 1 ? this.StyleManager.GetStyle(this.StyleNames.ElementAt(0)) : style1;
 
 			//
-			// Use the standard body font.
+			// Calculate the starting point.
 			//
-			XFont bodyMediumBoldFont = this.FirstItemFont.Resolve(gridPage, model);
-			PdfSize bodyMediumBoldFontSize = gridPage.MeasureText(bodyMediumBoldFont);
-
-			//
-			// Check if padding should be used.
-			//
-			bool usePadding = this.UsePadding.Resolve(gridPage, model);
-
-			int top = bounds.TopRow + (usePadding ? this.Padding.Top : 0);
-			int left = bounds.LeftColumn + (usePadding ? this.Padding.Left : 0);
+			PdfSpacing padding1 = style1.Padding.Resolve(g, m);
+			PdfSpacing padding2 = style2.Padding.Resolve(g, m);
+			int top = bounds.TopRow + padding2.Top;
+			int left = bounds.LeftColumn + padding2.Left;
 
 			foreach (BindProperty<string, TModel> item in this.StackedItems)
 			{
 				//
 				// Get the text for the item.
 				//
-				string text = item.Resolve(gridPage, model);
+				string text = item.Resolve(g, m);
 
 				//
 				// Don't draw the item (or a blank line)
@@ -75,27 +67,31 @@ namespace PdfDocuments
 					//
 					// Draw the item.
 					//
-					if (this.FirstItemDifferent && item == this.StackedItems.First())
+					if (item == this.StackedItems.First())
 					{
-						gridPage.DrawText(item.Resolve(gridPage, model), bodyMediumBoldFont,
+						PdfSize size = g.MeasureText(style2.Font.Resolve(g, m));
+
+						g.DrawText(item.Resolve(g, m), style2.Font.Resolve(g, m),
 							left,
 							top,
-							bounds.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0)),
-							bodyMediumBoldFontSize.Rows,
-							XStringFormats.TopLeft, this.ForegroundColor.Resolve(gridPage, model));
+							bounds.Columns - (padding2.Left + padding2.Right),
+							size.Rows,
+							style1.TextAlignment.Resolve(g, m), style1.ForegroundColor.Resolve(g, m));
 
-						top += bodyMediumBoldFontSize.Rows + (usePadding ? this.Padding.Top : 0) + (usePadding ? this.Padding.Bottom : 0);
+						top += size.Rows + padding2.Top + padding2.Bottom;
 					}
 					else
 					{
-						gridPage.DrawText(item.Resolve(gridPage, model), bodyFont,
+						PdfSize size = g.MeasureText(style1.Font.Resolve(g, m));
+
+						g.DrawText(item.Resolve(g, m), style1.Font.Resolve(g, m),
 							left,
 							top,
-							bounds.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0)),
-							bodyFontSize.Rows,
-							XStringFormats.TopLeft, this.ForegroundColor.Resolve(gridPage, model));
+							bounds.Columns - (padding1.Left + padding1.Right),
+							size.Rows,
+							XStringFormats.TopLeft, style1.ForegroundColor.Resolve(g, m));
 
-						top += bodyFontSize.Rows + (usePadding ? this.Padding.Top : 0) + (usePadding ? this.Padding.Bottom : 0);
+						top += size.Rows + (padding1.Top + padding1.Bottom);
 					}
 				}
 			}

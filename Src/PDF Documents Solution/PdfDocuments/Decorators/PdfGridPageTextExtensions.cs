@@ -64,7 +64,7 @@ namespace PdfDocuments
 			//
 			if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.RevealFontDetails))
 			{
-				XFont debugFont = source.DebugFont();
+				XFont debugFont = new XFont("Arial Narrow", 8, XFontStyle.Regular);
 				PdfSize textSize = source.MeasureText(debugFont, font.FontFamily.Name);
 				PdfBounds labelBounds = new PdfBounds(bounds.LeftColumn + (int)((bounds.Columns - textSize.Columns) / 2.0), bounds.TopRow + (int)((bounds.Rows - textSize.Rows) / 2.0), textSize.Columns + 2, textSize.Rows + 2);
 				source.DrawFilledRectangle(labelBounds, XColors.Black);
@@ -128,31 +128,6 @@ namespace PdfDocuments
 		{
 			PdfBounds bounds = new PdfBounds(leftColumn, topRow, columns, rows);
 			source.DrawWrappingText(text, font, bounds, formats, color, paragraphAlignment);
-		}
-
-		public static PdfSize ApplyPadding(this PdfSize textSize, PdfGridPage source, PdfSpacing padding, bool usePadding)
-		{
-			PdfSize returnValue = textSize;
-
-			if (usePadding)
-			{
-				returnValue.Columns = textSize.Columns + padding.Left + padding.Right;
-				returnValue.Rows = textSize.Rows + padding.Top + padding.Bottom;
-			}
-
-			return returnValue;
-		}
-
-		public static PdfSpacing MultipyPadding(this PdfSpacing padding, double multiplier)
-		{
-			PdfSpacing returnValue = new PdfSpacing(padding.Left, padding.Top, padding.Right, padding.Bottom);
-
-			returnValue.Left = (int)(returnValue.Left * multiplier);
-			returnValue.Top = (int)(returnValue.Top * multiplier);
-			returnValue.Right = (int)(returnValue.Right * multiplier);
-			returnValue.Bottom = (int)(returnValue.Bottom * multiplier);
-
-			return returnValue;
 		}
 	}
 }

@@ -36,7 +36,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PdfDocuments.Abstractions\PdfDocuments.Abstractions.csproj" />
-    <ProjectReference Include="..\PdfDocuments.Theme.Abstractions\PdfDocuments.Theme.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

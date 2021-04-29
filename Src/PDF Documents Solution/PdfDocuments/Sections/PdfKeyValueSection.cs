@@ -31,8 +31,6 @@ namespace PdfDocuments
 	public class PdfKeyValueItem<TModel>
 		where TModel : IPdfModel
 	{
-		public XStringFormat KeyAlignment { get; set; }
-		public XStringFormat ValueAlignment { get; set; }
 		public string Key { get; set; }
 		public BindProperty<string, TModel> Value { get; set; }
 	}
@@ -40,13 +38,7 @@ namespace PdfDocuments
 	public class PdfKeyValueSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public PdfKeyValueSection()
-		{
-			this.BackgroundColor = XColor.Empty;
-		}
-
 		public PdfKeyValueSection(params PdfKeyValueItem<TModel>[] values)
-			: this()
 		{
 			foreach (PdfKeyValueItem<TModel> value in values)
 			{
@@ -54,7 +46,6 @@ namespace PdfDocuments
 			}
 		}
 
-		public virtual BindProperty<double, TModel> KeyRelativeWidth { get; set; } = 0;
 		public virtual IList<PdfKeyValueItem<TModel>> Items { get; } = new List<PdfKeyValueItem<TModel>>();
 
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
@@ -79,17 +70,16 @@ namespace PdfDocuments
 			PdfSize textSize = g.MeasureText(nameFont);
 
 			//
+			// Get the relative width of the sections.
+			//
+			double[] widths = keyStyle.RelativeWidths.Resolve(g, m);
+			double relativeWidth = widths.Length > 0 ? widths[0] : .5;
+
+			//
 			// Determine the width
 			//
-			double relativeWidth = this.KeyRelativeWidth.Resolve(g, m);
-			int keyWidth = bounds.Columns / 2;
-			int valueWidth = bounds.Columns / 2;
-
-			if (relativeWidth > 0)
-			{
-				keyWidth = (int)(bounds.Columns * relativeWidth);
-				valueWidth = (int)(bounds.Columns * (1 - relativeWidth));
-			}
+			int keyWidth = (int)(bounds.Columns * relativeWidth);
+			int valueWidth = (int)(bounds.Columns * (1 - relativeWidth));
 
 			//
 			// Determine the height.
@@ -113,7 +103,7 @@ namespace PdfDocuments
 					PdfBounds textBounds = new PdfBounds(bounds.LeftColumn, top, keyWidth, height);
 					PdfBounds paddedBounds = this.ApplyPadding(g, m, textBounds, keyStyle.Padding.Resolve(g, m));
 					g.DrawFilledRectangle(paddedBounds, keyStyle.BackgroundColor.Resolve(g, m));
-					g.DrawText(item.Key, nameFont, paddedBounds, item.KeyAlignment, keyStyle.ForegroundColor.Resolve(g, m));
+					g.DrawText(item.Key, nameFont, paddedBounds, keyStyle.TextAlignment.Resolve(g, m), keyStyle.ForegroundColor.Resolve(g, m));
 				}
 
 				//
@@ -123,7 +113,7 @@ namespace PdfDocuments
 					PdfBounds textBounds = new PdfBounds(bounds.LeftColumn + keyWidth, top, valueWidth, height);
 					PdfBounds paddedBounds = this.ApplyPadding(g, m, textBounds, valueStyle.Padding.Resolve(g, m));
 					g.DrawFilledRectangle(paddedBounds, valueStyle.BackgroundColor.Resolve(g, m));
-					g.DrawText(item.Value.Resolve(g, m), valueFont, paddedBounds, item.ValueAlignment, valueStyle.ForegroundColor.Resolve(g, m));
+					g.DrawText(item.Value.Resolve(g, m), valueFont, paddedBounds, valueStyle.TextAlignment.Resolve(g, m), valueStyle.ForegroundColor.Resolve(g, m));
 				}
 
 				top += height;

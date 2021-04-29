@@ -35,7 +35,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PdfDocuments.BarcodeGenerator\PdfDocuments.Barcode.Abstractions.csproj" />
-    <ProjectReference Include="..\PdfDocuments.Theme.Abstractions\PdfDocuments.Theme.Abstractions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

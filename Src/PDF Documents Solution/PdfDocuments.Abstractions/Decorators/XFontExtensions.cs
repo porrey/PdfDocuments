@@ -21,14 +21,16 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using PdfDocuments.Theme.Abstractions;
+using PdfSharp.Drawing;
 
-namespace PdfDocuments.Theme.Basic
+namespace PdfDocuments
 {
-	public class ThemeDrawing : IThemeDrawing
+	public class XFontExtensions
 	{
-		public virtual double LineWeightNormal => 0.6;
-		public virtual double LineWeightMedium => 0.9;
-		public virtual double LineWeightHeavy => 1.2;
+		public static XFont WithSize(XFont font, double emSize)
+		{
+			XFont newFont = new XFont(font.FontFamily.Name, emSize, font.Style);
+			return newFont;
+		}
 	}
 }

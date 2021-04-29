@@ -21,6 +21,7 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using System.Linq;
 using System.Threading.Tasks;
 using PdfSharp.Drawing;
 
@@ -37,24 +38,26 @@ namespace PdfDocuments
 		public BindProperty<string, TModel> Copyright { get; set; } = string.Empty;
 		public BindProperty<string, TModel> Disclaimer { get; set; } = string.Empty;
 
-		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
 			//
-			// Get the font.
+			// Get style.
 			//
-			XFont font = gridPage.HeaderFooterFont();
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfSpacing padding = style.Padding.Resolve(g, m);
+			XFont font = style.Font.Resolve(g, m);
 
 			//
 			// Draw the background.
 			//
-			gridPage.DrawFilledRectangle(bounds, gridPage.Theme.Color.HeaderFooterBackgroundColor);
+			g.DrawFilledRectangle(bounds, style.BackgroundColor.Resolve(g, m));
 
 			//
 			// Get the height of the smaller text.
 			//
-			PdfSize textSize = gridPage.MeasureText(font, this.Copyright.Resolve(gridPage, model));
+			PdfSize textSize = g.MeasureText(font, this.Copyright.Resolve(g, m));
 
 			//
 			// Calculate the number of text rows in this section.
@@ -66,12 +69,12 @@ namespace PdfDocuments
 			//
 			int top = bounds.TopRow + (int)(((textRows * textSize.Rows) - (2 * textSize.Rows)) / 2.0);
 
-			gridPage.DrawText(this.Copyright.Resolve(gridPage, model), font, bounds.LeftColumn + this.Padding.Left, top, bounds.Columns - (2 * this.Padding.Left), textSize.Rows, XStringFormats.CenterLeft, gridPage.Theme.Color.HeaderFooterColor);
-			gridPage.DrawText($"Page {gridPage.PageNumber} of {gridPage.Document.PageCount}", font, bounds.LeftColumn + this.Padding.Left, top, bounds.Columns - (2 * this.Padding.Left), textSize.Rows, XStringFormats.CenterRight, gridPage.Theme.Color.HeaderFooterColor);
+			g.DrawText(this.Copyright.Resolve(g, m), font, bounds.LeftColumn + padding.Left, top, bounds.Columns - (2 * padding.Left), textSize.Rows, XStringFormats.CenterLeft, style.ForegroundColor.Resolve(g, m));
+			g.DrawText($"Page {g.PageNumber} of {g.Document.PageCount}", font, bounds.LeftColumn + padding.Left, top, bounds.Columns - (2 * padding.Left), textSize.Rows, XStringFormats.CenterRight, style.ForegroundColor.Resolve(g, m));
 
 			top += textSize.Rows;
-			gridPage.DrawText(this.Disclaimer.Resolve(gridPage, model), font, bounds.LeftColumn + this.Padding.Left, top, bounds.Columns - (2 * this.Padding.Left), textSize.Rows, XStringFormats.CenterLeft, gridPage.Theme.Color.HeaderFooterColor);
-			gridPage.DrawText($"Created {model.CreateDateTime.ToLongDateString()} at {model.CreateDateTime.ToLongTimeString()}", font, bounds.LeftColumn + this.Padding.Left, top, bounds.Columns - (2 * this.Padding.Left), textSize.Rows, XStringFormats.CenterRight, gridPage.Theme.Color.HeaderFooterColor);
+			g.DrawText(this.Disclaimer.Resolve(g, m), font, bounds.LeftColumn + padding.Left, top, bounds.Columns - (2 * padding.Left), textSize.Rows, XStringFormats.CenterLeft, style.ForegroundColor.Resolve(g, m));
+			g.DrawText($"Created {m.CreateDateTime.ToLongDateString()} at {m.CreateDateTime.ToLongTimeString()}", font, bounds.LeftColumn + padding.Left, top, bounds.Columns - (2 * padding.Left), textSize.Rows, XStringFormats.CenterRight, style.ForegroundColor.Resolve(g, m));
 
 			return Task.FromResult(returnValue);
 		}

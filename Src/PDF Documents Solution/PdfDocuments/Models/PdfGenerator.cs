@@ -21,28 +21,25 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using PdfDocuments.Barcode;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using PdfDocuments.Barcode;
-using PdfDocuments.Theme.Abstractions;
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
 
 namespace PdfDocuments
 {
 	public abstract class PdfGenerator<TModel> : IPdfGenerator<TModel>
 		where TModel : IPdfModel
 	{
-		public PdfGenerator(IPdfStyleManager<TModel> styleManager, ITheme theme)
+		public PdfGenerator(IPdfStyleManager<TModel> styleManager)
 		{
 			this.StyleManager = styleManager;
-			this.Theme = theme;
 		}
 
-		public PdfGenerator(ITheme theme, IBarcodeGenerator barcodeGenerator)
+		public PdfGenerator(IBarcodeGenerator barcodeGenerator)
 		{
-			this.Theme = theme;
 			this.BarcodeGenerator = barcodeGenerator;
 		}
 
@@ -74,7 +71,6 @@ namespace PdfDocuments
 
 		public IPdfStyleManager<TModel> StyleManager { get; set; }
 		public virtual Type DocumentType => typeof(TModel);
-		public virtual ITheme Theme { get; set; }
 		public virtual string DocumentTitle { get; set; }
 		public virtual DebugMode DebugMode { get; set; } = DebugMode.None;
 		public virtual PdfSpacing Padding { get; } = new PdfSpacing(1, 1, 1, 1);
@@ -202,7 +198,6 @@ namespace PdfDocuments
 						//
 						PdfGridPage gridPage = new PdfGridPage()
 						{
-							Theme = this.Theme,
 							DocumentTitle = this.DocumentTitle,
 							Document = document,
 							Page = page,
@@ -245,7 +240,7 @@ namespace PdfDocuments
 							//
 							// Draw the grid for debugging.
 							//
-							gridPage.DrawGrid(XColor.FromArgb(60, XColors.Red), this.Theme.Drawing.LineWeightNormal / 2.0);
+							gridPage.DrawGrid(XColor.FromArgb(60, XColors.Red), .3);
 						}
 						#endregion
 

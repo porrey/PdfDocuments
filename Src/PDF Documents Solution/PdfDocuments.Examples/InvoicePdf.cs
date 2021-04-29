@@ -21,8 +21,6 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using PdfDocuments.Example.Theme;
-using PdfDocuments.Theme.Abstractions;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System.Linq;
@@ -32,8 +30,8 @@ namespace PdfDocuments.Example
 {
 	public class InvoicePdf : PdfGenerator<Invoice>
 	{
-		public InvoicePdf(IPdfStyleManager<Invoice> styleManager, ITheme theme)
-			: base(styleManager, theme)
+		public InvoicePdf(IPdfStyleManager<Invoice> styleManager)
+			: base(styleManager)
 		{
 
 		}
@@ -54,6 +52,11 @@ namespace PdfDocuments.Example
 				TextAlignment = XStringFormats.CenterRight
 			});
 
+			this.StyleManager.Add("InvoiceNumber", new PdfStyle<Invoice>()
+			{
+				Margin = new PdfSpacing(0, 5, 0, 7)
+			});
+
 			this.StyleManager.Add("InvoiceNumber.Key", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Times New Roman", 11.75, XFontStyle.Bold),
@@ -62,7 +65,8 @@ namespace PdfDocuments.Example
 				Padding = new PdfSpacing(0, 0, 0, 0),
 				BackgroundColor = ColorPalette.Transparent,
 				ForegroundColor = ColorPalette.Gray,
-				TextAlignment = XStringFormats.CenterRight
+				TextAlignment = XStringFormats.CenterRight,
+				RelativeWidths = new double[] { .5 }
 			});
 
 			this.StyleManager.Add("InvoiceNumber.Value", new PdfStyle<Invoice>()
@@ -76,12 +80,44 @@ namespace PdfDocuments.Example
 				TextAlignment = XStringFormats.CenterRight
 			});
 
-			this.StyleManager.Add("Address.Header", new PdfStyle<Invoice>()
+			this.StyleManager.Add("Address.Section", new PdfStyle<Invoice>()
+			{
+				Padding = new PdfSpacing(0, 0, 0, 0),
+				Margin = new PdfSpacing(0, 5, 0, 5)
+			});
+
+			this.StyleManager.Add("Address.ContentBlock", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Arial", 11, XFontStyle.Regular),
+				//BorderColor = ColorPalette.Red,
+				BorderColor = ColorPalette.Blue,
+				BorderWidth = 1,
+				Padding = new PdfSpacing(1, 2, 1, 2),
+				Margin = new PdfSpacing(0, 0, 0, 0),
+				BackgroundColor = ColorPalette.White,
+				ForegroundColor = ColorPalette.Transparent,
+				TextAlignment = XStringFormats.CenterLeft
+			});
+
+			this.StyleManager.Add("Address.Header.Left", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Arial", 11, XFontStyle.Regular),
 				BorderColor = ColorPalette.Transparent,
 				BorderWidth = 0,
-				Padding = new PdfSpacing(1, 2, 1, 2),
+				Padding = new PdfSpacing(1, 3, 1, 3),
+				Margin = new PdfSpacing(0, 2, 1, 2),
+				BackgroundColor = ColorPalette.Red,
+				ForegroundColor = ColorPalette.White,
+				TextAlignment = XStringFormats.CenterLeft
+			});
+
+			this.StyleManager.Add("Address.Header.Right", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Arial", 11, XFontStyle.Regular),
+				BorderColor = ColorPalette.Transparent,
+				BorderWidth = 0,
+				Padding = new PdfSpacing(1, 3, 1, 3),
+				Margin = new PdfSpacing(1, 2, 0, 2),
 				BackgroundColor = ColorPalette.Red,
 				ForegroundColor = ColorPalette.White,
 				TextAlignment = XStringFormats.CenterLeft
@@ -95,7 +131,8 @@ namespace PdfDocuments.Example
 				Padding = new PdfSpacing(1, 1, 1, 1),
 				BackgroundColor = ColorPalette.Transparent,
 				ForegroundColor = ColorPalette.Gray,
-				TextAlignment = XStringFormats.CenterRight
+				TextAlignment = XStringFormats.CenterRight,
+				RelativeWidths = new double[] { .4 }
 			});
 
 			this.StyleManager.Add("Address.Value", new PdfStyle<Invoice>()
@@ -109,6 +146,11 @@ namespace PdfDocuments.Example
 				TextAlignment = XStringFormats.CenterRight
 			});
 
+			this.StyleManager.Add("Totals", new PdfStyle<Invoice>()
+			{
+				Padding = new PdfSpacing(0, 2, 0, 2)
+			});
+
 			this.StyleManager.Add("Totals.Key", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Arial", 11.75, XFontStyle.Regular),
@@ -117,7 +159,8 @@ namespace PdfDocuments.Example
 				Padding = new PdfSpacing(1, 1, 1, 1),
 				BackgroundColor = ColorPalette.LightRed,
 				ForegroundColor = ColorPalette.Blue,
-				TextAlignment = XStringFormats.CenterRight
+				TextAlignment = XStringFormats.CenterRight,
+				RelativeWidths = new double[] { .45 }
 			});
 
 			this.StyleManager.Add("Totals.Value", new PdfStyle<Invoice>()
@@ -131,15 +174,105 @@ namespace PdfDocuments.Example
 				TextAlignment = XStringFormats.CenterRight
 			});
 
-			this.StyleManager.Add("Reference.Header", new PdfStyle<Invoice>()
+			this.StyleManager.Add("Reference.Header.1", new PdfStyle<Invoice>()
 			{
 				Font = new XFont("Arial", 11, XFontStyle.Regular),
 				BorderColor = ColorPalette.Transparent,
 				BorderWidth = 0,
 				Padding = new PdfSpacing(1, 2, 1, 2),
+				Margin = new PdfSpacing(0, 2, 1, 2),
 				BackgroundColor = ColorPalette.Blue,
 				ForegroundColor = ColorPalette.White,
 				TextAlignment = XStringFormats.CenterLeft
+			});
+
+			this.StyleManager.Add("Reference.Header.2", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Arial", 11, XFontStyle.Regular),
+				BorderColor = ColorPalette.Transparent,
+				BorderWidth = 0,
+				Padding = new PdfSpacing(1, 2, 1, 2),
+				Margin = new PdfSpacing(1, 2, 1, 2),
+				BackgroundColor = ColorPalette.Blue,
+				ForegroundColor = ColorPalette.White,
+				TextAlignment = XStringFormats.CenterLeft
+			});
+
+			this.StyleManager.Add("Reference.Header.3", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Arial", 11, XFontStyle.Regular),
+				BorderColor = ColorPalette.Transparent,
+				BorderWidth = 0,
+				Padding = new PdfSpacing(1, 2, 1, 2),
+				Margin = new PdfSpacing(1, 2, 0, 2),
+				BackgroundColor = ColorPalette.Blue,
+				ForegroundColor = ColorPalette.White,
+				TextAlignment = XStringFormats.CenterLeft
+			});
+
+			this.StyleManager.Add("Reference.Body", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Arial", 11, XFontStyle.Regular),
+				BorderColor = ColorPalette.Blue,
+				BorderWidth = 1,
+				Padding = new PdfSpacing(1, 2, 1, 2),
+				BackgroundColor = ColorPalette.White,
+				ForegroundColor = ColorPalette.Red,
+				TextAlignment = XStringFormats.CenterLeft
+			});
+
+			this.StyleManager.Add("InvoiceItems.Grid", new PdfStyle<Invoice>()
+			{
+				Margin = new PdfSpacing(0, 2, 0, 2)
+			});
+
+			this.StyleManager.Add("InvoiceItems.Header", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Times New Roman", 13, XFontStyle.Bold),
+				BorderColor = ColorPalette.Transparent,
+				BorderWidth = 0,
+				Padding = new PdfSpacing(0, 2, 1, 2),
+				CellPadding = new PdfSpacing(2, 2, 2, 2),
+				BackgroundColor = ColorPalette.MediumRed,
+				ForegroundColor = ColorPalette.Red,
+				TextAlignment = XStringFormats.CenterRight
+			});
+
+			this.StyleManager.Add("InvoiceItems.Body", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Times New Roman", 13, XFontStyle.Regular),
+				BorderColor = ColorPalette.Transparent,
+				BorderWidth = 0,
+				Padding = new PdfSpacing(0, 2, 1, 2),
+				BackgroundColor = ColorPalette.MediumBlue,
+				ForegroundColor = ColorPalette.Gray,
+				TextAlignment = XStringFormats.CenterRight
+			});
+
+			this.StyleManager.Add("Signature", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Arial", 10, XFontStyle.Regular),
+				BorderColor = ColorPalette.Transparent,
+				BorderWidth = 1,
+				Padding = new PdfSpacing(0, 0, 0, 0),
+				Margin = new PdfSpacing(0, 0, 0, 0),
+				BackgroundColor = ColorPalette.Transparent,
+				ForegroundColor = ColorPalette.Gray,
+				TextAlignment = XStringFormats.CenterLeft,
+				RelativeWidths = new double[] { .4 }
+			});
+
+			this.StyleManager.Add("ThankYou", new PdfStyle<Invoice>()
+			{
+				Font = new XFont("Arial", 12, XFontStyle.Italic),
+				BorderColor = ColorPalette.Transparent,
+				BorderWidth = 0,
+				Padding = new PdfSpacing(0, 2, 1, 2),
+				Margin = new PdfSpacing(0, 15, 0, 0),
+				CellPadding = new PdfSpacing(2, 2, 2, 2),
+				BackgroundColor = ColorPalette.Transparent,
+				ForegroundColor = ColorPalette.Red,
+				TextAlignment = XStringFormats.Center
 			});
 		}
 
@@ -179,15 +312,14 @@ namespace PdfDocuments.Example
 					Pdf.EmptySection<Invoice>(),
 					Pdf.KeyValueSection<Invoice>
 					(
-						new PdfKeyValueItem<Invoice>() { Key = "Invoice Number:", Value = new BindProperty<string, Invoice>((g, m) => $"{m.Id:00000000}"), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterRight },
-						new PdfKeyValueItem<Invoice>() { Key = "Invoice Date:", Value = new BindProperty<string, Invoice>((g, m) => m.CreateDateTime.ToLongDateString()), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterRight },
-						new PdfKeyValueItem<Invoice>() { Key = "Invoice Due Date:", Value = new BindProperty<string, Invoice>((g, m) => m.DueDate.ToLongDateString()), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterRight }
+						new PdfKeyValueItem<Invoice>() { Key = "Invoice Number:", Value = new BindProperty<string, Invoice>((g, m) => $"{m.Id:00000000}") },
+						new PdfKeyValueItem<Invoice>() { Key = "Invoice Date:", Value = new BindProperty<string, Invoice>((g, m) => m.CreateDateTime.ToLongDateString()) },
+						new PdfKeyValueItem<Invoice>() { Key = "Invoice Due Date:", Value = new BindProperty<string, Invoice>((g, m) => m.DueDate.ToLongDateString()) }
 					)
-					.WithStyles("InvoiceNumber", "InvoiceNumber.Key", "InvoiceNumber.Value")
-					.WithKeyRelativeWidth(.4)
+					.WithStyles("Default", "InvoiceNumber.Key", "InvoiceNumber.Value")
 					.WithRelativeWidth(.53)
 				).WithRelativeHeight(.095)
-				 .WithMargin(0, 5, 0, 7),
+				 .WithStyles("InvoiceNumber"),
 
 				//
 				// Reference numbers section.
@@ -195,45 +327,27 @@ namespace PdfDocuments.Example
 				Pdf.HorizontalStackSection<Invoice>
 				(
 					Pdf.HeaderContentSection<Invoice>()
-						.WithMargin(0, 0, 1, 0)
 						.WithText("Payment Method")
-						.WithStyles("Reference", "Reference.Header")
+						.WithStyles("Reference.Header.1")
 						.WithContentSection(Pdf.TextBlockSection<Invoice>()
 											   .WithText((g, m) => m.PaymentMethod)
-											   .WithTextAlignment(XStringFormats.CenterLeft)
-											   .WithForegroundColor(ColorPalette.Red)
-											   .WithFont((g, m) => g.SubTitle3Font())
-											   //.WithValueFont((g, m) => g.SubTitle3Font())
-											   .WithBorderWidth(1)
-											   .WithBorderColor(ColorPalette.Blue)),
+											   .WithStyles("Reference.Body")),
 
 					Pdf.HeaderContentSection<Invoice>()
-						.WithMargin(1, 0, 1, 0)
 						.WithText("Check Number")
-						.WithStyles("Reference", "Reference.Header")
+						.WithStyles("Reference.Header.2")
 						.WithContentSection(Pdf.TextBlockSection<Invoice>()
 											   .WithText((g, m) => m.CheckNumber)
-											   .WithTextAlignment(XStringFormats.CenterLeft)
-											   .WithForegroundColor(ColorPalette.Red)
-											   .WithFont((g, m) => g.SubTitle3Font())
-											   //.WithValueFont((g, m) => g.SubTitle3Font())
-											   .WithBorderWidth(1)
-											   .WithBorderColor(ColorPalette.Blue)),
+											   .WithStyles("Reference.Body")),
 
 					Pdf.HeaderContentSection<Invoice>()
-						.WithMargin(1, 0, 0, 0)
 						.WithText("Job Number")
-						.WithStyles("Reference", "Reference.Header")
+						.WithStyles("Reference.Header.3")
 						.WithContentSection(Pdf.TextBlockSection<Invoice>()
 											   .WithText((g, m) => m.JobNumber)
-											   .WithTextAlignment(XStringFormats.CenterLeft)
-											   .WithForegroundColor(ColorPalette.Red)
-											   .WithFont((g, m) => g.SubTitle3Font())
-											   //.WithValueFont((g, m) => g.SubTitle3Font())
-											   .WithBorderWidth(1)
-											   .WithBorderColor(ColorPalette.Blue))
+											   .WithStyles("Reference.Body"))
 				).WithRelativeHeight(.065)
-				 .WithPadding(0, 0, 0, 0),
+				 .WithStyles("Default"),
 
 				//
 				// Bill to/from.
@@ -241,76 +355,54 @@ namespace PdfDocuments.Example
 				Pdf.HorizontalStackSection<Invoice>
 				(
 					Pdf.HeaderContentSection<Invoice>()
-						.WithMargin(0, 0, 1, 0)
 						.WithText("Bill To")
-						.WithFont((g, m) => g.SubTitle3Font())
-						.WithStyles("Address", "Address.Header")
+						.WithStyles("Address.Header.Left")
 						.WithContentSection(Pdf.KeyValueSection<Invoice>
-												(
-													new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Name), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterLeft },
-													new PdfKeyValueItem<Invoice>() { Key = "Address:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.AddressLine), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterLeft },
-													new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.CityStateZip), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterLeft },
-													new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Phone), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterLeft }
-												)
-											   .WithStyles("Address", "Address.Key", "Address.Value")
-											   .WithBorderWidth(1)
-											   .WithBorderColor(ColorPalette.Blue)
-											   .WithKeyRelativeWidth(.4)
-											   .WithMargin(0, 3, 0, 3)),
+						(
+							new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Name) },
+							new PdfKeyValueItem<Invoice>() { Key = "Address:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.AddressLine) },
+							new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.CityStateZip) },
+							new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Phone) }
+						)
+						.WithStyles("Address.ContentBlock", "Address.Key", "Address.Value")),
 
 					Pdf.HeaderContentSection<Invoice>()
-						.WithMargin(0, 0, 0, 0)
-						.WithText("From")
-						.WithFont((g, m) => g.SubTitle3Font())
-						.WithStyles("Address", "Address.Header")
-						.WithContentSection(Pdf.KeyValueSection<Invoice>
-												(
-													new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Name), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterLeft },
-													new PdfKeyValueItem<Invoice>() { Key = "Address:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.AddressLine), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterLeft },
-													new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.CityStateZip), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterLeft },
-													new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Phone), KeyAlignment = XStringFormats.CenterLeft, ValueAlignment = XStringFormats.CenterLeft }
-												)
-											   .WithStyles("Address", "Address.Key", "Address.Value")
-											   .WithBorderWidth(1)
-											   .WithBorderColor(ColorPalette.Blue)
-											   .WithKeyRelativeWidth(.4)
-											   .WithMargin(0, 3, 0, 3))
+					   .WithText("From")
+					   .WithStyles("Address.Header.Right")
+					   .WithContentSection(Pdf.KeyValueSection<Invoice>
+						(
+							new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Name) },
+							new PdfKeyValueItem<Invoice>() { Key = "Address:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.AddressLine) },
+							new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.CityStateZip) },
+							new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Phone) }
+						)
+						.WithStyles("Address.ContentBlock", "Address.Key", "Address.Value"))
 
 				).WithRelativeHeight(.16)
-				 .WithPadding(0, 0, 0, 0)
-				 .WithMargin(0, 5, 0, 5),
+				 .WithStyles("Address.Section"),
 
 				//
 				// Invoice details
 				//
 				Pdf.DataGridSection<Invoice, InvoiceItem>()
-				   .AddColumn<Invoice, InvoiceItem, int>("Item Number", t => t.Id, .20, "{0:1000000000000}", XStringFormats.CenterLeft)
-				   .AddColumn<Invoice, InvoiceItem, int>("Quantity", t => t.Quantity, .25, "{0:#,###}", XStringFormats.CenterRight)
-				   .AddColumn<Invoice, InvoiceItem, decimal>("Unit Price", t => t.UnitPrice, .25, "{0:C}", XStringFormats.CenterRight)
-				   .AddColumn<Invoice, InvoiceItem, decimal>("Amount", t => t.Amount, .30, "{0:C}", XStringFormats.CenterRight)
+				   .AddColumn<Invoice, InvoiceItem, int>("Item Number", t => t.Id, .20, "{0:1000000000000}")
+				   .AddColumn<Invoice, InvoiceItem, int>("Quantity", t => t.Quantity, .25, "{0:#,###}")
+				   .AddColumn<Invoice, InvoiceItem, decimal>("Unit Price", t => t.UnitPrice, .25, "{0:C}")
+				   .AddColumn<Invoice, InvoiceItem, decimal>("Amount", t => t.Amount, .30, "{0:C}")
 				   .UseItems((g, m) => m.Items)
-				   .WithCellPadding<Invoice, InvoiceItem>(2, 2, 2, 2)
-				   .WithPadding(0, 2, 1, 2)
-				   .WithColumnHeaderFont<Invoice, InvoiceItem>((g, m) => g.BodyMediumFont(XFontStyle.Bold).WithSize(13))
-				   .WithColumnHeaderForegroundColor<Invoice, InvoiceItem>(ColorPalette.Red)
-				   .WithColumnHeaderBackgroundColor<Invoice, InvoiceItem>(ColorPalette.MediumRed)
-				   .WithColumnValueFont<Invoice, InvoiceItem>((g, m) => g.BodyLightFont(XFontStyle.Regular).WithSize(13))
-				   .WithColumnValueForegroundColor<Invoice, InvoiceItem>(ColorPalette.Gray)
-				   .WithColumnValueBackgroundColor<Invoice, InvoiceItem>(ColorPalette.MediumBlue),
+				   .WithStyles("InvoiceItems.Grid", "InvoiceItems.Header", "InvoiceItems.Body"),
 
 				//
-				//
+				// Invoice totals
 				//
 				Pdf.HorizontalStackSection<Invoice>
 				(
 					Pdf.EmptySection<Invoice>().WithRelativeWidth(.55),
 					Pdf.KeyValueSection<Invoice>
 						(
-							new PdfKeyValueItem<Invoice>() { Key = "Sub Total:", Value = new BindProperty<string, Invoice>((g, m) => m.Items.Sum(t => t.Amount).ToString("C")), KeyAlignment = XStringFormats.CenterRight, ValueAlignment = XStringFormats.CenterRight },
-							new PdfKeyValueItem<Invoice>() { Key = "Tax (6.0%):", Value = new BindProperty<string, Invoice>((g, m) => (m.Items.Sum(t => t.Amount) * .06M).ToString("C")), KeyAlignment = XStringFormats.CenterRight, ValueAlignment = XStringFormats.CenterRight },
-							new PdfKeyValueItem<Invoice>() { Key = "Total:", Value = new BindProperty<string, Invoice>((g, m) => (m.Items.Sum(t => t.Amount) * 1.06M).ToString("C")), KeyAlignment = XStringFormats.CenterRight, ValueAlignment = XStringFormats.CenterRight })
-						.WithKeyRelativeWidth(.45)
-						.WithMargin((0, 2, 0, 2))
+							new PdfKeyValueItem<Invoice>() { Key = "Sub Total:", Value = new BindProperty<string, Invoice>((g, m) => m.Items.Sum(t => t.Amount).ToString("C")) },
+							new PdfKeyValueItem<Invoice>() { Key = "Tax (6.0%):", Value = new BindProperty<string, Invoice>((g, m) => (m.Items.Sum(t => t.Amount) * .06M).ToString("C")) },
+							new PdfKeyValueItem<Invoice>() { Key = "Total:", Value = new BindProperty<string, Invoice>((g, m) => (m.Items.Sum(t => t.Amount) * 1.06M).ToString("C")) })
 						.WithStyles("Totals", "Totals.Key", "Totals.Value")
 				).WithRelativeHeight(.1),
 
@@ -320,8 +412,7 @@ namespace PdfDocuments.Example
 				Pdf.SignatureSection<Invoice>()
 				   .WithRelativeHeight(.05)
 				   .WithText("Approved by")
-				   .WithForegroundColor(ColorPalette.Gray)
-				   .WithFont((g, m) => g.SubTitle3Font(XFontStyle.Bold))
+				   .WithStyles("Signature")
 				   .WithRenderCondition((g, m) => g.PageNumber == g.Document.PageCount),
 
 				//
@@ -329,11 +420,8 @@ namespace PdfDocuments.Example
 				//
 				Pdf.TextBlockSection<Invoice>()
 					.WithText("Thank you for your business!")
-					.WithMargin(0, 15, 0, 0)
-					.WithFont((g, m) => g.Title3Font())
-					.WithForegroundColor(ColorPalette.Red)
-					.WithTextAlignment(XStringFormats.Center)
 					.WithRelativeHeight(.058)
+					.WithStyles("ThankYou")
 			)
 			.WithKey("Report")
 			.WithWatermark((g, m) => m.Paid ? "./images/paid.png" : string.Empty);

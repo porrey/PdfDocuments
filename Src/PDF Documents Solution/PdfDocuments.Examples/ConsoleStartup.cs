@@ -24,8 +24,6 @@
 using Diamond.Core.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PdfDocuments.Example.Theme;
-using PdfDocuments.IronBarcode;
 using Serilog;
 
 namespace PdfDocuments.Example
@@ -49,8 +47,7 @@ namespace PdfDocuments.Example
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddExampleTheme()
-					.AddPdfDocuments()
+			services.AddPdfDocuments()
 					//.AddIronBarcodeSupport()
 					.AddScoped<IPdfGenerator, InvoicePdf>()
 					.AddPdfStyleManager<Invoice>()

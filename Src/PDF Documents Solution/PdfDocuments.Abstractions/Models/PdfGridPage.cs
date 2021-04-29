@@ -22,7 +22,6 @@
  *	SOFTWARE.
  */
 using PdfDocuments.Barcode;
-using PdfDocuments.Theme.Abstractions;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
@@ -31,7 +30,6 @@ namespace PdfDocuments
 	public class PdfGridPage
 	{
 		public string CurrentService { get; set; }
-		public ITheme Theme { get; set; }
 		public string DocumentTitle { get; set; }
 		public PdfDocument Document { get; set; }
 		public PdfPage Page { get; set; }

@@ -21,12 +21,11 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using PdfSharp.Drawing;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using PdfDocuments.Theme.Abstractions;
-using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
@@ -52,13 +51,10 @@ namespace PdfDocuments
 		public virtual IPdfSection<TModel> ParentSection { get; set; }
 		public virtual IList<IPdfSection<TModel>> Children { get; } = new List<IPdfSection<TModel>>();
 		public virtual PdfBounds ActualBounds { get; set; } = new PdfBounds(0, 0, 0, 0);
-		public virtual BindProperty<bool, TModel> UsePadding { get; set; } = true;
-		public virtual BindProperty<bool, TModel> UseMargins { get; set; } = true;
 		public virtual BindProperty<bool, TModel> ShouldRender { get; set; } = true;
-		public virtual BindProperty<XFont, TModel> DebugFont { get; set; } = new BindPropertyAction<XFont, TModel>((gp, m) => { return gp.DebugFont(); });
 		public BindProperty<string, TModel> WaterMarkImagePath { get; set; } = string.Empty;
 		public IEnumerable<string> StyleNames { get; set; } = new string[] { PdfStyleManager<TModel>.Default };
-		
+
 		IPdfStyleManager<TModel> _styleManager = null;
 		public IPdfStyleManager<TModel> StyleManager
 		{
@@ -80,30 +76,26 @@ namespace PdfDocuments
 			}
 		}
 
-		public BindProperty<XStringFormat, TModel> TextAlignment { get; set; } = XStringFormats.CenterLeft;
 		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0.0;
 		public virtual BindProperty<double, TModel> RelativeWidth { get; set; } = 0.0;
-		public virtual PdfSpacing Padding { get; set; } = new PdfSpacing(1, 1, 1, 1);
-		public virtual PdfSpacing Margin { get; set; } = new PdfSpacing(0, 0, 0, 0);
-		public virtual BindProperty<XFont, TModel> Font { get; set; } = new BindPropertyAction<XFont, TModel>((gp, m) => { return gp.BodyFont(); });
-		public virtual BindProperty<double, TModel> BorderWidth { get; set; } = 0.0;
-		public virtual BindProperty<XColor, TModel> BorderColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyColor; });
-		public virtual BindProperty<XColor, TModel> BackgroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyBackgroundColor; });
-		public virtual BindProperty<XColor, TModel> ForegroundColor { get; set; } = new BindPropertyAction<XColor, TModel>((gp, m) => { return gp.Theme.Color.BodyColor; });
 
-
-		public virtual async Task<bool> LayoutAsync(PdfGridPage gridPage, TModel model)
+		public virtual async Task<bool> LayoutAsync(PdfGridPage g, TModel m)
 		{
 			bool returnValue = true;
 
 			//
+			// The first style is always used for the base section style.
+			//
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+
+			//
 			// Apply margins.
 			//
-			PdfBounds bounds = this.ApplyMargins(gridPage, model);
+			PdfBounds bounds = this.ApplyMargins(g, m, style.Margin.Resolve(g, m));
 
-			if (await this.OnLayoutAsync(gridPage, model, bounds))
+			if (await this.OnLayoutAsync(g, m, bounds))
 			{
-				returnValue = await this.OnLayoutChildrenAsync(gridPage, model, bounds);
+				returnValue = await this.OnLayoutChildrenAsync(g, m, bounds);
 			}
 			else
 			{
@@ -113,23 +105,23 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		protected virtual Task<bool> OnLayoutAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected virtual Task<bool> OnLayoutAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			return Task.FromResult(true);
 		}
 
-		protected virtual async Task<bool> OnLayoutChildrenAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected virtual async Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
 			//
 			// Render child sections.
 			//
-			IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(gridPage, model)).ToArray();
+			IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(g, m)).ToArray();
 
 			foreach (IPdfSection<TModel> section in sections)
 			{
-				if (!await section.LayoutAsync(gridPage, model))
+				if (!await section.LayoutAsync(g, m))
 				{
 					returnValue = false;
 					break;
@@ -139,37 +131,42 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		public virtual async Task<bool> RenderAsync(PdfGridPage gridPage, TModel model)
+		public virtual async Task<bool> RenderAsync(PdfGridPage g, TModel m)
 		{
 			bool returnValue = true;
 
 			//
+			// The first style is always used for the base section style.
+			//
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+
+			//
+			// Apply margins.
+			//
+			PdfBounds bounds = this.ApplyMargins(g, m, style.Margin.Resolve(g, m));
+
+			//
 			// Draw the background if set.
 			//
-			XColor backgroundColor = this.BackgroundColor.Resolve(gridPage, model);
+			XColor backgroundColor = style.BackgroundColor.Resolve(g, m);
 			if (backgroundColor != XColor.Empty)
 			{
 				//
 				// Draw the filled rectangle.
 				//
-				gridPage.DrawFilledRectangle(this.ActualBounds, backgroundColor);
+				g.DrawFilledRectangle(bounds, backgroundColor);
 			}
 
-			//
-			// Apply margins.
-			//
-			PdfBounds bounds = this.ApplyMargins(gridPage, model);
-
-			if (await this.OnRenderAsync(gridPage, model, bounds))
+			if (await this.OnRenderAsync(g, m, bounds))
 			{
 				//
 				// Render child sections.
 				//
-				IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(gridPage, model)).ToArray();
+				IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(g, m)).ToArray();
 
 				foreach (IPdfSection<TModel> section in sections)
 				{
-					if (!await section.RenderAsync(gridPage, model))
+					if (!await section.RenderAsync(g, m))
 					{
 						returnValue = false;
 						break;
@@ -179,10 +176,10 @@ namespace PdfDocuments
 				//
 				// Render the border.
 				//
-				double borderWidth = this.BorderWidth.Resolve(gridPage, model);
+				double borderWidth = style.BorderWidth.Resolve(g, m);
 				if (borderWidth > 0.0)
 				{
-					gridPage.DrawRectangle(this.ActualBounds, borderWidth, this.BorderColor.Resolve(gridPage, model));
+					g.DrawRectangle(this.ActualBounds, borderWidth, style.BorderColor.Resolve(g, m));
 				}
 			}
 			else
@@ -193,37 +190,42 @@ namespace PdfDocuments
 			//
 			// Draw the page water mark.
 			//
-			string waterMarkPath = this.WaterMarkImagePath.Resolve(gridPage, model);
+			string waterMarkPath = this.WaterMarkImagePath.Resolve(g, m);
 			if (!string.IsNullOrWhiteSpace(waterMarkPath) && File.Exists(waterMarkPath))
 			{
-				gridPage.DrawImage(waterMarkPath, this.ActualBounds, PdfHorizontalAlignment.Center, PdfVerticalAlignment.Center);
+				g.DrawImage(waterMarkPath, this.ActualBounds, PdfHorizontalAlignment.Center, PdfVerticalAlignment.Center);
 			}
 
 			return returnValue;
 		}
 
-		public virtual async Task<bool> RenderDebugAsync(PdfGridPage gridPage, TModel model)
+		public virtual async Task<bool> RenderDebugAsync(PdfGridPage g, TModel m)
 		{
 			bool returnValue = true;
 
 			//
-			// Get the margin bounds.
+			// The first style is always used for the base section style.
 			//
-			PdfBounds marginBounds = this.ApplyMargins(gridPage, model);
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+
+			//
+			// Apply margins.
+			//
+			PdfBounds bounds = this.ApplyMargins(g, m, style.Margin.Resolve(g, m));
 
 			//
 			// Call the base to render the outline overlay.
 			//
-			await this.OnRenderDebugAsync(gridPage, model, marginBounds);
+			await this.OnRenderDebugAsync(g, m, bounds);
 
 			//
 			// Get a list of section to be rendered.
 			//
-			IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(gridPage, model)).ToArray();
+			IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(g, m)).ToArray();
 
 			foreach (IPdfSection<TModel> section in sections)
 			{
-				if (!await section.RenderDebugAsync(gridPage, model))
+				if (!await section.RenderDebugAsync(g, m))
 				{
 					returnValue = false;
 					break;
@@ -255,7 +257,7 @@ namespace PdfDocuments
 		{
 		}
 
-		protected virtual Task<bool> OnRenderDebugAsync(PdfGridPage gridPage, TModel model, PdfBounds marginBounds)
+		protected virtual Task<bool> OnRenderDebugAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
@@ -272,39 +274,40 @@ namespace PdfDocuments
 			//
 			// Draw a border around the section.
 			//
-			gridPage.DrawRectangle(this.ActualBounds, 1.0, color);
+			g.DrawRectangle(this.ActualBounds, 1.0, color);
 
 			//
 			// Draw a border to indicate the margin.
 			//
 			XPen pen = new XPen(XColors.LightGray, 1);
 			pen.DashStyle = XDashStyle.Dot;
-			gridPage.DrawRectangle(marginBounds, pen);
+			g.DrawRectangle(bounds, pen);
 
 			//
 			// Get the size of the text.
 			//
-			XFont font = this.DebugFont.Resolve(gridPage, model);
+			var style = this.StyleManager.GetStyle("Debug");
+			XFont font = style.Font.Resolve(g, m);
 			string label = $"{this.Key} [{this.ActualBounds.Columns} x {this.ActualBounds.Rows}]";
-			PdfSize textSize = gridPage.MeasureText(font, label);
+			PdfSize textSize = g.MeasureText(font, label);
 
 			//
 			// Draw a small filled rectangle behind the text.
 			//
 			PdfSpacing padding = (1, 1, 1, 1);
 			PdfBounds rectBounds = new PdfBounds(this.ActualBounds.LeftColumn, this.ActualBounds.TopRow, textSize.Columns + padding.Left + (2 * padding.Right), textSize.Rows + padding.Top + padding.Bottom);
-			gridPage.DrawFilledRectangle(rectBounds, color);
+			g.DrawFilledRectangle(rectBounds, color);
 
 			//
 			// Draw the text label.
 			//
 			PdfBounds labelBounds = new PdfBounds(this.ActualBounds.LeftColumn + padding.Left, this.ActualBounds.TopRow, textSize.Columns + padding.Left + padding.Right, textSize.Rows + padding.Top + padding.Bottom);
-			gridPage.DrawText(label, font, labelBounds, XStringFormats.CenterLeft, labelColor);
+			g.DrawText(label, font, labelBounds, XStringFormats.CenterLeft, labelColor, true);
 
 			return Task.FromResult(returnValue);
 		}
 
-		protected virtual Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected virtual Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			return Task.FromResult(true);
 		}

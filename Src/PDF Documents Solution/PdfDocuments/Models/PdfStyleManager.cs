@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using PdfSharp.Drawing;
+using System.Collections.Generic;
 
 namespace PdfDocuments
 {
 	public class PdfStyleManager<TModel> : Dictionary<string, PdfStyle<TModel>>, IPdfStyleManager<TModel>
 	{
 		public const string Default = "Default";
+		public const string Debug = "Debug";
 
 		public PdfStyleManager()
 		{
@@ -12,6 +14,7 @@ namespace PdfDocuments
 			// Add default style.
 			//
 			this.Add(PdfStyleManager<TModel>.Default, new PdfStyle<TModel>());
+			this.Add(PdfStyleManager<TModel>.Debug, new PdfStyle<TModel>() { Font = new XFont("Arial Narrow", 8, XFontStyle.Regular) });
 		}
 
 		public PdfStyle<TModel> GetStyle(string name)

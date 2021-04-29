@@ -42,7 +42,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\PdfDocuments.Example.Theme\PdfDocuments.Example.Theme.csproj" />
 		<ProjectReference Include="..\PdfDocuments.IronBarcode\PdfDocuments.IronBarcode.csproj" />
 		<ProjectReference Include="..\PdfDocuments\PdfDocuments.csproj" />
 	</ItemGroup>

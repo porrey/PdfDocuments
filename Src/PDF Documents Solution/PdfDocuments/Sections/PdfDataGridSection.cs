@@ -27,69 +27,56 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
 	public class PdfDataGridSection<TModel, TItem> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public PdfDataGridSection()
-		{
-			this.ColumnHeaderFont = new BindProperty<XFont, TModel>((g, m) => g.BodyMediumFont(XFontStyle.Regular).WithSize(10));
-			this.ColumnHeaderForegroundColor = new BindProperty<XColor, TModel>((g, m) => g.Theme.Color.BodyColor);
-			this.ColumnHeaderBackgroundColor = new BindProperty<XColor, TModel>((g, m) => XColors.Transparent);
-
-			this.ColumnValueFont = new BindProperty<XFont, TModel>((g, m) => g.BodyLightFont(XFontStyle.Bold).WithSize(10));
-			this.ColumnValueForegroundColor = new BindProperty<XColor, TModel>((g, m) => g.Theme.Color.BodyColor);
-			this.ColumnValueBackgroundColor = new BindProperty<XColor, TModel>((g, m) => XColors.Transparent);
-		}
-
-		public PdfSpacing CellPadding { get; set; } = new PdfSpacing(1, 1, 1, 1);
-
-		public BindProperty<XFont, TModel> ColumnHeaderFont { get; set; }
-		public BindProperty<XColor, TModel> ColumnHeaderForegroundColor { get; set; }
-		public BindProperty<XColor, TModel> ColumnHeaderBackgroundColor { get; set; }
-
-		public BindProperty<XFont, TModel> ColumnValueFont { get; set; }
-		public BindProperty<XColor, TModel> ColumnValueForegroundColor { get; set; }
-		public BindProperty<XColor, TModel> ColumnValueBackgroundColor { get; set; }
-
 		public IList<PdfDataGridColumn> DataColumns { get; } = new List<PdfDataGridColumn>();
-
 		public BindProperty<IEnumerable<TItem>, TModel> Items { get; set; } = new TItem[0];
 
-		public virtual PdfDataGridColumn AddDataColumn<TProperty>(string columnHeader, Expression<Func<TItem, TProperty>> expression, double relativeWidth, string format, XStringFormat alignment)
+		public virtual PdfDataGridColumn AddDataColumn<TProperty>(string columnHeader, Expression<Func<TItem, TProperty>> expression, double relativeWidth, string format, string styleName = null)
 		{
 			PdfDataGridColumn column = new PdfDataGridColumn()
 			{
 				ColumnHeader = columnHeader,
 				MemberExpression = expression.Body as MemberExpression,
 				RelativeWidth = relativeWidth,
-				Format = format,
-				Alignment = alignment
+				StringFormat = format
 			};
 
 			this.DataColumns.Add(column);
 			return column;
 		}
 
-		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
 			//
 			// Get the items.
 			//
-			IEnumerable<TItem> items = this.Items.Resolve(gridPage, model);
+			IEnumerable<TItem> items = this.Items.Resolve(g, m);
 
 			if (items.Any())
 			{
 				//
+				// Get the cell style.
+				//
+				PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(this.StyleNames.ElementAt(1));
+				PdfSpacing headerPadding = headerStyle.Padding.Resolve(g, m);
+				PdfSpacing headerCellPadding = headerStyle.CellPadding.Resolve(g, m);
+
+				PdfStyle<TModel> bodyStyle = this.StyleManager.GetStyle(this.StyleNames.ElementAt(2));
+				PdfSpacing bodyPadding = bodyStyle.Padding.Resolve(g, m);
+				PdfSpacing bodyCellPadding = bodyStyle.CellPadding.Resolve(g, m);
+
+				//
 				// Get the font size.
 				//
-				PdfSize headerSize = gridPage.MeasureText(this.ColumnValueFont.Resolve(gridPage, model), this.DataColumns[0].ColumnHeader);
-				PdfSize valueSize = gridPage.MeasureText(this.ColumnValueFont.Resolve(gridPage, model), this.FormattedValue(this.DataColumns[0], items.First()));
+				PdfSize headerSize = g.MeasureText(headerStyle.Font.Resolve(g, m), this.DataColumns[0].ColumnHeader);
+				PdfSize valueSize = g.MeasureText(headerStyle.Font.Resolve(g, m), this.FormattedValue(this.DataColumns[0], items.First()));
 
 				//
 				// Calculate the column header sizes.
@@ -105,7 +92,7 @@ namespace PdfDocuments
 						{
 							LeftColumn = columnIndex > 0 ? headerCellBounds[columnIndex - 1].RightColumn + 1 : bounds.LeftColumn,
 							TopRow = bounds.TopRow,
-							Rows = headerSize.Rows + this.Padding.Top + this.Padding.Bottom + this.CellPadding.Top + this.CellPadding.Bottom,
+							Rows = headerSize.Rows + headerPadding.Top + headerPadding.Bottom + headerCellPadding.Top + headerCellPadding.Bottom,
 							Columns = columnIndex < (this.DataColumns.Count - 1) ? (int)(bounds.Columns * dataColumn.RelativeWidth) : remainingColumns
 						};
 
@@ -115,7 +102,7 @@ namespace PdfDocuments
 				}
 
 				//
-				// Calculate the column header sizes.
+				// Calculate the column body sizes.
 				//
 				PdfBounds[] valueCellBounds = new PdfBounds[this.DataColumns.Count];
 				{
@@ -128,7 +115,7 @@ namespace PdfDocuments
 						{
 							LeftColumn = columnIndex > 0 ? valueCellBounds[columnIndex - 1].RightColumn + 1 : bounds.LeftColumn,
 							TopRow = headerCellBounds[0].BottomRow,
-							Rows = valueSize.Rows + this.Padding.Top + this.Padding.Bottom + this.CellPadding.Top + this.CellPadding.Bottom,
+							Rows = valueSize.Rows + bodyPadding.Top + bodyPadding.Bottom + bodyPadding.Top + bodyPadding.Bottom,
 							Columns = columnIndex < (this.DataColumns.Count - 1) ? (int)(bounds.Columns * dataColumn.RelativeWidth) : remainingColumns
 						};
 
@@ -149,18 +136,18 @@ namespace PdfDocuments
 						// Determine the text rectangle.
 						//
 						PdfBounds textBounds = headerCellBounds[columnIndex];
-						PdfBounds paddedBounds = this.ApplyPadding(gridPage, model, textBounds, this.Padding);
-						PdfBounds cellPaddedBounds = this.ApplyPadding(gridPage, model, paddedBounds, this.CellPadding);
+						PdfBounds paddedBounds = this.ApplyPadding(g, m, textBounds, headerPadding);
+						PdfBounds cellPaddedBounds = this.ApplyPadding(g, m, paddedBounds, headerCellPadding);
 
 						//
 						// Draw the background
 						//
-						gridPage.DrawFilledRectangle(paddedBounds, this.ColumnHeaderBackgroundColor.Resolve(gridPage, model));
+						g.DrawFilledRectangle(paddedBounds, headerStyle.BackgroundColor.Resolve(g, m));
 
 						//
 						// Draw the text.
 						//
-						gridPage.DrawText(column.ColumnHeader, this.ColumnHeaderFont.Resolve(gridPage, model), cellPaddedBounds, column.Alignment, this.ColumnHeaderForegroundColor.Resolve(gridPage, model));
+						g.DrawText(column.ColumnHeader, headerStyle.Font.Resolve(g, m), cellPaddedBounds, headerStyle.TextAlignment.Resolve(g, m), headerStyle.ForegroundColor.Resolve(g, m));
 						columnIndex++;
 					}
 
@@ -179,18 +166,18 @@ namespace PdfDocuments
 							// Determine the text rectangle.
 							//
 							PdfBounds textBounds = valueCellBounds[columnIndex].WithTopRow(topRow);
-							PdfBounds paddedBounds = this.ApplyPadding(gridPage, model, textBounds, this.Padding);
-							PdfBounds cellPaddedBounds = this.ApplyPadding(gridPage, model, paddedBounds, this.CellPadding);
+							PdfBounds paddedBounds = this.ApplyPadding(g, m, textBounds, bodyPadding);
+							PdfBounds cellPaddedBounds = this.ApplyPadding(g, m, paddedBounds, bodyCellPadding);
 
 							//
 							// Draw the background
 							//
-							gridPage.DrawFilledRectangle(paddedBounds, this.ColumnValueBackgroundColor.Resolve(gridPage, model));
+							g.DrawFilledRectangle(paddedBounds, bodyStyle.BackgroundColor.Resolve(g, m));
 
 							//
 							// Draw the text.
 							//
-							gridPage.DrawText(this.FormattedValue(column, item), this.ColumnValueFont.Resolve(gridPage, model), cellPaddedBounds, column.Alignment, this.ColumnValueForegroundColor.Resolve(gridPage, model));
+							g.DrawText(this.FormattedValue(column, item), bodyStyle.Font.Resolve(g, m), cellPaddedBounds, bodyStyle.TextAlignment.Resolve(g, m), bodyStyle.ForegroundColor.Resolve(g, m));
 							columnIndex++;
 						}
 
@@ -209,7 +196,7 @@ namespace PdfDocuments
 			//
 			PropertyInfo property = column.MemberExpression.Member as PropertyInfo;
 			object value = property.GetValue(item);
-			return column.Format != null ? string.Format(column.Format, value) : Convert.ToString(value);
+			return column.StringFormat != null ? string.Format(column.StringFormat, value) : Convert.ToString(value);
 		}
 	}
 }

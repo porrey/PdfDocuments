@@ -21,12 +21,11 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using PdfDocuments.Barcode;
+using PdfSharp.Drawing;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using PdfDocuments.Barcode;
-using PdfDocuments.Theme.Abstractions;
-using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {

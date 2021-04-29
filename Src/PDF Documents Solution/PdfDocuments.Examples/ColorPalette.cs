@@ -21,17 +21,20 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using Microsoft.Extensions.DependencyInjection;
-using PdfDocuments.Theme.Abstractions;
+using PdfSharp.Drawing;
 
-namespace PdfDocuments.Example.Theme
+namespace PdfDocuments
 {
-	public static class ServiceCollectionExtensions
+	public static class ColorPalette
 	{
-		public static IServiceCollection AddExampleTheme(this IServiceCollection services)
-		{
-			services.AddScoped<ITheme, ExampleTheme>();
-			return services;
-		}
+		public static XColor Transparent = XColors.Transparent;
+		public static XColor White = XColor.FromArgb(255, 255, 255, 255);
+		public static XColor Gray = XColor.FromArgb(255, 99, 99, 99);
+		public static XColor Blue = XColor.FromArgb(255, 37, 32, 98);
+		public static XColor MediumBlue = XColor.FromArgb(255, 37, 32, 98).WithLuminosity(.95);
+		public static XColor LightBlue = XColor.FromArgb(255, 37, 32, 98).WithLuminosity(.98);
+		public static XColor Red = XColor.FromArgb(255, 215, 35, 44);
+		public static XColor MediumRed = XColor.FromArgb(255, 215, 35, 44).WithLuminosity(.95);
+		public static XColor LightRed = XColor.FromArgb(255, 215, 35, 44).WithLuminosity(.98);
 	}
 }

@@ -31,10 +31,10 @@ namespace PdfDocuments.Example
 	public class Program
 	{
 		static Task Main(string[] args) => Host.CreateDefaultBuilder(args)
-				.UseStartup<ConsoleStartup>()
-				.UseSerilog()
-				.UseConsoleLifetime()
-				.Build()
-				.RunWithExitCodeAsync();
+					.UseStartup<ConsoleStartup>()
+					.UseSerilog()
+					.UseConsoleLifetime()
+					.Build()
+					.RunWithExitCodeAsync();
 	}
 }

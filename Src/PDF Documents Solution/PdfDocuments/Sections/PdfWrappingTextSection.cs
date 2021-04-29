@@ -21,35 +21,31 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Threading.Tasks;
-using PdfSharp.Drawing;
 using PdfSharp.Drawing.Layout;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
 	public class PdfWrappingTextSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public XParagraphAlignment ParagraphAlignment { get; set; } = XParagraphAlignment.Justify;
-
-		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
-			//
-			// Check if padding should be used.
-			//
-			bool usePadding = this.UsePadding.Resolve(gridPage, model);
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfSpacing padding = style.Padding.Resolve(g, m);
 
-			gridPage.DrawWrappingText(this.Text.Resolve(gridPage, model),
-				this.Font.Resolve(gridPage, model),
-				bounds.LeftColumn + (usePadding ? this.Padding.Left : 0),
-				bounds.TopRow + (usePadding ? this.Padding.Top : 0),
-				bounds.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0)),
-				bounds.Rows - ((usePadding ? this.Padding.Top : 0) + (usePadding ? this.Padding.Bottom : 0)),
-				XStringFormats.TopLeft,
-				this.ForegroundColor.Resolve(gridPage, model),
-				XParagraphAlignment.Justify);
+			g.DrawWrappingText(this.Text.Resolve(g, m),
+				style.Font.Resolve(g, m),
+				bounds.LeftColumn + padding.Left,
+				bounds.TopRow + padding.Top,
+				bounds.Columns - (padding.Left + padding.Right),
+				bounds.Rows - (padding.Top + padding.Bottom),
+				style.TextAlignment.Resolve(g, m),
+				style.ForegroundColor.Resolve(g, m),
+				style.ParagraphAlignment.Resolve(g, m));
 
 			return Task.FromResult(returnValue);
 		}

@@ -24,7 +24,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
@@ -126,12 +125,12 @@ namespace PdfDocuments
 			return new PdfDataGridSection<TModel, TItem>();
 		}
 
-		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, string columnHeader, Expression<Func<TItem, TProperty>> expression, double relativeWidth, string format, XStringFormat alignment)
+		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, string columnHeader, Expression<Func<TItem, TProperty>> expression, double relativeWidth, string format, string styleName = null)
 			where TModel : IPdfModel
 		{
 			if (section is PdfDataGridSection<TModel, TItem> s)
 			{
-				s.AddDataColumn(columnHeader, expression, relativeWidth, format, alignment);
+				s.AddDataColumn(columnHeader, expression, relativeWidth, format, styleName);
 			}
 			return section;
 		}
@@ -142,126 +141,6 @@ namespace PdfDocuments
 			if (section is PdfDataGridSection<TModel, TItem> s)
 			{
 				s.Items = items;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithColumnHeaderFont<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XFont, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.ColumnHeaderFont = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithColumnValueFont<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XFont, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.ColumnValueFont = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithColumnHeaderForegroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.ColumnHeaderForegroundColor = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithColumnHeaderForegroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.ColumnHeaderForegroundColor = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithColumnValueForegroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.ColumnValueForegroundColor = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithColumnValueForegroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.ColumnValueForegroundColor = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithColumnHeaderBackgroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.ColumnHeaderBackgroundColor = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithColumnHeaderBackgroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.ColumnHeaderBackgroundColor = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithColumnValueBackgroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.ColumnValueBackgroundColor = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithColumnValueBackgroundColor<TModel, TItem>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.ColumnValueBackgroundColor = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithCellPadding<TModel, TItem>(this IPdfSection<TModel> section, PdfSpacing value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.CellPadding = value;
-			}
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithCellPadding<TModel, TItem>(this IPdfSection<TModel> section, int left, int top, int right, int bottom)
-			where TModel : IPdfModel
-		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
-			{
-				s.CellPadding = (left, top, right, bottom);
 			}
 			return section;
 		}
@@ -385,104 +264,6 @@ namespace PdfDocuments
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithBackgroundColor<TModel>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.BackgroundColor = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithBackgroundColor<TModel>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.BackgroundColor = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithForegroundColor<TModel>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.ForegroundColor = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithForegroundColor<TModel>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.ForegroundColor = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithFont<TModel>(this IPdfSection<TModel> section, BindProperty<XFont, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.Font = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithFont<TModel>(this IPdfSection<TModel> section, BindPropertyAction<XFont, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.Font = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithBorderColor<TModel>(this IPdfSection<TModel> section, BindProperty<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.BorderColor = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithBorderColor<TModel>(this IPdfSection<TModel> section, BindPropertyAction<XColor, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.BorderColor = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithBorderWidth<TModel>(this IPdfSection<TModel> section, BindProperty<double, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.BorderWidth = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithBorderWidth<TModel>(this IPdfSection<TModel> section, BindPropertyAction<double, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.BorderWidth = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithPadding<TModel>(this IPdfSection<TModel> section, PdfSpacing value)
-			where TModel : IPdfModel
-		{
-			section.Padding = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithPadding<TModel>(this IPdfSection<TModel> section, int left, int top, int right, int bottom)
-			where TModel : IPdfModel
-		{
-			section.Padding = (left, top, right, bottom);
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithMargin<TModel>(this IPdfSection<TModel> section, PdfSpacing value)
-			where TModel : IPdfModel
-		{
-			section.Margin = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithMargin<TModel>(this IPdfSection<TModel> section, int left, int top, int right, int bottom)
-			where TModel : IPdfModel
-		{
-			section.Margin = (left, top, right, bottom);
-			return section;
-		}
-
 		public static IPdfSection<TModel> AssignParentSection<TModel>(this IPdfSection<TModel> section, IPdfSection<TModel> value)
 			where TModel : IPdfModel
 		{
@@ -534,30 +315,6 @@ namespace PdfDocuments
 			where TModel : IPdfModel
 		{
 			section.AddChildSection(value);
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithTextAlignment<TModel>(this IPdfSection<TModel> section, BindProperty<XStringFormat, TModel> value)
-		where TModel : IPdfModel
-		{
-			section.TextAlignment = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithTextAlignment<TModel>(this IPdfSection<TModel> section, BindPropertyAction<XStringFormat, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.TextAlignment = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithKeyRelativeWidth<TModel>(this IPdfSection<TModel> section, BindProperty<double, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfKeyValueSection<TModel> s)
-			{
-				s.KeyRelativeWidth = value;
-			}
 			return section;
 		}
 	}

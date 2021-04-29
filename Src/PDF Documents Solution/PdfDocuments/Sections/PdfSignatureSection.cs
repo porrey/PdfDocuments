@@ -21,6 +21,7 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using System.Linq;
 using System.Threading.Tasks;
 using PdfSharp.Drawing;
 
@@ -29,55 +30,55 @@ namespace PdfDocuments
 	public class PdfSignatureSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public PdfSignatureSection()
-		{
-			this.Font = new BindPropertyAction<XFont, TModel>((gp, m) => { return gp.BodyFont().WithSize(gp.Theme.FontSize.BodySmall); });
-		}
-
-		public BindProperty<int, TModel> RightDateColumnPadding { get; set; } = 40;
-
-		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
 			//
-			// Check the padding flag.
+			// Get the style.
 			//
-			bool usePadding = this.UsePadding.Resolve(gridPage, model);
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfSpacing padding = style.Padding.Resolve(g, m);
 
 			//
 			// Use the standard small body font.
 			//
-			string label = $"{this.Text.Resolve(gridPage, model)}:";
-			XFont bodyFont = this.Font.Resolve(gridPage, model);
-			PdfSize bodyFontSize = gridPage.MeasureText(bodyFont, label);
+			string label = $"{this.Text.Resolve(g, m)}:";
+			XFont bodyFont = style.Font.Resolve(g, m);
+			PdfSize bodyFontSize = g.MeasureText(bodyFont, label);
 
 			//
 			// Draw the signature line.
 			//
-			int top = bounds.BottomRow - (usePadding ? 2 * this.Padding.Bottom : 0);
-			gridPage.DrawHorizontalLine(top, bounds.LeftColumn, bounds.RightColumn, RowEdge.Bottom, gridPage.Theme.Drawing.LineWeightNormal, this.ForegroundColor.Resolve(gridPage, model));
+			int top = bounds.BottomRow - (2 * padding.Bottom);
+			g.DrawHorizontalLine(top, bounds.LeftColumn, bounds.RightColumn, RowEdge.Bottom, style.BorderWidth.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
+
+			//
+			// Get the relative width of the sections.
+			//
+			double[] widths = style.RelativeWidths.Resolve(g, m);
+			double width = widths.Length > 0 ? widths[0] : .4;
 
 			//
 			// Draw the text.
 			//
-			top -= bodyFontSize.Rows + (usePadding ? this.Padding.Bottom : 0);
+			top -= bodyFontSize.Rows + padding.Bottom;
 
-			gridPage.DrawText(label, bodyFont,
-				bounds.LeftColumn + (usePadding ? this.Padding.Left : 0),
+			g.DrawText(label, bodyFont,
+				bounds.LeftColumn + padding.Left,
 				top,
-				bounds.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0)),
+				bounds.Columns - (padding.Left + padding.Right),
 				bodyFontSize.Rows,
-				XStringFormats.TopLeft, this.ForegroundColor.Resolve(gridPage, model));
+				style.TextAlignment.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
 
-			int left = bounds.RightColumn - this.RightDateColumnPadding.Resolve(gridPage, model);
+			int left = bounds.RightColumn - (int)(bounds.Columns * width);
 
-			gridPage.DrawText("Date:", bodyFont,
+			g.DrawText("Date:", bodyFont,
 				left,
 				top,
-				bounds.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0)),
+				bounds.Columns - (padding.Left + padding.Right),
 				bodyFontSize.Rows,
-				XStringFormats.TopLeft, this.ForegroundColor.Resolve(gridPage, model));
+				style.TextAlignment.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
 
 			return Task.FromResult(returnValue);
 		}

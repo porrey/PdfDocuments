@@ -21,8 +21,8 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using System.Linq;
 using System.Threading.Tasks;
-using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
@@ -35,14 +35,15 @@ namespace PdfDocuments
 			this.ShouldRender = new BindPropertyAction<bool, TModel>((gp, m) => { return gp.PageNumber == 1; });
 		}
 
-		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
 			//
 			// Draw the title.
 			//
-			gridPage.DrawText(gridPage.DocumentTitle.ToUpper(), gridPage.Theme.FontFamily.TitleLight, gridPage.Theme.FontSize.Title1, XFontStyle.Regular, bounds.LeftColumn, bounds.TopRow, bounds.Columns, bounds.Rows, XStringFormats.Center, gridPage.Theme.Color.TitleColor);
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			g.DrawText(g.DocumentTitle.ToUpper(), style.Font.Resolve(g, m), bounds.LeftColumn, bounds.TopRow, bounds.Columns, bounds.Rows, style.TextAlignment.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
 
 			return Task.FromResult(returnValue);
 		}

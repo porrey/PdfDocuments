@@ -21,6 +21,7 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PdfDocuments
@@ -28,34 +29,32 @@ namespace PdfDocuments
 	public class PdfTextBlockSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		protected override Task<bool> OnRenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
+		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
-			//
-			// Get the padding flagging.
-			//
-			bool usePadding = this.UsePadding.Resolve(gridPage, model);
+			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfSpacing padding = style.Padding.Resolve(g, m);
 
 			//
 			// Determine the bounds.
 			//
 			PdfBounds paddedBounds = new PdfBounds()
 			{
-				LeftColumn = bounds.LeftColumn + (usePadding ? this.Padding.Left : 0),
-				TopRow = bounds.TopRow + (usePadding ? this.Padding.Top : 0),
-				Columns = bounds.Columns - ((usePadding ? this.Padding.Left : 0) + (usePadding ? this.Padding.Right : 0)),
-				Rows = bounds.Rows - ((usePadding ? this.Padding.Top : 0) + (usePadding ? this.Padding.Bottom : 0)),
+				LeftColumn = bounds.LeftColumn + padding.Left,
+				TopRow = bounds.TopRow + padding.Top,
+				Columns = bounds.Columns - (padding.Left + padding.Right),
+				Rows = bounds.Rows - (padding.Top + padding.Bottom),
 			};
 
 			//
 			// Draw the text.
 			//
-			gridPage.DrawText(this.Text.Resolve(gridPage, model),
-							  this.Font.Resolve(gridPage, model),
+			g.DrawText(this.Text.Resolve(g, m),
+							  style.Font.Resolve(g, m),
 							  paddedBounds,
-							  this.TextAlignment.Resolve(gridPage, model),
-							  this.ForegroundColor.Resolve(gridPage, model));
+							  style.TextAlignment.Resolve(g, m),
+							  style.ForegroundColor.Resolve(g, m));
 
 			return Task.FromResult(returnValue);
 		}
