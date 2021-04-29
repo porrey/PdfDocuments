@@ -33,11 +33,20 @@ namespace PdfDocuments.Example
 		public InvoicePdf(IPdfStyleManager<Invoice> styleManager)
 			: base(styleManager)
 		{
-
 		}
 
 		protected override void OnInitializeStyles(IPdfStyleManager<Invoice> styleManager)
 		{
+			this.StyleManager.Add("Test", Style.Create<Invoice>()
+											   .UseFont(new XFont("Arial", 12))
+											   .UseForegroundColor(ColorPalette.Red)
+											   .UseBackgroundColor(ColorPalette.Transparent)
+											   .UseBorderColor(ColorPalette.LightRed)
+											   .UseBorderWidth(1)
+											   .Build());
+
+			this.StyleManager.GetStyle("").Copy().UseBackgroundColor(ColorPalette.White);
+
 			//
 			// Add page header style.
 			//
@@ -132,7 +141,7 @@ namespace PdfDocuments.Example
 				BackgroundColor = ColorPalette.Transparent,
 				ForegroundColor = ColorPalette.Gray,
 				TextAlignment = XStringFormats.CenterRight,
-				RelativeWidths = new double[] { .4 }
+				RelativeWidths = new double[] { .3 }
 			});
 
 			this.StyleManager.Add("Address.Value", new PdfStyle<Invoice>()

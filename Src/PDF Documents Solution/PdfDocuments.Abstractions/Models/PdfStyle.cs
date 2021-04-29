@@ -3,10 +3,9 @@ using PdfSharp.Drawing.Layout;
 
 namespace PdfDocuments
 {
-	public class PdfStyle<TModel>
+	public class PdfStyle<TModel> : IStyleBuilder<TModel>
 	{
 		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0;
-		public virtual BindProperty<double, TModel> RelativeWidth { get; set; } = 0;
 		public virtual BindProperty<XFont, TModel> Font { get; set; } = new XFont("Arial", 12);
 		public virtual BindProperty<PdfSpacing, TModel> Margin { get; set; } = new PdfSpacing(0, 0, 0, 0);
 		public virtual BindProperty<PdfSpacing, TModel> Padding { get; set; } = new PdfSpacing(0, 0, 0, 0);
