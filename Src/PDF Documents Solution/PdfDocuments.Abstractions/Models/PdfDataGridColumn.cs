@@ -27,6 +27,8 @@ namespace PdfDocuments
 {
 	public class PdfDataGridColumn
 	{
+		public string HeaderStyleName { get; set; }
+		public string CellStyleName { get; set; }
 		public string ColumnHeader { get; set; }
 		public MemberExpression MemberExpression { get; set; }
 		public double RelativeWidth { get; set; }

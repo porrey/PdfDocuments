@@ -125,12 +125,12 @@ namespace PdfDocuments
 			return new PdfDataGridSection<TModel, TItem>();
 		}
 
-		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, string columnHeader, Expression<Func<TItem, TProperty>> expression, double relativeWidth, string format, string styleName = null)
+		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, string columnHeader, Expression<Func<TItem, TProperty>> expression, double relativeWidth, string format, string headerStyleName, string cellStyleName)
 			where TModel : IPdfModel
 		{
 			if (section is PdfDataGridSection<TModel, TItem> s)
 			{
-				s.AddDataColumn(columnHeader, expression, relativeWidth, format, styleName);
+				s.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
 			}
 			return section;
 		}
