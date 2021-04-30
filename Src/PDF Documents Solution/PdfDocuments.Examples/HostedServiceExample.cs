@@ -111,12 +111,11 @@ namespace PdfDocuments.Example
 				// Use the various option to debug the PDF layout.
 				//
 				generator.DebugMode = generator.DebugMode
-									//.SetFlag(DebugMode.RevealGrid)
-									//.SetFlag(DebugMode.RevealLayout)
-									//.SetFlag(DebugMode.HideDetails)
-									//.SetFlag(DebugMode.RevealFontDetails)
-									//.SetFlag(DebugMode.OutlineText)
-									;
+									.SetFlag(DebugMode.RevealGrid, false)
+									.SetFlag(DebugMode.RevealLayout, false)
+									.SetFlag(DebugMode.HideDetails, false)
+									.SetFlag(DebugMode.RevealFontDetails, false)
+									.SetFlag(DebugMode.OutlineText, false);
 #endif
 
 				//

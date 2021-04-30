@@ -31,7 +31,6 @@ namespace PdfDocuments
 	{
 		public PdfReportHeaderSection()
 		{
-			this.RelativeHeight = .05;
 			this.ShouldRender = new BindPropertyAction<bool, TModel>((gp, m) => { return gp.PageNumber == 1; });
 		}
 

@@ -58,6 +58,11 @@ namespace PdfDocuments
 			return Task.FromResult(returnValue);
 		}
 
+		protected override bool OnShouldDrawBackground()
+		{
+			return false;
+		}
+
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;

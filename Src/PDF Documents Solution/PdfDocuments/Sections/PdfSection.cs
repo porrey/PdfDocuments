@@ -76,8 +76,8 @@ namespace PdfDocuments
 			}
 		}
 
-		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0.0;
-		public virtual BindProperty<double, TModel> RelativeWidth { get; set; } = 0.0;
+		public virtual BindProperty<double, TModel> RelativeHeight => this.StyleManager.GetStyle(this.StyleNames.First()).RelativeHeight;
+		public virtual BindProperty<double[], TModel> RelativeWidths => this.StyleManager.GetStyle(this.StyleNames.First()).RelativeWidths;
 
 		public virtual async Task<bool> LayoutAsync(PdfGridPage g, TModel m)
 		{
@@ -145,16 +145,19 @@ namespace PdfDocuments
 			//
 			PdfBounds bounds = this.ApplyMargins(g, m, style.Margin.Resolve(g, m));
 
-			//
-			// Draw the background if set.
-			//
-			XColor backgroundColor = style.BackgroundColor.Resolve(g, m);
-			if (backgroundColor != XColor.Empty)
+			if (this.OnShouldDrawBackground())
 			{
 				//
-				// Draw the filled rectangle.
+				// Draw the background if set.
 				//
-				g.DrawFilledRectangle(bounds, backgroundColor);
+				XColor backgroundColor = style.BackgroundColor.Resolve(g, m);
+				if (backgroundColor != XColor.Empty)
+				{
+					//
+					// Draw the filled rectangle.
+					//
+					g.DrawFilledRectangle(bounds, backgroundColor);
+				}
 			}
 
 			if (await this.OnRenderAsync(g, m, bounds))
@@ -197,6 +200,11 @@ namespace PdfDocuments
 			}
 
 			return returnValue;
+		}
+
+		protected virtual bool OnShouldDrawBackground()
+		{
+			return true;
 		}
 
 		public virtual async Task<bool> RenderDebugAsync(PdfGridPage g, TModel m)

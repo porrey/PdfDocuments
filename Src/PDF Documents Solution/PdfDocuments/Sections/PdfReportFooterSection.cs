@@ -29,7 +29,6 @@ namespace PdfDocuments
 	{
 		public PdfReportFooterSection()
 		{
-			this.RelativeHeight = .03;
 			this.ShouldRender = new BindPropertyAction<bool, TModel>((gp, m) => { return gp.PageNumber == gp.Document.PageCount; });
 		}
 	}

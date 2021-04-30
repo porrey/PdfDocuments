@@ -30,11 +30,6 @@ namespace PdfDocuments
 	public class PdfPageFooterSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public PdfPageFooterSection()
-		{
-			this.RelativeHeight = .03;
-		}
-
 		public BindProperty<string, TModel> Copyright { get; set; } = string.Empty;
 		public BindProperty<string, TModel> Disclaimer { get; set; } = string.Empty;
 

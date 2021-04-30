@@ -31,9 +31,12 @@ namespace PdfDocuments
 			return ((debugMode & checkFlag) == checkFlag);
 		}
 
-		public static DebugMode SetFlag(this DebugMode debugMode, DebugMode flag)
+		public static DebugMode SetFlag(this DebugMode debugMode, DebugMode flag, bool set = true)
 		{
-			debugMode |= flag;
+			if (set)
+			{
+				debugMode |= flag;
+			}
 			return debugMode;
 		}
 	}

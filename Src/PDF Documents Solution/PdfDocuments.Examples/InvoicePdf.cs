@@ -40,7 +40,7 @@ namespace PdfDocuments.Example
 			//
 			// Build the styles.
 			//
-			this.StyleManager.Add("PageHeader", Style.Create<Invoice>()
+			this.StyleManager.Add("PageHeader.Section", Style.Create<Invoice>()
 									.UseFont("Arial Narrow", 48)
 									.UseForegroundColor(ColorPalette.Blue)
 									.UseBackgroundColor(ColorPalette.Transparent)
@@ -51,9 +51,12 @@ namespace PdfDocuments.Example
 									.UseRelativeHeight(.12)
 									.Build());
 
+			this.StyleManager.Add("InvoiceNumber.Section", Style.Create<Invoice>()
+									.UseRelativeHeight(.095)
+									.Build());
+
 			this.StyleManager.Add("InvoiceNumber", Style.Create<Invoice>()
 									.UseMargin(0, 2, 0, 2)
-									.UseRelativeHeight(.095)
 									.UseRelativeWidths(.53)
 									.Build());
 
@@ -70,11 +73,13 @@ namespace PdfDocuments.Example
 
 			this.StyleManager.Add("Address.Section", Style.Create<Invoice>()
 									.UseMargin(0, 5, 0, 5)
+									.UseRelativeHeight(.16)
 									.Build());
 
 			this.StyleManager.Add("Address.ContentBlock", Style.Create<Invoice>()
 									.UseFont("Arial", 11, XFontStyle.Regular)
 									.UsePadding(1, 2, 1, 2)
+									.UseMargin(0, 3, 0, 2)
 									.UseBorderColor(ColorPalette.Blue)
 									.UseBorderWidth(1)
 									.UseBackgroundColor(ColorPalette.White)
@@ -98,17 +103,24 @@ namespace PdfDocuments.Example
 			this.StyleManager.Add("Address.Key", Style.Create<Invoice>()
 									.UseFont("Arial", 11, XFontStyle.Regular)
 									.UsePadding(1, 1, 1, 1)
-									.UseForegroundColor(ColorPalette.Gray)
+									.UseForegroundColor(ColorPalette.LightGray)
 									.UseTextAlignment(XStringFormats.CenterRight)
 									.UseRelativeWidths(.3)
 									.Build());
 
 			this.StyleManager.Add("Address.Value", Style.Copy(this.StyleManager.GetStyle("Address.Key"))
 									.UseFont("Arial", 11, XFontStyle.Bold)
+									.UseForegroundColor(ColorPalette.Gray)
+									.UseTextAlignment(XStringFormats.CenterLeft)
+									.Build());
+
+			this.StyleManager.Add("Totals.Section", Style.Create<Invoice>()
+									.UseRelativeHeight(.1)
 									.Build());
 
 			this.StyleManager.Add("Totals", Style.Create<Invoice>()
 									.UsePadding(0, 2, 0, 2)
+									.UseRelativeWidths(.45)
 									.Build());
 
 			this.StyleManager.Add("Totals.Key", Style.Create<Invoice>()
@@ -123,6 +135,10 @@ namespace PdfDocuments.Example
 			this.StyleManager.Add("Totals.Value", Style.Copy(this.StyleManager.GetStyle("Totals.Key"))
 									.UseFont("Arial", 11, XFontStyle.Bold)
 									.Build());
+
+			this.StyleManager.Add("Reference.Section", Style.Create<Invoice>()
+						.UseRelativeHeight(.065)
+						.Build());
 
 			this.StyleManager.Add("Reference.Header.1", Style.Create<Invoice>()
 									.UseFont("Arial", 11, XFontStyle.Regular)
@@ -151,7 +167,7 @@ namespace PdfDocuments.Example
 									.UseTextAlignment(XStringFormats.CenterLeft)
 									.Build());
 
-			this.StyleManager.Add("InvoiceItems.Grid", Style.Create<Invoice>()
+			this.StyleManager.Add("InvoiceItems.Section", Style.Create<Invoice>()
 									.UseMargin(1, 2, 1, 2)
 									.Build());
 
@@ -182,20 +198,22 @@ namespace PdfDocuments.Example
 									.UseTextAlignment(XStringFormats.CenterRight)
 									.Build());
 
-			this.StyleManager.Add("Signature", Style.Create<Invoice>()
+			this.StyleManager.Add("Signature.Section", Style.Create<Invoice>()
 									.UseFont("Arial", 10, XFontStyle.Regular)
 									.UseBorderWidth(1)
 									.UseForegroundColor(ColorPalette.Gray)
 									.UseTextAlignment(XStringFormats.CenterLeft)
 									.UseRelativeWidths(.4)
+									.UseRelativeHeight(.05)
 									.Build());
 
-			this.StyleManager.Add("ThankYou", Style.Create<Invoice>()
+			this.StyleManager.Add("ThankYou.Section", Style.Create<Invoice>()
 									.UseFont("Arial", 12, XFontStyle.Italic)
 									.UsePadding(0, 2, 1, 2)
 									.UseMargin(0, 15, 0, 0)
 									.UseForegroundColor(ColorPalette.Red)
 									.UseTextAlignment(XStringFormats.Center)
+									.UseRelativeHeight(.058)
 									.Build());
 		}
 
@@ -222,10 +240,9 @@ namespace PdfDocuments.Example
 				// Page header - shows on every page.
 				//
 				Pdf.PageHeaderSection<Invoice>()
-				   .WithRelativeHeight(.12)
 				   .WithTitle("INVOICE")
 				   .WithLogoPath("./Images/logo.jpg")
-				   .WithStyles("PageHeader"),
+				   .WithStyles("PageHeader.Section"),
 
 				//
 				// Invoice number and date.
@@ -240,9 +257,7 @@ namespace PdfDocuments.Example
 						new PdfKeyValueItem<Invoice>() { Key = "Invoice Due Date:", Value = new BindProperty<string, Invoice>((g, m) => m.DueDate.ToLongDateString()) }
 					)
 					.WithStyles("InvoiceNumber", "InvoiceNumber.Key", "InvoiceNumber.Value")
-					.WithRelativeWidth(.53)
-				).WithRelativeHeight(.095)
-				 .WithStyles("InvoiceNumber"),
+				).WithStyles("InvoiceNumber.Section"),
 
 				//
 				// Reference numbers section.
@@ -269,8 +284,7 @@ namespace PdfDocuments.Example
 						.WithContentSection(Pdf.TextBlockSection<Invoice>()
 											   .WithText((g, m) => m.JobNumber)
 											   .WithStyles("Reference.Body"))
-				).WithRelativeHeight(.065)
-				 .WithStyles("Default"),
+				).WithStyles("Reference.Section"),
 
 				//
 				// Bill to/from.
@@ -301,8 +315,7 @@ namespace PdfDocuments.Example
 						)
 						.WithStyles("Address.ContentBlock", "Address.Key", "Address.Value"))
 
-				).WithRelativeHeight(.16)
-				 .WithStyles("Address.Section"),
+				).WithStyles("Address.Section"),
 
 				//
 				// Invoice details
@@ -313,38 +326,36 @@ namespace PdfDocuments.Example
 				   .AddColumn<Invoice, InvoiceItem, decimal>("Unit Price", t => t.UnitPrice, .25, "{0:C}", "InvoiceItems.Header.Right", "InvoiceItems.Body.Right")
 				   .AddColumn<Invoice, InvoiceItem, decimal>("Amount", t => t.Amount, .30, "{0:C}", "InvoiceItems.Header.Right", "InvoiceItems.Body.Right")
 				   .UseItems((g, m) => m.Items)
-				   .WithStyles("InvoiceItems.Grid"),
+				   .WithStyles("InvoiceItems.Section"),
 
 				//
 				// Invoice totals
 				//
 				Pdf.HorizontalStackSection<Invoice>
 				(
-					Pdf.EmptySection<Invoice>().WithRelativeWidth(.55),
+					Pdf.EmptySection<Invoice>(),
 					Pdf.KeyValueSection<Invoice>
 						(
 							new PdfKeyValueItem<Invoice>() { Key = "Sub Total:", Value = new BindProperty<string, Invoice>((g, m) => m.Items.Sum(t => t.Amount).ToString("C")) },
 							new PdfKeyValueItem<Invoice>() { Key = "Tax (6.0%):", Value = new BindProperty<string, Invoice>((g, m) => (m.Items.Sum(t => t.Amount) * .06M).ToString("C")) },
 							new PdfKeyValueItem<Invoice>() { Key = "Total:", Value = new BindProperty<string, Invoice>((g, m) => (m.Items.Sum(t => t.Amount) * 1.06M).ToString("C")) })
 						.WithStyles("Totals", "Totals.Key", "Totals.Value")
-				).WithRelativeHeight(.1),
+				).WithStyles("Totals.Section"),
 
 				//
 				// Signature section will display only on the last page.
 				//
 				Pdf.SignatureSection<Invoice>()
-				   .WithRelativeHeight(.05)
 				   .WithText("Approved by")
-				   .WithStyles("Signature")
-				   .WithRenderCondition((g, m) => g.PageNumber == g.Document.PageCount),
+				   .WithRenderCondition((g, m) => g.PageNumber == g.Document.PageCount)
+				   .WithStyles("Signature.Section"),
 
 				//
 				// Tag line.
 				//
 				Pdf.TextBlockSection<Invoice>()
 					.WithText("Thank you for your business!")
-					.WithRelativeHeight(.058)
-					.WithStyles("ThankYou")
+					.WithStyles("ThankYou.Section")
 			)
 			.WithKey("Report")
 			.WithWatermark((g, m) => m.Paid ? "./images/paid.png" : string.Empty);

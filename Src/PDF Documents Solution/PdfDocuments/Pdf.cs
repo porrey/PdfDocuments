@@ -192,34 +192,6 @@ namespace PdfDocuments
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithRelativeHeight<TModel>(this IPdfSection<TModel> section, BindProperty<double, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.RelativeHeight = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithRelativeHeight<TModel>(this IPdfSection<TModel> section, BindPropertyAction<double, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.RelativeHeight = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithRelativeWidth<TModel>(this IPdfSection<TModel> section, BindProperty<double, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.RelativeWidth = value;
-			return section;
-		}
-
-		public static IPdfSection<TModel> WithRelativeWidth<TModel>(this IPdfSection<TModel> section, BindPropertyAction<double, TModel> value)
-			where TModel : IPdfModel
-		{
-			section.RelativeWidth = value;
-			return section;
-		}
-
 		public static IPdfSection<TModel> WithTitle<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
 			where TModel : IPdfModel
 		{

@@ -59,16 +59,16 @@ namespace PdfDocuments
 			// without. Those sections without get the remaining space
 			// evenly divided.
 			//
-			foreach (IPdfSection<TModel> section in sections.Where(t => t.RelativeWidth.Resolve(g, m) != 0))
+			foreach (IPdfSection<TModel> section in sections.Where(t => t.RelativeWidths.Resolve(g, m)[0] != 0))
 			{
-				await section.SetActualColumns((int)(section.RelativeWidth.Resolve(g, m) * bounds.Columns));
+				await section.SetActualColumns((int)(section.RelativeWidths.Resolve(g, m)[0] * bounds.Columns));
 				await section.SetActualRows(bounds.Rows);
 			}
 
 			//
 			// Get the sum of the height of the previous sections.
 			//
-			int usedColumns = sections.Where(t => t.RelativeWidth.Resolve(g, m) != 0).Sum(t => t.ActualBounds.Columns);
+			int usedColumns = sections.Where(t => t.RelativeWidths.Resolve(g, m)[0] != 0).Sum(t => t.ActualBounds.Columns);
 
 			//
 			// Get the remaining rows.
@@ -78,7 +78,7 @@ namespace PdfDocuments
 			//
 			// Get a count of sections where the relative height is not specified.
 			//
-			int nonRelativeSectionCount = sections.Where(t => t.RelativeWidth.Resolve(g, m) == 0).Count();
+			int nonRelativeSectionCount = sections.Where(t => t.RelativeWidths.Resolve(g, m)[0] == 0).Count();
 
 			if (nonRelativeSectionCount > 0)
 			{
@@ -90,7 +90,7 @@ namespace PdfDocuments
 				//
 				// Assign the rows to the remaining sections.
 				//
-				IPdfSection<TModel>[] sectionList = sections.Where(t => t.RelativeWidth.Resolve(g, m) == 0).ToArray();
+				IPdfSection<TModel>[] sectionList = sections.Where(t => t.RelativeWidths.Resolve(g, m)[0] == 0).ToArray();
 
 				foreach (IPdfSection<TModel> section in sectionList)
 				{

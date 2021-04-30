@@ -65,11 +65,6 @@ namespace PdfDocuments
 			XFont valueFont = valueStyle.Font.Resolve(g, m);
 
 			//
-			// Get the size of the name text.
-			//
-			PdfSize textSize = g.MeasureText(nameFont);
-
-			//
 			// Get the relative width of the sections.
 			//
 			double[] widths = keyStyle.RelativeWidths.Resolve(g, m);

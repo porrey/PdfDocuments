@@ -23,7 +23,6 @@
  */
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
@@ -43,7 +42,7 @@ namespace PdfDocuments
 		Task<bool> RenderDebugAsync(PdfGridPage gridPage, TModel model);
 		Task SetActualRows(int rows);
 		Task SetActualColumns(int columns);
-		BindProperty<double, TModel> RelativeHeight { get; set; }
-		BindProperty<double, TModel> RelativeWidth { get; set; }
+		BindProperty<double, TModel> RelativeHeight { get; }
+		BindProperty<double[], TModel> RelativeWidths { get; }
 	}
 }

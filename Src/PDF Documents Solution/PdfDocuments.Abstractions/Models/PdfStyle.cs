@@ -6,6 +6,7 @@ namespace PdfDocuments
 	public class PdfStyle<TModel> : IStyleBuilder<TModel>
 	{
 		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0;
+		public virtual BindProperty<double[], TModel> RelativeWidths { get; set; } = new double[] { 0 };
 		public virtual BindProperty<XFont, TModel> Font { get; set; } = new XFont("Arial", 12);
 		public virtual BindProperty<PdfSpacing, TModel> Margin { get; set; } = new PdfSpacing(0, 0, 0, 0);
 		public virtual BindProperty<PdfSpacing, TModel> Padding { get; set; } = new PdfSpacing(0, 0, 0, 0);
@@ -16,6 +17,5 @@ namespace PdfDocuments
 		public virtual BindProperty<XStringFormat, TModel> TextAlignment { get; set; } = XStringFormats.CenterLeft;
 		public virtual BindProperty<XParagraphAlignment, TModel> ParagraphAlignment { get; set; } = XParagraphAlignment.Justify;
 		public virtual BindProperty<PdfSpacing, TModel> CellPadding { get; set; } = new PdfSpacing(0, 0, 0, 0);
-		public virtual BindProperty<double[], TModel> RelativeWidths { get; set; } = new double[0];
 	}
 }

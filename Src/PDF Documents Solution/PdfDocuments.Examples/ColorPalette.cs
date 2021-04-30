@@ -30,6 +30,7 @@ namespace PdfDocuments
 		public static XColor Transparent = XColors.Transparent;
 		public static XColor White = XColor.FromArgb(255, 255, 255, 255);
 		public static XColor Gray = XColor.FromArgb(255, 99, 99, 99);
+		public static XColor LightGray = XColor.FromArgb(255, 200, 200, 200);
 		public static XColor Blue = XColor.FromArgb(255, 37, 32, 98);
 		public static XColor MediumBlue = XColor.FromArgb(255, 37, 32, 98).WithLuminosity(.95);
 		public static XColor LightBlue = XColor.FromArgb(255, 37, 32, 98).WithLuminosity(.98);
