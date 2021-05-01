@@ -94,5 +94,40 @@ namespace PdfDocuments
 				Rows = bounds.Rows > 0 ? bounds.Rows : 1
 			};
 		}
+
+		public static PdfBounds SubtractBounds<TModel>(this PdfBounds outerBounds, PdfGridPage g, TModel m, PdfSpacing innerBounds)
+			where TModel : IPdfModel
+		{
+			PdfBounds returnValue = outerBounds;
+
+			int left = outerBounds.LeftColumn + innerBounds.Left;
+			int top = outerBounds.TopRow + innerBounds.Top;
+			int columns = outerBounds.Columns - (innerBounds.Left + innerBounds.Right);
+			int rows = outerBounds.Rows - (innerBounds.Top + innerBounds.Bottom);
+
+			returnValue = (new PdfBounds(left, top, columns, rows)).Normalize();
+
+			return returnValue;
+		}
+
+		//public static PdfBounds SubtractBounds<TModel>(this PdfBounds bounds, PdfGridPage g, TModel m, PdfSpacing padding)
+		//{
+		//	PdfBounds returnValue = bounds;
+
+		//	int l = bounds.LeftColumn + padding.Left;
+		//	int t = bounds.TopRow + padding.Top;
+		//	int w = bounds.Columns - (padding.Left + padding.Right);
+		//	int h = bounds.Rows - (padding.Top + padding.Bottom);
+
+		//	returnValue = new PdfBounds()
+		//	{
+		//		LeftColumn = l >= 0 ? l : 0,
+		//		TopRow = t >= 0 ? t : 0,
+		//		Columns = w > 0 ? w : 1,
+		//		Rows = h > 0 ? h : 1
+		//	};
+
+		//	return returnValue;
+		//}
 	}
 }

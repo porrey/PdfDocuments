@@ -70,7 +70,7 @@ namespace PdfDocuments
 			//
 			// Get the styles.
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.ElementAt(0));
+			PdfStyle<TModel> style = this.ResolveStyle(0);
 
 			//
 			// Get the header rectangle.
@@ -104,7 +104,7 @@ namespace PdfDocuments
 			//
 			// Get the styles.
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.ElementAt(0));
+			PdfStyle<TModel> style = this.ResolveStyle(0);
 
 			//
 			// Get the text.

@@ -22,7 +22,6 @@
  *	SOFTWARE.
  */
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PdfDocuments
@@ -40,12 +39,7 @@ namespace PdfDocuments
 			//
 			// Get the first style for this section
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
-
-			//
-			// Draw the background.
-			//
-			g.DrawFilledRectangle(bounds, style.BackgroundColor.Resolve(g, m));
+			PdfStyle<TModel> style = this.ResolveStyle(0);
 
 			//
 			// Get the default style for this section
@@ -67,7 +61,7 @@ namespace PdfDocuments
 			if (this.Title != null)
 			{
 				string title = this.Title.Resolve(g, m);
-				PdfBounds textBounds = this.ApplyPadding(g, m, bounds, padding);
+				PdfBounds textBounds = bounds.SubtractBounds(g, m, padding);
 				g.DrawText(title, style.Font.Resolve(g, m), textBounds, style.TextAlignment.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
 			}
 

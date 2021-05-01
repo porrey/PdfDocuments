@@ -33,30 +33,21 @@ namespace PdfDocuments
 		{
 			bool returnValue = true;
 
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
-			PdfSpacing padding = style.Padding.Resolve(g, m);
-
-			//
-			// Determine the bounds.
-			//
-			PdfBounds paddedBounds = new PdfBounds()
-			{
-				LeftColumn = bounds.LeftColumn + padding.Left,
-				TopRow = bounds.TopRow + padding.Top,
-				Columns = bounds.Columns - (padding.Left + padding.Right),
-				Rows = bounds.Rows - (padding.Top + padding.Bottom),
-			};
-
-			//
-			// Draw the text.
-			//
-			g.DrawText(this.Text.Resolve(g, m),
-							  style.Font.Resolve(g, m),
-							  paddedBounds,
-							  style.TextAlignment.Resolve(g, m),
-							  style.ForegroundColor.Resolve(g, m));
+			PdfStyle<TModel> style = this.ResolveStyle(0);
+			PdfTextElement<TModel> textElement = new PdfTextElement<TModel>(this.Text.Resolve(g, m));
+			textElement.Render(g, m, bounds, style);
 
 			return Task.FromResult(returnValue);
+		}
+
+		protected override bool OnShouldDrawBackground()
+		{
+			return false;
+		}
+
+		protected override bool OnShouldDrawBorder()
+		{
+			return false;
 		}
 	}
 }

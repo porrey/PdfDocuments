@@ -33,8 +33,9 @@ namespace PdfDocuments.Example
 		public string CheckNumber { get; set; }
 		public string JobNumber { get; set; }
 		public DateTime DueDate { get; set; }
+		public string Terms { get; set; }
 		public bool Paid { get; set; } = true;
-		public DateTime CreateDateTime { get; set; }
+		public DateTime InvoiceDate { get; set; }
 		public Address BillTo { get; set; }
 		public Address BillFrom { get; set; }
 		public IEnumerable<InvoiceItem> Items { get; set; }

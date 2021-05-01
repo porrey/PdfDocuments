@@ -51,8 +51,9 @@ namespace PdfDocuments.Example
 				PaymentMethod = "ACH",
 				CheckNumber = "123481819",
 				JobNumber = "123456",
-				DueDate = DateTime.Now.AddDays(30),
-				CreateDateTime = DateTime.Now,
+				Terms = "NET30",
+				DueDate = DateTime.Now.AddDays(20),
+				InvoiceDate = DateTime.Now.Subtract(TimeSpan.FromDays(10)),
 				BillTo = new Address()
 				{
 					Name = "GROVER INDUSTRIES",
@@ -136,7 +137,7 @@ namespace PdfDocuments.Example
 
 			if (result)
 			{
-				string fileName = $@"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\{model.GetType().Name}[{model.Id}].pdf";
+				string fileName = $@"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\{model.GetType().Name} [{model.Id}].pdf";
 				File.WriteAllBytes(fileName, fileData);
 				this.Logger.LogInformation($"Saved PDF to '{fileName}'.");
 

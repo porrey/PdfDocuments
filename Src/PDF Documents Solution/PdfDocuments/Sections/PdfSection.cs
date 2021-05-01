@@ -22,6 +22,7 @@
  *	SOFTWARE.
  */
 using PdfSharp.Drawing;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -76,8 +77,8 @@ namespace PdfDocuments
 			}
 		}
 
-		public virtual BindProperty<double, TModel> RelativeHeight => this.StyleManager.GetStyle(this.StyleNames.First()).RelativeHeight;
-		public virtual BindProperty<double[], TModel> RelativeWidths => this.StyleManager.GetStyle(this.StyleNames.First()).RelativeWidths;
+		public virtual BindProperty<double, TModel> RelativeHeight => this.ResolveStyle(0).RelativeHeight;
+		public virtual BindProperty<double[], TModel> RelativeWidths => this.ResolveStyle(0).RelativeWidths;
 
 		public virtual async Task<bool> LayoutAsync(PdfGridPage g, TModel m)
 		{
@@ -86,7 +87,7 @@ namespace PdfDocuments
 			//
 			// The first style is always used for the base section style.
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfStyle<TModel> style = this.ResolveStyle(0);
 
 			//
 			// Apply margins.
@@ -138,7 +139,7 @@ namespace PdfDocuments
 			//
 			// The first style is always used for the base section style.
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfStyle<TModel> style = this.ResolveStyle(0);
 
 			//
 			// Apply margins.
@@ -176,13 +177,16 @@ namespace PdfDocuments
 					}
 				}
 
-				//
-				// Render the border.
-				//
-				double borderWidth = style.BorderWidth.Resolve(g, m);
-				if (borderWidth > 0.0)
+				if (this.OnShouldDrawBorder())
 				{
-					g.DrawRectangle(this.ActualBounds, borderWidth, style.BorderColor.Resolve(g, m));
+					//
+					// Render the border.
+					//
+					double borderWidth = style.BorderWidth.Resolve(g, m);
+					if (borderWidth > 0.0)
+					{
+						g.DrawRectangle(this.ActualBounds, borderWidth, style.BorderColor.Resolve(g, m));
+					}
 				}
 			}
 			else
@@ -207,6 +211,11 @@ namespace PdfDocuments
 			return true;
 		}
 
+		protected virtual bool OnShouldDrawBorder()
+		{
+			return true;
+		}
+
 		public virtual async Task<bool> RenderDebugAsync(PdfGridPage g, TModel m)
 		{
 			bool returnValue = true;
@@ -214,7 +223,7 @@ namespace PdfDocuments
 			//
 			// The first style is always used for the base section style.
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfStyle<TModel> style = this.ResolveStyle(0);
 
 			//
 			// Apply margins.

@@ -125,12 +125,12 @@ namespace PdfDocuments
 			return new PdfDataGridSection<TModel, TItem>();
 		}
 
-		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, string columnHeader, Expression<Func<TItem, TProperty>> expression, double relativeWidth, string format, string headerStyleName, string cellStyleName)
+		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, string columnHeader, Expression<Func<TItem, TProperty>> expression, double relativeWidth, string format, string headerStyleName, string dataStyleName)
 			where TModel : IPdfModel
 		{
 			if (section is PdfDataGridSection<TModel, TItem> s)
 			{
-				s.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
+				s.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, dataStyleName);
 			}
 			return section;
 		}
@@ -312,6 +312,28 @@ namespace PdfDocuments
 			return section;
 		}
 
+		public static IPdfSection<TModel> WithTopRightText<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfPageFooterSection<TModel> footerSection)
+			{
+				footerSection.TopRightText = value;
+			}
+
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithTopRightText<TModel>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfPageFooterSection<TModel> footerSection)
+			{
+				footerSection.TopRightText = value;
+			}
+
+			return section;
+		}
+
 		public static IPdfSection<TModel> WithBottomLeftText<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -329,6 +351,28 @@ namespace PdfDocuments
 			if (section is PdfPageFooterSection<TModel> footerSection)
 			{
 				footerSection.BottomLeftText = value;
+			}
+
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithBottomRightText<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfPageFooterSection<TModel> footerSection)
+			{
+				footerSection.BottomRightText = value;
+			}
+
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithBottomRightText<TModel>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfPageFooterSection<TModel> footerSection)
+			{
+				footerSection.BottomRightText = value;
 			}
 
 			return section;

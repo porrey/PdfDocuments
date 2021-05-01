@@ -37,7 +37,7 @@ namespace PdfDocuments
 			//
 			// Get the style.
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfStyle<TModel> style = this.ResolveStyle(0);
 			PdfSpacing padding = style.Padding.Resolve(g, m);
 
 			//

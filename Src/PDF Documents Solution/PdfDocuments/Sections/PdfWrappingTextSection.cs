@@ -34,7 +34,7 @@ namespace PdfDocuments
 		{
 			bool returnValue = true;
 
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfStyle<TModel> style = this.ResolveStyle(0);
 			PdfSpacing padding = style.Padding.Resolve(g, m);
 
 			g.DrawWrappingText(this.Text.Resolve(g, m),

@@ -40,8 +40,8 @@ namespace PdfDocuments
 			//
 			// Get style.
 			//
-			PdfStyle<TModel> style1 = this.StyleManager.GetStyle(this.StyleNames.ElementAt(0));
-			PdfStyle<TModel> style2 = this.StyleNames.Count() > 1 ? this.StyleManager.GetStyle(this.StyleNames.ElementAt(0)) : style1;
+			PdfStyle<TModel> style1 = this.ResolveStyle(0);
+			PdfStyle<TModel> style2 = this.ResolveStyle(1);
 
 			//
 			// Calculate the starting point.

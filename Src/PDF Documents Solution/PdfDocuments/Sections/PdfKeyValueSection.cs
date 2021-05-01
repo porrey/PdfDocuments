@@ -24,7 +24,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
@@ -55,14 +54,8 @@ namespace PdfDocuments
 			//
 			// Get the styles.
 			//
-			PdfStyle<TModel> keyStyle = this.StyleManager.GetStyle(this.StyleNames.ElementAt(1));
-			PdfStyle<TModel> valueStyle = this.StyleManager.GetStyle(this.StyleNames.ElementAt(2));
-
-			//
-			// Create the fonts.
-			//
-			XFont nameFont = keyStyle.Font.Resolve(g, m);
-			XFont valueFont = valueStyle.Font.Resolve(g, m);
+			PdfStyle<TModel> keyStyle = this.ResolveStyle(1);
+			PdfStyle<TModel> valueStyle = this.ResolveStyle(2);
 
 			//
 			// Get the relative width of the sections.
@@ -74,12 +67,6 @@ namespace PdfDocuments
 			// Determine the width
 			//
 			int keyWidth = (int)(bounds.Columns * relativeWidth);
-			int valueWidth = (int)(bounds.Columns * (1 - relativeWidth));
-
-			//
-			// Determine the height.
-			//
-			int height = bounds.Rows / this.Items.Count;
 
 			//
 			// Get the starting point for the top of the text.
@@ -94,24 +81,20 @@ namespace PdfDocuments
 				//
 				// Draw the Key
 				//
-				{
-					PdfBounds textBounds = new PdfBounds(bounds.LeftColumn, top, keyWidth, height);
-					PdfBounds paddedBounds = this.ApplyPadding(g, m, textBounds, keyStyle.Padding.Resolve(g, m));
-					g.DrawFilledRectangle(paddedBounds, keyStyle.BackgroundColor.Resolve(g, m));
-					g.DrawText(item.Key, nameFont, paddedBounds, keyStyle.TextAlignment.Resolve(g, m), keyStyle.ForegroundColor.Resolve(g, m));
-				}
+				PdfTextElement<TModel> keyElement = new PdfTextElement<TModel>(item.Key);
+				PdfSize keySize = keyElement.Measure(g, m, keyStyle);
+				PdfBounds keyBounds = new PdfBounds(bounds.LeftColumn, top, keyWidth, keySize.Rows);
+				keyElement.Render(g, m, keyBounds, keyStyle);
 
 				//
 				// Draw the Value
 				//
-				{
-					PdfBounds textBounds = new PdfBounds(bounds.LeftColumn + keyWidth, top, valueWidth, height);
-					PdfBounds paddedBounds = this.ApplyPadding(g, m, textBounds, valueStyle.Padding.Resolve(g, m));
-					g.DrawFilledRectangle(paddedBounds, valueStyle.BackgroundColor.Resolve(g, m));
-					g.DrawText(item.Value.Resolve(g, m), valueFont, paddedBounds, valueStyle.TextAlignment.Resolve(g, m), valueStyle.ForegroundColor.Resolve(g, m));
-				}
+				PdfTextElement<TModel> valueElement = new PdfTextElement<TModel>(item.Value.Resolve(g, m));
+				PdfSize valueSize = valueElement.Measure(g, m, valueStyle);
+				PdfBounds valueBounds = new PdfBounds(bounds.LeftColumn + keyWidth, top, bounds.Columns - keyWidth, valueSize.Rows);
+				valueElement.Render(g, m, valueBounds, valueStyle);
 
-				top += height;
+				top += (new int[] { keySize.Rows, valueSize.Rows }).Max();
 			}
 
 			return Task.FromResult(returnValue);

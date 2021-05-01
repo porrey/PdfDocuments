@@ -45,7 +45,7 @@ namespace PdfDocuments
 			//
 			// Get style.
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfStyle<TModel> style = this.ResolveStyle(0);
 			PdfSpacing padding = style.Padding.Resolve(g, m);
 
 			//
@@ -134,7 +134,7 @@ namespace PdfDocuments
 			//
 			foreach (IPdfSection<TModel> section in sections)
 			{
-				section.ActualBounds = section.ApplyPadding(g, m, section.ActualBounds, padding);
+				section.ActualBounds = section.ActualBounds.SubtractBounds(g, m, padding);
 			}
 
 			//

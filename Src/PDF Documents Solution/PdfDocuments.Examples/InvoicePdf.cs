@@ -41,185 +41,215 @@ namespace PdfDocuments.Example
 			// Build the styles.
 			//
 			this.StyleManager.Add("PageHeader.Section", Style.Create<Invoice>()
-									.UseFont("Arial Narrow", 48)
-									.UseForegroundColor(ColorPalette.Blue)
-									.UseBackgroundColor(ColorPalette.Transparent)
-									.UseBorderColor(ColorPalette.Red)
-									.UseBorderWidth(1)
-									.UseTextAlignment(XStringFormats.CenterRight)
-									.UsePadding(0, 0, 2, 0)
-									.UseRelativeHeight(.12)
-									.Build());
+						.UseFont("Arial Narrow", 48)
+						.UseForegroundColor(ColorPalette.Blue)
+						.UseBorderColor(ColorPalette.Red)
+						.UseBorderWidth(1)
+						.UseTextAlignment(XStringFormats.CenterRight)
+						.UsePadding(0, 0, 2, 0)
+						.UseRelativeHeight(.12)
+						.Build());
 
+			//
+			// Invoice Number and date
+			//
 			this.StyleManager.Add("InvoiceNumber.Section", Style.Create<Invoice>()
-									.UseRelativeHeight(.095)
-									.Build());
+						.UseRelativeHeight(.11)
+						.UseMargin(0, 3, 0, 3)
+						.Build());
 
 			this.StyleManager.Add("InvoiceNumber", Style.Create<Invoice>()
-									.UseMargin(0, 2, 0, 2)
-									.UseRelativeWidths(.53)
-									.Build());
+						.UseMargin(0, 2, 0, 2)
+						.UseRelativeWidths(.53)
+						.Build());
 
 			this.StyleManager.Add("InvoiceNumber.Key", Style.Create<Invoice>()
-									.UseFont("Times New Roman", 11.75, XFontStyle.Bold)
-									.UseForegroundColor(ColorPalette.Gray)
-									.UseTextAlignment(XStringFormats.CenterRight)
-									.UseRelativeWidths(.5)
-									.Build());
+						.UseFont("Times New Roman", 11.75, XFontStyle.Bold)
+						.UsePadding(1, 1, 1, 1)
+						.UseForegroundColor(ColorPalette.Gray)
+						.UseTextAlignment(XStringFormats.CenterRight)
+						.UseRelativeWidths(.5)
+						.Build());
 
 			this.StyleManager.Add("InvoiceNumber.Value", Style.Copy(this.StyleManager.GetStyle("InvoiceNumber.Key"))
-									.UseFont("Times New Roman", 11.75, XFontStyle.Regular)
-									.Build());
+						.UseFont("Times New Roman", 11.75, XFontStyle.Regular)
+						.Build());
 
-			this.StyleManager.Add("Address.Section", Style.Create<Invoice>()
-									.UseMargin(0, 5, 0, 5)
-									.UseRelativeHeight(.16)
-									.Build());
-
-			this.StyleManager.Add("Address.ContentBlock", Style.Create<Invoice>()
-									.UseFont("Arial", 11, XFontStyle.Regular)
-									.UsePadding(1, 2, 1, 2)
-									.UseMargin(0, 3, 0, 2)
-									.UseBorderColor(ColorPalette.Blue)
-									.UseBorderWidth(1)
-									.UseBackgroundColor(ColorPalette.White)
-									.UseForegroundColor(ColorPalette.Transparent)
-									.UseTextAlignment(XStringFormats.CenterLeft)
-									.Build());
-
-			this.StyleManager.Add("Address.Header.Left", Style.Create<Invoice>()
-									.UseFont("Arial", 11, XFontStyle.Regular)
-									.UsePadding(1, 3, 1, 3)
-									.UseMargin(0, 2, 1, 2)
-									.UseBackgroundColor(ColorPalette.Red)
-									.UseForegroundColor(ColorPalette.White)
-									.UseTextAlignment(XStringFormats.CenterLeft)
-									.Build());
-
-			this.StyleManager.Add("Address.Header.Right", Style.Copy(this.StyleManager.GetStyle("Address.Header.Left"))
-									.UseMargin(1, 2, 0, 2)
-									.Build());
-
-			this.StyleManager.Add("Address.Key", Style.Create<Invoice>()
-									.UseFont("Arial", 11, XFontStyle.Regular)
-									.UsePadding(1, 1, 1, 1)
-									.UseForegroundColor(ColorPalette.LightGray)
-									.UseTextAlignment(XStringFormats.CenterRight)
-									.UseRelativeWidths(.3)
-									.Build());
-
-			this.StyleManager.Add("Address.Value", Style.Copy(this.StyleManager.GetStyle("Address.Key"))
-									.UseFont("Arial", 11, XFontStyle.Bold)
-									.UseForegroundColor(ColorPalette.Gray)
-									.UseTextAlignment(XStringFormats.CenterLeft)
-									.Build());
-
-			this.StyleManager.Add("Totals.Section", Style.Create<Invoice>()
-									.UseRelativeHeight(.1)
-									.Build());
-
-			this.StyleManager.Add("Totals", Style.Create<Invoice>()
-									.UsePadding(0, 2, 0, 2)
-									.UseRelativeWidths(.45)
-									.Build());
-
-			this.StyleManager.Add("Totals.Key", Style.Create<Invoice>()
-									.UseFont("Arial", 11.75, XFontStyle.Regular)
-									.UsePadding(1, 1, 1, 1)
-									.UseForegroundColor(ColorPalette.Blue)
-									.UseBackgroundColor(ColorPalette.LightRed)
-									.UseTextAlignment(XStringFormats.CenterRight)
-									.UseRelativeWidths(.45)
-									.Build());
-
-			this.StyleManager.Add("Totals.Value", Style.Copy(this.StyleManager.GetStyle("Totals.Key"))
-									.UseFont("Arial", 11, XFontStyle.Bold)
-									.Build());
-
+			//
+			// Reference numbers
+			//
 			this.StyleManager.Add("Reference.Section", Style.Create<Invoice>()
 						.UseRelativeHeight(.065)
 						.Build());
 
 			this.StyleManager.Add("Reference.Header.1", Style.Create<Invoice>()
-									.UseFont("Arial", 11, XFontStyle.Regular)
-									.UsePadding(1, 2, 1, 2)
-									.UseMargin(0, 2, 1, 2)
-									.UseForegroundColor(ColorPalette.White)
-									.UseBackgroundColor(ColorPalette.Blue)
-									.UseTextAlignment(XStringFormats.CenterLeft)
-									.Build());
+						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UsePadding(1, 2, 1, 2)
+						.UseMargin(0, 0, 1, 0)
+						.UseForegroundColor(ColorPalette.White)
+						.UseBackgroundColor(ColorPalette.Blue)
+						.UseTextAlignment(XStringFormats.CenterLeft)
+						.Build());
 
 			this.StyleManager.Add("Reference.Header.2", Style.Copy(this.StyleManager.GetStyle("Reference.Header.1"))
-									.UseMargin(1, 2, 1, 2)
-									.Build());
+						.UseMargin(1, 0, 1, 0)
+						.Build());
 
 			this.StyleManager.Add("Reference.Header.3", Style.Copy(this.StyleManager.GetStyle("Reference.Header.1"))
-									.UseMargin(1, 2, 0, 2)
-									.Build());
+						.UseMargin(1, 0, 0, 0)
+						.Build());
 
 			this.StyleManager.Add("Reference.Body", Style.Create<Invoice>()
-									.UseFont("Arial", 11, XFontStyle.Regular)
-									.UseBorderColor(ColorPalette.Blue)
-									.UseBorderWidth(1)
-									.UsePadding(1, 2, 1, 2)
-									.UseForegroundColor(ColorPalette.Red)
-									.UseBackgroundColor(ColorPalette.White)
-									.UseTextAlignment(XStringFormats.CenterLeft)
-									.Build());
+						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UseBorderColor(ColorPalette.Blue)
+						.UseBorderWidth(1)
+						.UseCellPadding(1, 2, 1, 2)
+						.UseForegroundColor(ColorPalette.Red)
+						.UseTextAlignment(XStringFormats.CenterLeft)
+						.Build());
 
-			this.StyleManager.Add("InvoiceItems.Section", Style.Create<Invoice>()
-									.UseMargin(1, 2, 1, 2)
-									.Build());
+			//
+			// Bill to section
+			//
+			this.StyleManager.Add("BillTo.Section", Style.Create<Invoice>()
+						.UseMargin(0, 5, 0, 5)
+						.UseRelativeHeight(.16)
+						.Build());
 
-			this.StyleManager.Add("InvoiceItems.Header.Left", Style.Create<Invoice>()
-									.UseFont("Times New Roman", 13, XFontStyle.Bold)
-									.UsePadding(0, 2, 1, 2)
-									.UseCellPadding(2, 2, 2, 2)
-									.UseForegroundColor(ColorPalette.Red)
-									.UseBackgroundColor(ColorPalette.MediumRed)
-									.UseTextAlignment(XStringFormats.CenterLeft)
-									.Build());
+			this.StyleManager.Add("BillTo.ContentBlock", Style.Create<Invoice>()
+						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UsePadding(1, 2, 1, 2)
+						.UseMargin(0, 3, 0, 2)
+						.UseBorderColor(ColorPalette.Blue)
+						.UseBorderWidth(1)
+						.UseForegroundColor(ColorPalette.Transparent)
+						.UseTextAlignment(XStringFormats.CenterLeft)
+						.Build());
 
-			this.StyleManager.Add("InvoiceItems.Header.Right", Style.Copy(this.StyleManager.GetStyle("InvoiceItems.Header.Left"))
-									.UseTextAlignment(XStringFormats.CenterRight)
-									.Build());
+			this.StyleManager.Add("BillTo.Header.Left", Style.Create<Invoice>()
+						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UsePadding(1, 3, 1, 3)
+						.UseMargin(0, 2, 1, 2)
+						.UseBackgroundColor(ColorPalette.Red)
+						.UseForegroundColor(ColorPalette.White)
+						.UseTextAlignment(XStringFormats.CenterLeft)
+						.Build());
 
-			this.StyleManager.Add("InvoiceItems.Body.Left", Style.Create<Invoice>()
-									.UseFont("Times New Roman", 13, XFontStyle.Regular)
-									.UsePadding(0, 2, 1, 2)
-									.UseCellPadding(2, 2, 2, 2)
-									.UseForegroundColor(ColorPalette.Blue)
-									.UseBackgroundColor(ColorPalette.MediumBlue)
-									.UseTextAlignment(XStringFormats.CenterLeft)
-									.Build());
+			this.StyleManager.Add("BillTo.Header.Right", Style.Copy(this.StyleManager.GetStyle("BillTo.Header.Left"))
+						.UseMargin(1, 2, 0, 2)
+						.Build());
 
-			this.StyleManager.Add("InvoiceItems.Body.Right", Style.Copy(this.StyleManager.GetStyle("InvoiceItems.Body.Left"))
-									.UseForegroundColor(ColorPalette.Gray)
-									.UseTextAlignment(XStringFormats.CenterRight)
-									.Build());
+			this.StyleManager.Add("BillTo.Key", Style.Create<Invoice>()
+						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UsePadding(1, 1, 1, 1)
+						.UseForegroundColor(ColorPalette.LightGray)
+						.UseTextAlignment(XStringFormats.CenterRight)
+						.UseRelativeWidths(.3)
+						.Build());
 
+			this.StyleManager.Add("BillTo.Value", Style.Copy(this.StyleManager.GetStyle("BillTo.Key"))
+						.UseFont("Arial", 11, XFontStyle.Bold)
+						.UseForegroundColor(ColorPalette.Gray)
+						.UseTextAlignment(XStringFormats.CenterLeft)
+						.Build());
+
+			//
+			// Invoice details
+			//
+			this.StyleManager.Add("InvoiceDetails.Section", Style.Create<Invoice>()
+						.UseMargin(0, 2, 0, 2)
+						.Build());
+
+			this.StyleManager.Add("InvoiceDetails.Header.Item", Style.Create<Invoice>()
+						.UseFont("Times New Roman", 13, XFontStyle.Bold)
+						.UseMargin(0, 1, 0, 1)
+						.UsePadding(0, 2, 1, 2)
+						.UseCellPadding(1, 1, 1, 1)
+						.UseForegroundColor(ColorPalette.Red)
+						.UseBackgroundColor(ColorPalette.MediumRed)
+						.UseTextAlignment(XStringFormats.CenterLeft)
+						.Build());
+
+			this.StyleManager.Add("InvoiceDetails.Header.Other", Style.Copy(this.StyleManager.GetStyle("InvoiceDetails.Header.Item"))
+						.UseTextAlignment(XStringFormats.CenterRight)
+						.UseMargin(1, 1, 0, 1)
+						.Build());
+
+			this.StyleManager.Add("InvoiceDetails.Body.Left", Style.Create<Invoice>()
+						.UseFont("Times New Roman", 13, XFontStyle.Regular)
+						.UseMargin(0, 1, 0, 1)
+						.UsePadding(0, 2, 1, 2)
+						.UseCellPadding(1, 1, 1, 1)
+						.UseForegroundColor(ColorPalette.Blue)
+						.UseBackgroundColor(ColorPalette.MediumBlue)
+						.UseTextAlignment(XStringFormats.CenterLeft)
+						.Build());
+
+			this.StyleManager.Add("InvoiceDetails.Body.Other", Style.Copy(this.StyleManager.GetStyle("InvoiceDetails.Body.Left"))
+						.UseForegroundColor(ColorPalette.Gray)
+						.UseTextAlignment(XStringFormats.CenterRight)
+						.UseMargin(1, 1, 0, 1)
+						.Build());
+
+			//
+			// Invoice totals
+			//
+			this.StyleManager.Add("Totals.Section", Style.Create<Invoice>()
+						.UseRelativeHeight(.1)
+						.Build());
+
+			this.StyleManager.Add("Totals", Style.Create<Invoice>()
+						.UsePadding(0, 2, 0, 2)
+						.UseRelativeWidths(.45)
+						.Build());
+
+			this.StyleManager.Add("Totals.Key", Style.Create<Invoice>()
+						.UseFont("Arial", 11.75, XFontStyle.Regular)
+						.UseMargin(1, 1, 0, 1)
+						.UsePadding(1, 1, 1, 1)
+						.UseCellPadding(2, 2, 2, 2)
+						.UseForegroundColor(ColorPalette.Blue)
+						.UseBackgroundColor(ColorPalette.LightRed)
+						.UseTextAlignment(XStringFormats.CenterRight)
+						.UseRelativeWidths(.45)
+						.Build());
+
+			this.StyleManager.Add("Totals.Value", Style.Copy(this.StyleManager.GetStyle("Totals.Key"))
+						.UseFont("Arial", 11.75, XFontStyle.Bold)
+						.Build());
+
+			//
+			// Signature
+			//
 			this.StyleManager.Add("Signature.Section", Style.Create<Invoice>()
-									.UseFont("Arial", 10, XFontStyle.Regular)
-									.UseBorderWidth(1)
-									.UseForegroundColor(ColorPalette.Gray)
-									.UseTextAlignment(XStringFormats.CenterLeft)
-									.UseRelativeWidths(.4)
-									.UseRelativeHeight(.05)
-									.Build());
+						.UseFont("Arial", 10, XFontStyle.Regular)
+						.UseBorderWidth(1)
+						.UseForegroundColor(ColorPalette.Gray)
+						.UseTextAlignment(XStringFormats.CenterLeft)
+						.UseRelativeWidths(.4)
+						.UseRelativeHeight(.05)
+						.Build());
 
+			//
+			// Tag line
+			//
 			this.StyleManager.Add("ThankYou.Section", Style.Create<Invoice>()
-									.UseFont("Arial", 12, XFontStyle.Italic)
-									.UsePadding(0, 2, 1, 2)
-									.UseMargin(0, 15, 0, 0)
-									.UseForegroundColor(ColorPalette.Red)
-									.UseTextAlignment(XStringFormats.Center)
-									.UseRelativeHeight(.058)
-									.Build());
+						.UseFont("Arial", 12, XFontStyle.Italic)
+						.UsePadding(0, 2, 1, 2)
+						.UseMargin(0, 3, 0, 0)
+						.UseForegroundColor(ColorPalette.Red)
+						.UseTextAlignment(XStringFormats.Center)
+						.UseRelativeHeight(.058)
+						.Build());
 
+			//
+			// Footer
+			//
 			this.StyleManager.Add("PageFooter.Section", Style.Create<Invoice>()
-									.UseFont("Arial Narrow", 7, XFontStyle.Regular)
-									.UseRelativeHeight(.025)
-									.Build());
+						.UseFont("Arial Narrow", 7, XFontStyle.Regular)
+						.UseRelativeHeight(.035)
+						.UseMargin(0, 5, 0, 0)
+						.Build());
 		}
 
 		protected override Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
@@ -258,7 +288,8 @@ namespace PdfDocuments.Example
 					Pdf.KeyValueSection<Invoice>
 					(
 						new PdfKeyValueItem<Invoice>() { Key = "Invoice Number:", Value = new BindProperty<string, Invoice>((g, m) => $"{m.Id:00000000}") },
-						new PdfKeyValueItem<Invoice>() { Key = "Invoice Date:", Value = new BindProperty<string, Invoice>((g, m) => m.CreateDateTime.ToLongDateString()) },
+						new PdfKeyValueItem<Invoice>() { Key = "Invoice Date:", Value = new BindProperty<string, Invoice>((g, m) => m.InvoiceDate.ToLongDateString()) },
+						new PdfKeyValueItem<Invoice>() { Key = "Terms:", Value = new BindProperty<string, Invoice>((g, m) => m.Terms) },
 						new PdfKeyValueItem<Invoice>() { Key = "Invoice Due Date:", Value = new BindProperty<string, Invoice>((g, m) => m.DueDate.ToLongDateString()) }
 					)
 					.WithStyles("InvoiceNumber", "InvoiceNumber.Key", "InvoiceNumber.Value")
@@ -298,7 +329,7 @@ namespace PdfDocuments.Example
 				(
 					Pdf.HeaderContentSection<Invoice>()
 						.WithText("Bill To")
-						.WithStyles("Address.Header.Left")
+						.WithStyles("BillTo.Header.Left")
 						.WithContentSection(Pdf.KeyValueSection<Invoice>
 						(
 							new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Name) },
@@ -306,11 +337,11 @@ namespace PdfDocuments.Example
 							new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.CityStateZip) },
 							new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Phone) }
 						)
-						.WithStyles("Address.ContentBlock", "Address.Key", "Address.Value")),
+						.WithStyles("BillTo.ContentBlock", "BillTo.Key", "BillTo.Value")),
 
 					Pdf.HeaderContentSection<Invoice>()
 					   .WithText("From")
-					   .WithStyles("Address.Header.Right")
+					   .WithStyles("BillTo.Header.Right")
 					   .WithContentSection(Pdf.KeyValueSection<Invoice>
 						(
 							new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Name) },
@@ -318,20 +349,20 @@ namespace PdfDocuments.Example
 							new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.CityStateZip) },
 							new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Phone) }
 						)
-						.WithStyles("Address.ContentBlock", "Address.Key", "Address.Value"))
+						.WithStyles("BillTo.ContentBlock", "BillTo.Key", "BillTo.Value"))
 
-				).WithStyles("Address.Section"),
+				).WithStyles("BillTo.Section"),
 
 				//
 				// Invoice details
 				//
 				Pdf.DataGridSection<Invoice, InvoiceItem>()
-				   .AddColumn<Invoice, InvoiceItem, int>("Item Number", t => t.Id, .20, "{0:1000000000000}", "InvoiceItems.Header.Left", "InvoiceItems.Body.Left")
-				   .AddColumn<Invoice, InvoiceItem, int>("Quantity", t => t.Quantity, .25, "{0:#,###}", "InvoiceItems.Header.Right", "InvoiceItems.Body.Right")
-				   .AddColumn<Invoice, InvoiceItem, decimal>("Unit Price", t => t.UnitPrice, .25, "{0:C}", "InvoiceItems.Header.Right", "InvoiceItems.Body.Right")
-				   .AddColumn<Invoice, InvoiceItem, decimal>("Amount", t => t.Amount, .30, "{0:C}", "InvoiceItems.Header.Right", "InvoiceItems.Body.Right")
+				   .AddColumn<Invoice, InvoiceItem, int>("Item Number", t => t.Id, .20, "{0:1000000000000}", "InvoiceDetails.Header.Item", "InvoiceDetails.Body.Left")
+				   .AddColumn<Invoice, InvoiceItem, int>("Quantity", t => t.Quantity, .25, "{0:#,###}", "InvoiceDetails.Header.Other", "InvoiceDetails.Body.Other")
+				   .AddColumn<Invoice, InvoiceItem, decimal>("Unit Price", t => t.UnitPrice, .25, "{0:C}", "InvoiceDetails.Header.Other", "InvoiceDetails.Body.Other")
+				   .AddColumn<Invoice, InvoiceItem, decimal>("Amount", t => t.Amount, .30, "{0:C}", "InvoiceDetails.Header.Other", "InvoiceDetails.Body.Other")
 				   .UseItems((g, m) => m.Items)
-				   .WithStyles("InvoiceItems.Section"),
+				   .WithStyles("InvoiceDetails.Section"),
 
 				//
 				// Invoice totals
@@ -366,8 +397,10 @@ namespace PdfDocuments.Example
 				//
 				//
 				Pdf.PageFooterSection<Invoice>()
-					.WithTopLeftText("Copyright Daniel Porrey. All right reserved.")
-					.WithBottomLeftText("Contact us immediately with any questions")
+					.WithTopLeftText("Contact us immediately with any questions")
+					.WithTopRightText((g, m) => $"Page {g.PageNumber} of {g.Document.PageCount}")
+					.WithBottomLeftText("Copyright Daniel Porrey. All right reserved.")
+					.WithBottomRightText((g, m) => $"Invoiced: {m.InvoiceDate.ToLongDateString()}")
 					.WithStyles("PageFooter.Section")
 			)
 			.WithKey("Report")

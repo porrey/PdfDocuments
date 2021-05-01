@@ -22,59 +22,38 @@
  *	SOFTWARE.
  */
 
+using System.Linq;
+
 namespace PdfDocuments
 {
 	public static class PdfSectionExtensions
 	{
-		public static PdfBounds ApplyMargins<TModel>(this IPdfSection<TModel> section, PdfGridPage gridPage, TModel model, PdfSpacing margin)
+		public static PdfBounds ApplyMargins<TModel>(this IPdfSection<TModel> section, PdfGridPage g, TModel m, PdfSpacing margin)
 			where TModel : IPdfModel
 		{
-			PdfBounds returnValue = section.ActualBounds;
-
-			//
-			// Don't apply a margin to an item aligned to the left edge.
-			//
-			int left = section.ActualBounds.LeftColumn + margin.Left;
-
-			//
-			// Don't apply a margin to an item aligned to the top edge.
-			//
-			int top = section.ActualBounds.TopRow + margin.Top;
-
-			//
-			// Don't apply a margin to an item aligned to the right edge.
-			//
-			int columns = section.ActualBounds.Columns - (margin.Left + margin.Right);
-
-			//
-			// Don't apply a margin to an item aligned to the bottom edge.
-			//
-			int rows = section.ActualBounds.Rows - (margin.Top + margin.Bottom);
-
-			//
-			// Create the bounds.
-			//
-			returnValue = (new PdfBounds(left, top, columns, rows)).Normalize();
-
-			return returnValue;
+			return section.ActualBounds.SubtractBounds(g, m, margin);
 		}
 
-		public static PdfBounds ApplyPadding<TModel>(this IPdfSection<TModel> section, PdfGridPage gridPage, TModel model, PdfBounds bounds, PdfSpacing padding)
+		public static PdfStyle<TModel> ResolveStyle<TModel>(this IPdfSection<TModel> section, int index)
+			where TModel : IPdfModel
 		{
-			PdfBounds returnValue = bounds;
+			PdfStyle<TModel> returnValue = null;
 
-			int l = bounds.LeftColumn + padding.Left;
-			int t = bounds.TopRow + padding.Top;
-			int w = bounds.Columns - (padding.Left + padding.Right);
-			int h = bounds.Rows - (padding.Top + padding.Bottom);
-
-			returnValue = new PdfBounds()
+			if (section.StyleNames.Count() > 0)
 			{
-				LeftColumn = l >= 0 ? l : 0,
-				TopRow = t >= 0 ? t : 0,
-				Columns = w > 0 ? w : 1,
-				Rows = h > 0 ? h : 1
-			};
+				if (index < section.StyleNames.Count())
+				{
+					returnValue = section.StyleManager.GetStyle(section.StyleNames.ElementAt(index));
+				}
+				else
+				{
+					returnValue = section.StyleManager.GetStyle(section.StyleNames.First());
+				}
+			}
+			else
+			{
+				section.StyleManager.GetStyle(PdfStyleManager<TModel>.Default);
+			}
 
 			return returnValue;
 		}

@@ -42,30 +42,30 @@ namespace PdfDocuments
 			//
 			// Get style.
 			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
+			PdfStyle<TModel> style = this.ResolveStyle(0);
 			PdfSpacing padding = style.Padding.Resolve(g, m);
 			XFont font = style.Font.Resolve(g, m);
-			PdfBounds textBounds = this.ApplyPadding(g, m, bounds, padding);
+			PdfBounds textBounds = bounds.SubtractBounds(g, m, padding);
 
 			//
 			// Top left.
 			//
-			g.DrawText(this.TopLeftText.Resolve(g, m), font,textBounds, XStringFormats.TopLeft, style.ForegroundColor.Resolve(g, m));
-			
+			g.DrawText(this.TopLeftText.Resolve(g, m), font, textBounds, XStringFormats.TopLeft, style.ForegroundColor.Resolve(g, m));
+
 			//
 			// Top right.
 			//
-			g.DrawText($"Page {g.PageNumber} of {g.Document.PageCount}", font, textBounds, XStringFormats.TopRight, style.ForegroundColor.Resolve(g, m));
-			
+			g.DrawText(this.TopRightText.Resolve(g, m), font, textBounds, XStringFormats.TopRight, style.ForegroundColor.Resolve(g, m));
+
 			//
 			// Bottom left
 			//
 			g.DrawText(this.BottomLeftText.Resolve(g, m), font, textBounds, XStringFormats.BottomLeft, style.ForegroundColor.Resolve(g, m));
-			
+
 			//
 			// Bottom right.
 			//
-			g.DrawText($"Created {m.CreateDateTime.ToLongDateString()} at {m.CreateDateTime.ToLongTimeString()}", font, textBounds, XStringFormats.BottomRight, style.ForegroundColor.Resolve(g, m));
+			g.DrawText(this.BottomRightText.Resolve(g, m), font, textBounds, XStringFormats.BottomRight, style.ForegroundColor.Resolve(g, m));
 
 			return Task.FromResult(returnValue);
 		}
