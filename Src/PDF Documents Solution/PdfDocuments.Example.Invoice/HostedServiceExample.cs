@@ -31,7 +31,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments.Example.Invoice
 {
 	public class HostedServiceExample : HostedServiceTemplate
 	{
@@ -122,43 +122,10 @@ namespace PdfDocuments.Example
 				//
 				// Save and open the PDF.
 				//
-				this.SaveAndOpenPdfAsync(generator, model);
+				await generator.SaveAndOpenPdfAsync(model);
 			}
 
 			return returnValue;
-		}
-
-		protected async void SaveAndOpenPdfAsync<TModel>(IPdfGenerator<TModel> generator, TModel model)
-			where TModel : IPdfModel
-		{
-			this.Logger.LogInformation("Creating PDF.");
-
-			(bool result, byte[] fileData) = await generator.CreatePdfAsync(model);
-
-			if (result)
-			{
-				string fileName = $@"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\{model.GetType().Name} [{model.Id}].pdf";
-				File.WriteAllBytes(fileName, fileData);
-				this.Logger.LogInformation($"Saved PDF to '{fileName}'.");
-
-				try
-				{
-					this.Logger.LogInformation($"Opening PDF.");
-
-					using (Process.Start(new ProcessStartInfo(fileName)
-					{
-						UseShellExecute = true
-					}))
-					{
-						this.Logger.LogInformation($"PDF opened successfully.");
-						this.HostApplicationLifetime.StopApplication();
-					}
-				}
-				catch (Exception ex)
-				{
-					this.Logger.LogError(ex, $"Exception");
-				}
-			}
 		}
 	}
 }

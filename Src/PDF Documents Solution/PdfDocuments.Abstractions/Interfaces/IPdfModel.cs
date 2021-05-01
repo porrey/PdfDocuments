@@ -28,6 +28,5 @@ namespace PdfDocuments
 	public interface IPdfModel
 	{
 		string Id { get; }
-		DateTime InvoiceDate { get; set; }
 	}
 }

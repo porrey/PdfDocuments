@@ -44,7 +44,7 @@ namespace PdfDocuments
 			IPdfGenerator<TModel> returnValue = null;
 
 			IEnumerable<IPdfGenerator> items = this.ServiceProvider.GetRequiredService<IEnumerable<IPdfGenerator>>();
-			IPdfGenerator item = items.Where(t => t.DocumentType == typeof(TModel)).SingleOrDefault();
+			IPdfGenerator item = items.Where(t => t.DocumentModelType == typeof(TModel)).SingleOrDefault();
 
 			if (item != null)
 			{

@@ -21,7 +21,6 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using PdfDocuments.Barcode;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
@@ -38,6 +37,5 @@ namespace PdfDocuments
 		public XGraphics Graphics { get; set; }
 		public string ImagePath { get; set; }
 		public DebugMode DebugMode { get; set; }
-		public IBarcodeGenerator BarcodeGenerator { get; set; }
 	}
 }

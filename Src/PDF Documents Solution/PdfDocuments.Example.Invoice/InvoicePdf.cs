@@ -26,7 +26,7 @@ using PdfSharp.Pdf;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments.Example.Invoice
 {
 	public class InvoicePdf : PdfGenerator<Invoice>
 	{
@@ -35,7 +35,7 @@ namespace PdfDocuments.Example
 		{
 		}
 
-		protected override void OnInitializeStyles(IPdfStyleManager<Invoice> styleManager)
+		protected override Task OnInitializeStylesAsync(IPdfStyleManager<Invoice> styleManager)
 		{
 			//
 			// Build the styles.
@@ -249,7 +249,10 @@ namespace PdfDocuments.Example
 						.UseFont("Arial Narrow", 7, XFontStyle.Regular)
 						.UseRelativeHeight(.035)
 						.UseMargin(0, 5, 0, 0)
+						.UseForegroundColor(ColorPalette.LightGray)
 						.Build());
+
+			return Task.CompletedTask;
 		}
 
 		protected override Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
@@ -257,9 +260,9 @@ namespace PdfDocuments.Example
 			return Task.FromResult(new PdfGrid(this.PageWidth(page), this.PageHeight(page), 400, 160));
 		}
 
-		protected override string OnGetDocumentTitle(Invoice model)
+		protected override Task<string> OnGetDocumentTitleAsync(Invoice model)
 		{
-			return "Invoice";
+			return Task.FromResult("Invoice");
 		}
 
 		protected override Task<int> OnGetPageCountAsync(Invoice model)
@@ -267,9 +270,9 @@ namespace PdfDocuments.Example
 			return Task.FromResult(1);
 		}
 
-		protected override IPdfSection<Invoice> OnAddContent()
+		protected override Task<IPdfSection<Invoice>> OnAddContentAsync()
 		{
-			return Pdf.VerticalStackSection<Invoice>
+			return Task.FromResult(Pdf.VerticalStackSection<Invoice>
 			(
 				//
 				// Page header - shows on every page.
@@ -404,7 +407,7 @@ namespace PdfDocuments.Example
 					.WithStyles("PageFooter.Section")
 			)
 			.WithKey("Report")
-			.WithWatermark((g, m) => m.Paid ? "./images/paid.png" : string.Empty);
+			.WithWatermark((g, m) => m.Paid ? "./images/paid.png" : string.Empty));
 		}
 	}
 }

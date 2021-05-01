@@ -21,23 +21,36 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System;
-using System.Collections.Generic;
+using Diamond.Core.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments.Example.Invoice
 {
-	public class Invoice : IPdfModel
+	public class ConsoleStartup : IStartupConfigureServices, IStartupAppConfiguration
 	{
-		public string Id { get; set; }
-		public string PaymentMethod { get; set; }
-		public string CheckNumber { get; set; }
-		public string JobNumber { get; set; }
-		public DateTime DueDate { get; set; }
-		public string Terms { get; set; }
-		public bool Paid { get; set; } = true;
-		public DateTime InvoiceDate { get; set; }
-		public Address BillTo { get; set; }
-		public Address BillFrom { get; set; }
-		public IEnumerable<InvoiceItem> Items { get; set; }
+		public void ConfigureAppConfiguration(IConfigurationBuilder builder)
+		{
+			//
+			// Build the configuration so Serilog can read from it.
+			//
+			IConfigurationRoot configuration = builder.Build();
+
+			//
+			// Create a logger from the configuration.
+			//
+			Log.Logger = new LoggerConfiguration()
+					  .ReadFrom.Configuration(configuration)
+					  .CreateLogger();
+		}
+
+		public void ConfigureServices(IServiceCollection services)
+		{
+			services.AddPdfDocuments()
+					.AddScoped<IPdfGenerator, InvoicePdf>()
+					.AddPdfStyleManager<Invoice>()
+					.AddHostedService<HostedServiceExample>();
+		}
 	}
 }

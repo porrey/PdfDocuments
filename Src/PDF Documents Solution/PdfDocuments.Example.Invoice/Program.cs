@@ -21,37 +21,20 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using System.Threading.Tasks;
 using Diamond.Core.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments.Example.Invoice
 {
-	public class ConsoleStartup : IStartupConfigureServices, IStartupAppConfiguration
+	public class Program
 	{
-		public void ConfigureAppConfiguration(IConfigurationBuilder builder)
-		{
-			//
-			// Build the configuration so Serilog can read from it.
-			//
-			IConfigurationRoot configuration = builder.Build();
-
-			//
-			// Create a logger from the configuration.
-			//
-			Log.Logger = new LoggerConfiguration()
-					  .ReadFrom.Configuration(configuration)
-					  .CreateLogger();
-		}
-
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddPdfDocuments()
-					//.AddIronBarcodeSupport()
-					.AddScoped<IPdfGenerator, InvoicePdf>()
-					.AddPdfStyleManager<Invoice>()
-					.AddHostedService<HostedServiceExample>();
-		}
+		static Task Main(string[] args) => Host.CreateDefaultBuilder(args)
+					.UseStartup<ConsoleStartup>()
+					.UseSerilog()
+					.UseConsoleLifetime()
+					.Build()
+					.RunWithExitCodeAsync();
 	}
 }

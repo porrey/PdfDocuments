@@ -28,7 +28,7 @@ namespace PdfDocuments
 {
 	public interface IPdfGenerator
 	{
-		Type DocumentType { get; }
+		Type DocumentModelType { get; }
 		DebugMode DebugMode { get; set; }
 	}
 

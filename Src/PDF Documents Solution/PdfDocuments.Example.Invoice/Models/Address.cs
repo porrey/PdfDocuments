@@ -22,13 +22,13 @@
  *	SOFTWARE.
  */
 
-namespace PdfDocuments.Example
+namespace PdfDocuments.Example.Invoice
 {
-	public class InvoiceItem
+	public class Address
 	{
-		public int Id { get; set; }
-		public int Quantity { get; set; }
-		public decimal UnitPrice { get; set; }
-		public decimal Amount => this.Quantity * this.UnitPrice;
+		public string Name { get; set; }
+		public string AddressLine { get; set; }
+		public string CityStateZip { get; set; }
+		public string Phone { get; set; }
 	}
 }

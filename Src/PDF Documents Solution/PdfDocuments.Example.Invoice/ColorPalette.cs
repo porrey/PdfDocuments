@@ -21,20 +21,21 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Threading.Tasks;
-using Diamond.Core.Extensions.Hosting;
-using Microsoft.Extensions.Hosting;
-using Serilog;
+using PdfSharp.Drawing;
 
-namespace PdfDocuments.Example
+namespace PdfDocuments.Example.Invoice
 {
-	public class Program
+	public static class ColorPalette
 	{
-		static Task Main(string[] args) => Host.CreateDefaultBuilder(args)
-					.UseStartup<ConsoleStartup>()
-					.UseSerilog()
-					.UseConsoleLifetime()
-					.Build()
-					.RunWithExitCodeAsync();
+		public static XColor Transparent = XColors.Transparent;
+		public static XColor White = XColor.FromArgb(255, 255, 255, 255);
+		public static XColor Gray = XColor.FromArgb(255, 99, 99, 99);
+		public static XColor LightGray = XColor.FromArgb(255, 200, 200, 200);
+		public static XColor Blue = XColor.FromArgb(255, 37, 32, 98);
+		public static XColor MediumBlue = XColor.FromArgb(255, 37, 32, 98).WithLuminosity(.95);
+		public static XColor LightBlue = XColor.FromArgb(255, 37, 32, 98).WithLuminosity(.98);
+		public static XColor Red = XColor.FromArgb(255, 215, 35, 44);
+		public static XColor MediumRed = XColor.FromArgb(255, 215, 35, 44).WithLuminosity(.95);
+		public static XColor LightRed = XColor.FromArgb(255, 215, 35, 44).WithLuminosity(.98);
 	}
 }

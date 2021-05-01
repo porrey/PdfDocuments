@@ -21,7 +21,6 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using PdfDocuments.Barcode;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System;
@@ -36,11 +35,6 @@ namespace PdfDocuments
 		public PdfGenerator(IPdfStyleManager<TModel> styleManager)
 		{
 			this.StyleManager = styleManager;
-		}
-
-		public PdfGenerator(IBarcodeGenerator barcodeGenerator)
-		{
-			this.BarcodeGenerator = barcodeGenerator;
 		}
 
 		public virtual async Task<(bool, byte[])> CreatePdfAsync(TModel model)
@@ -70,12 +64,10 @@ namespace PdfDocuments
 		}
 
 		public IPdfStyleManager<TModel> StyleManager { get; set; }
-		public virtual Type DocumentType => typeof(TModel);
+		public virtual Type DocumentModelType => typeof(TModel);
 		public virtual string DocumentTitle { get; set; }
 		public virtual DebugMode DebugMode { get; set; } = DebugMode.None;
-		public virtual PdfSpacing Padding { get; } = new PdfSpacing(1, 1, 1, 1);
-		public virtual IPdfSection<TModel> ReportSection { get; protected set; }
-		public virtual IBarcodeGenerator BarcodeGenerator { get; set; }
+		public virtual IPdfSection<TModel> RootSection { get; protected set; }
 
 		protected virtual PdfGrid Grid { get; set; }
 		protected virtual double PageWidth(PdfPage page) => page.Width - page.TrimMargins.Left - page.TrimMargins.Right;
@@ -88,7 +80,7 @@ namespace PdfDocuments
 			//
 			// Initialize styles.
 			//
-			this.OnInitializeStyles(this.StyleManager);
+			await this.OnInitializeStylesAsync(this.StyleManager);
 
 			//
 			// Create the PDF pages.
@@ -98,8 +90,8 @@ namespace PdfDocuments
 			//
 			// Create the document sections.
 			//
-			this.ReportSection = this.OnAddContent();
-			this.ReportSection.StyleManager = this.StyleManager;
+			this.RootSection = await this.OnAddContentAsync();
+			this.RootSection.StyleManager = this.StyleManager;
 
 			//
 			// Render the pages.
@@ -121,7 +113,7 @@ namespace PdfDocuments
 				//
 				// Render the document page.
 				//
-				returnValue = await this.OnRenderDocument(document, page, pageNumber, model);
+				returnValue = await this.OnRenderDocumentAsync(document, page, pageNumber, model);
 
 				//
 				// Increment the page number.
@@ -132,13 +124,14 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		protected virtual void OnInitializeStyles(IPdfStyleManager<TModel> styleManager)
+		protected virtual Task OnInitializeStylesAsync(IPdfStyleManager<TModel> styleManager)
 		{
+			return Task.CompletedTask;
 		}
 
-		protected virtual string OnGetDocumentTitle(TModel model)
+		protected virtual Task<string> OnGetDocumentTitleAsync(TModel model)
 		{
-			return "No Document Title";
+			return Task.FromResult("No Document Title");
 		}
 
 		protected virtual Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
@@ -173,12 +166,12 @@ namespace PdfDocuments
 			return Task.FromResult(0);
 		}
 
-		protected virtual IPdfSection<TModel> OnAddContent()
+		protected virtual Task<IPdfSection<TModel>> OnAddContentAsync()
 		{
-			return new PdfContentSection<TModel>();
+			return Task.FromResult<IPdfSection<TModel>>(new PdfContentSection<TModel>());
 		}
 
-		protected virtual async Task<bool> OnRenderDocument(PdfDocument document, PdfPage page, int pageNumber, TModel model)
+		protected virtual async Task<bool> OnRenderDocumentAsync(PdfDocument document, PdfPage page, int pageNumber, TModel model)
 		{
 			bool returnValue = false;
 
@@ -191,7 +184,7 @@ namespace PdfDocuments
 						//
 						// Get the document title.
 						//
-						this.DocumentTitle = this.OnGetDocumentTitle(model);
+						this.DocumentTitle = await this.OnGetDocumentTitleAsync(model);
 
 						//
 						// Create the page grid instance.
@@ -204,8 +197,7 @@ namespace PdfDocuments
 							Graphics = g,
 							Grid = this.Grid,
 							PageNumber = pageNumber,
-							DebugMode = this.DebugMode,
-							BarcodeGenerator = this.BarcodeGenerator
+							DebugMode = this.DebugMode
 						};
 
 						//
@@ -232,7 +224,7 @@ namespace PdfDocuments
 							//
 							// Have the primary section render the debug elements.
 							//
-							await this.ReportSection.RenderDebugAsync(gridPage, model);
+							await this.RootSection.RenderDebugAsync(gridPage, model);
 						}
 
 						if (this.DebugMode.HasFlag(DebugMode.RevealGrid))
@@ -255,21 +247,21 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		protected virtual async Task<bool> OnLayoutSectionsAsync(PdfGridPage gridPage, TModel model)
+		protected virtual async Task<bool> OnLayoutSectionsAsync(PdfGridPage g, TModel m)
 		{
 			bool returnValue = false;
 
 			//
 			// Set the report section bounds to the full page.
 			//
-			this.ReportSection.ActualBounds = gridPage.Grid.GetBounds();
+			this.RootSection.ActualBounds = g.Grid.GetBounds();
 
 			//
 			// Call layout on the primary section if it is being rendered.
 			//
-			if (this.ReportSection.ShouldRender.Resolve(gridPage, model))
+			if (this.RootSection.ShouldRender.Resolve(g, m))
 			{
-				if (await this.ReportSection.LayoutAsync(gridPage, model))
+				if (await this.RootSection.LayoutAsync(g, m))
 				{
 					returnValue = true;
 				}
@@ -278,21 +270,21 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		protected virtual async Task<bool> OnRenderSectionsAsync(PdfGridPage gridPage, TModel model)
+		protected virtual async Task<bool> OnRenderSectionsAsync(PdfGridPage g, TModel m)
 		{
 			bool returnValue = false;
 
 			//
 			// Set the report section bounds to the full page.
 			//
-			this.ReportSection.ActualBounds = gridPage.Grid.GetBounds();
+			this.RootSection.ActualBounds = g.Grid.GetBounds();
 
 			//
 			// Call layout on the primary section if it is being rendered.
 			//
-			if (this.ReportSection.ShouldRender.Resolve(gridPage, model))
+			if (this.RootSection.ShouldRender.Resolve(g, m))
 			{
-				if (await this.ReportSection.RenderAsync(gridPage, model))
+				if (await this.RootSection.RenderAsync(g, m))
 				{
 					returnValue = true;
 				}

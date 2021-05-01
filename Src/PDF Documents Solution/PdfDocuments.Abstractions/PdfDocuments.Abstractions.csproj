@@ -34,10 +34,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PdfDocuments.BarcodeGenerator\PdfDocuments.Barcode.Abstractions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\..\..\Images\PdfDcouments.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

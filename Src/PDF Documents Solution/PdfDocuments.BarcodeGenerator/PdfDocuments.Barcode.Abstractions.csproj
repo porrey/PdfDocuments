@@ -40,4 +40,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PdfDocuments.Abstractions\PdfDocuments.Abstractions.csproj" />
+  </ItemGroup>
+
 </Project>

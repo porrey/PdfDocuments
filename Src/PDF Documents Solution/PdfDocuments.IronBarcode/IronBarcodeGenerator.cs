@@ -58,8 +58,7 @@ namespace PdfDocuments.IronBarcode
 					.ChangeBackgroundColor(backColor)
 					.ChangeBarCodeColor(color)
 					//.SetMargins(0, 0, 0, 0)
-					.ResizeTo(barcodeWidth, barcodeHeight)
-					;
+					.ResizeTo(barcodeWidth, barcodeHeight);
 
 			returnValue = bc.ToImage();
 
