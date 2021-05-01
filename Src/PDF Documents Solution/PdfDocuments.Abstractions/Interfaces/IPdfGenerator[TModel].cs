@@ -21,13 +21,13 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System;
+using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
-	public interface IPdfGenerator
+	public interface IPdfGenerator<TModel> : IPdfGenerator
+		where TModel : IPdfModel
 	{
-		Type DocumentModelType { get; }
-		DebugMode DebugMode { get; set; }
+		Task<(bool, byte[])> Build(TModel model);
 	}
 }

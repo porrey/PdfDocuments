@@ -37,7 +37,7 @@ namespace PdfDocuments
 			this.StyleManager = styleManager;
 		}
 
-		public virtual async Task<(bool, byte[])> CreatePdfAsync(TModel model)
+		public virtual async Task<(bool, byte[])> Build(TModel model)
 		{
 			(bool result, byte[] pdf) = (false, null);
 

@@ -15,7 +15,7 @@ namespace PdfDocuments.Example
 			//
 			// Generate the PDF.
 			//
-			(bool result, byte[] fileData) = await generator.CreatePdfAsync(model);
+			(bool result, byte[] fileData) = await generator.Build(model);
 
 			if (result)
 			{
