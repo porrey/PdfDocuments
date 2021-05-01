@@ -195,9 +195,9 @@ namespace PdfDocuments
 		public static IPdfSection<TModel> WithTitle<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
 			where TModel : IPdfModel
 		{
-			if (section is IPdfTitle<TModel> titleSection)
+			if (section is PdfPageHeaderSection<TModel> headerSection)
 			{
-				titleSection.Title = value;
+				headerSection.Title = value;
 			}
 
 			return section;
@@ -206,31 +206,31 @@ namespace PdfDocuments
 		public static IPdfSection<TModel> WithTitle<TModel>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> value)
 			where TModel : IPdfModel
 		{
-			if (section is IPdfTitle<TModel> titleSection)
+			if (section is PdfPageHeaderSection<TModel> headerSection)
 			{
-				titleSection.Title = value;
+				headerSection.Title = value;
 			}
 
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithLogoPath<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
+		public static IPdfSection<TModel> WithLogo<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
 			where TModel : IPdfModel
 		{
-			if (section is IPdfLogoPath<TModel> titleSection)
+			if (section is PdfPageHeaderSection<TModel> headerSection)
 			{
-				titleSection.LogoPath = value;
+				headerSection.Logo = value;
 			}
 
 			return section;
 		}
 
-		public static IPdfSection<TModel> WithLogoPath<TModel>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> value)
+		public static IPdfSection<TModel> WithLogo<TModel>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> value)
 			where TModel : IPdfModel
 		{
-			if (section is IPdfLogoPath<TModel> titleSection)
+			if (section is PdfPageHeaderSection<TModel> headerSection)
 			{
-				titleSection.LogoPath = value;
+				headerSection.Logo = value;
 			}
 
 			return section;
@@ -287,6 +287,50 @@ namespace PdfDocuments
 			where TModel : IPdfModel
 		{
 			section.AddChildSection(value);
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithTopLeftText<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfPageFooterSection<TModel> footerSection)
+			{
+				footerSection.TopLeftText = value;
+			}
+
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithTopLeftText<TModel>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfPageFooterSection<TModel> footerSection)
+			{
+				footerSection.TopLeftText = value;
+			}
+
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithBottomLeftText<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfPageFooterSection<TModel> footerSection)
+			{
+				footerSection.BottomLeftText = value;
+			}
+
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithBottomLeftText<TModel>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfPageFooterSection<TModel> footerSection)
+			{
+				footerSection.BottomLeftText = value;
+			}
+
 			return section;
 		}
 	}

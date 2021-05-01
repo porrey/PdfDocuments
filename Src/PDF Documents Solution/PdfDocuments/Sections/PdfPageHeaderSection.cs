@@ -27,10 +27,10 @@ using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
-	public class PdfPageHeaderSection<TModel> : PdfSection<TModel>, IPdfTitle<TModel>, IPdfLogoPath<TModel>
+	public class PdfPageHeaderSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public BindProperty<string, TModel> LogoPath { get; set; } = string.Empty;
+		public BindProperty<string, TModel> Logo { get; set; } = string.Empty;
 		public BindProperty<string, TModel> Title { get; set; } = string.Empty;
 
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
@@ -57,7 +57,7 @@ namespace PdfDocuments
 			// header leaving a 1 row margin above and below it. Also 
 			// leave a one column margin on the left.
 			//
-			string path = this.LogoPath.Resolve(g, m);
+			string path = this.Logo.Resolve(g, m);
 
 			if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
 			{

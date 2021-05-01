@@ -30,8 +30,10 @@ namespace PdfDocuments
 	public class PdfPageFooterSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public BindProperty<string, TModel> Copyright { get; set; } = string.Empty;
-		public BindProperty<string, TModel> Disclaimer { get; set; } = string.Empty;
+		public BindProperty<string, TModel> TopLeftText { get; set; } = string.Empty;
+		public BindProperty<string, TModel> TopRightText { get; set; } = string.Empty;
+		public BindProperty<string, TModel> BottomLeftText { get; set; } = string.Empty;
+		public BindProperty<string, TModel> BottomRightText { get; set; } = string.Empty;
 
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
@@ -43,33 +45,27 @@ namespace PdfDocuments
 			PdfStyle<TModel> style = this.StyleManager.GetStyle(this.StyleNames.First());
 			PdfSpacing padding = style.Padding.Resolve(g, m);
 			XFont font = style.Font.Resolve(g, m);
+			PdfBounds textBounds = this.ApplyPadding(g, m, bounds, padding);
 
 			//
-			// Draw the background.
+			// Top left.
 			//
-			g.DrawFilledRectangle(bounds, style.BackgroundColor.Resolve(g, m));
-
+			g.DrawText(this.TopLeftText.Resolve(g, m), font,textBounds, XStringFormats.TopLeft, style.ForegroundColor.Resolve(g, m));
+			
 			//
-			// Get the height of the smaller text.
+			// Top right.
 			//
-			PdfSize textSize = g.MeasureText(font, this.Copyright.Resolve(g, m));
-
+			g.DrawText($"Page {g.PageNumber} of {g.Document.PageCount}", font, textBounds, XStringFormats.TopRight, style.ForegroundColor.Resolve(g, m));
+			
 			//
-			// Calculate the number of text rows in this section.
+			// Bottom left
 			//
-			int textRows = (int)(bounds.Rows / textSize.Rows);
-
+			g.DrawText(this.BottomLeftText.Resolve(g, m), font, textBounds, XStringFormats.BottomLeft, style.ForegroundColor.Resolve(g, m));
+			
 			//
-			// Calculate the number of rows to use for the text.
+			// Bottom right.
 			//
-			int top = bounds.TopRow + (int)(((textRows * textSize.Rows) - (2 * textSize.Rows)) / 2.0);
-
-			g.DrawText(this.Copyright.Resolve(g, m), font, bounds.LeftColumn + padding.Left, top, bounds.Columns - (2 * padding.Left), textSize.Rows, XStringFormats.CenterLeft, style.ForegroundColor.Resolve(g, m));
-			g.DrawText($"Page {g.PageNumber} of {g.Document.PageCount}", font, bounds.LeftColumn + padding.Left, top, bounds.Columns - (2 * padding.Left), textSize.Rows, XStringFormats.CenterRight, style.ForegroundColor.Resolve(g, m));
-
-			top += textSize.Rows;
-			g.DrawText(this.Disclaimer.Resolve(g, m), font, bounds.LeftColumn + padding.Left, top, bounds.Columns - (2 * padding.Left), textSize.Rows, XStringFormats.CenterLeft, style.ForegroundColor.Resolve(g, m));
-			g.DrawText($"Created {m.CreateDateTime.ToLongDateString()} at {m.CreateDateTime.ToLongTimeString()}", font, bounds.LeftColumn + padding.Left, top, bounds.Columns - (2 * padding.Left), textSize.Rows, XStringFormats.CenterRight, style.ForegroundColor.Resolve(g, m));
+			g.DrawText($"Created {m.CreateDateTime.ToLongDateString()} at {m.CreateDateTime.ToLongTimeString()}", font, textBounds, XStringFormats.BottomRight, style.ForegroundColor.Resolve(g, m));
 
 			return Task.FromResult(returnValue);
 		}

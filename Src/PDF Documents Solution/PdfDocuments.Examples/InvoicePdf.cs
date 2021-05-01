@@ -215,6 +215,11 @@ namespace PdfDocuments.Example
 									.UseTextAlignment(XStringFormats.Center)
 									.UseRelativeHeight(.058)
 									.Build());
+
+			this.StyleManager.Add("PageFooter.Section", Style.Create<Invoice>()
+									.UseFont("Arial Narrow", 7, XFontStyle.Regular)
+									.UseRelativeHeight(.025)
+									.Build());
 		}
 
 		protected override Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
@@ -241,7 +246,7 @@ namespace PdfDocuments.Example
 				//
 				Pdf.PageHeaderSection<Invoice>()
 				   .WithTitle("INVOICE")
-				   .WithLogoPath("./Images/logo.jpg")
+				   .WithLogo("./Images/logo.jpg")
 				   .WithStyles("PageHeader.Section"),
 
 				//
@@ -355,7 +360,15 @@ namespace PdfDocuments.Example
 				//
 				Pdf.TextBlockSection<Invoice>()
 					.WithText("Thank you for your business!")
-					.WithStyles("ThankYou.Section")
+					.WithStyles("ThankYou.Section"),
+
+				//
+				//
+				//
+				Pdf.PageFooterSection<Invoice>()
+					.WithTopLeftText("Copyright Daniel Porrey. All right reserved.")
+					.WithBottomLeftText("Contact us immediately with any questions")
+					.WithStyles("PageFooter.Section")
 			)
 			.WithKey("Report")
 			.WithWatermark((g, m) => m.Paid ? "./images/paid.png" : string.Empty);

@@ -92,7 +92,7 @@ namespace PdfDocuments.Example
 			using (IServiceScope scope = this.ServiceScopeFactory.CreateScope())
 			{
 				//
-				//
+				// Register an encoding provider.
 				//
 				Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
