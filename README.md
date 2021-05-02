@@ -7,7 +7,7 @@ High level C# library for the easy creation of PDF documents using **PdfSharp**.
 
 ![Example PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Invoice.png)
 
-[View Actual PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Invoice-%5B12345678%5D.pdf)
+[View Actual PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Invoice.pdf)
 
 The library has debug flags to assist in troubleshooting layout issues while developing.
 
@@ -161,11 +161,23 @@ If everything worked, the PDF should look like this:
 
 ![Simple PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Message.png)
 
-[View Actual PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Message-%5B12345678%5D.pdf)
+[View Actual PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Message.pdf)
+
+### Troubleshooting the Layout
+
+In more complex documents, it may be necessaru to troubleshoot layout and fonts. There are a few debug flags that can be set to reveal the details of how the document was rendered.
+
+	helloWorld.DebugMode = helloWorld.DebugMode
+							.SetFlag(DebugMode.RevealGrid, true)
+							.SetFlag(DebugMode.RevealLayout, true)
+							.SetFlag(DebugMode.HideDetails, false)
+							.SetFlag(DebugMode.RevealFontDetails, true)
+							.SetFlag(DebugMode.OutlineText, false);
 
 
+In the above code, the PDF renderer will draw the grid, the section outlines and the fonts used. This result in the PDF shown below.
 
+![Simple Debug PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Message-Debug.png)
 
-
-
+[View Actual PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Message-debug.pdf)
 
