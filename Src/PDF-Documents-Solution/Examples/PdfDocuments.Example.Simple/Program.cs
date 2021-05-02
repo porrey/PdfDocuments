@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
+using PdfDocuments;
 
 namespace PdfDocuments.Example.Simple
 {
@@ -33,9 +34,14 @@ namespace PdfDocuments.Example.Simple
 									.SetFlag(DebugMode.OutlineText, false);
 
 			//
+			// Create an instance of the model.
+			//
+			Message model = new Message() { Id = "12345", Text = "Hello World" };
+
+			//
 			// Create, save and open the PDF.
 			//
-			await helloWorld.SaveAndOpenPdfAsync(new Message() { Id = "12345", Text = "Hello World" });
+			await helloWorld.SaveAndOpenPdfAsync(model);
 
 			return 0;
 		}
