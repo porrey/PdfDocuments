@@ -1,5 +1,5 @@
 # PdfDocuments
-High level C# library for the easy creation of PDF documents using **PdfSharp**. Use this library to create beautiful and complex PDF's using a structure similar to XAML with model binding. Objects called PdfSections, are aligned to a grid allowing easy alignment of objects, flow and resizing capabilities.
+High level C# library for the easy creation of PDF documents using **PdfSharp**. Use this library to create beautiful and complex PDF's using a structure similar to XAML with model binding. Objects called **PdfSections**, are aligned to a grid by stacking or creating parent/child heirarchy. The rendrng engine will flow the sections and align them to the grid creating perfect PDF documents every time.
 
 ## Examples
 
