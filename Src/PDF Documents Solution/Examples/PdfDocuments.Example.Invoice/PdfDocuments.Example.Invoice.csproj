@@ -41,9 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\PdfDocuments.Example.Shared\PdfDocuments.Example.Shared.csproj" />
-		<ProjectReference Include="..\PdfDocuments.IronBarcode\PdfDocuments.IronBarcode.csproj" />
-		<ProjectReference Include="..\PdfDocuments\PdfDocuments.csproj" />
+	  <ProjectReference Include="..\PdfDocuments.Example.Shared\PdfDocuments.Example.Shared.csproj" />
 	</ItemGroup>
 
 </Project>

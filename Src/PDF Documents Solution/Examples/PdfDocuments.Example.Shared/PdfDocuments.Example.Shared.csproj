@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PdfDocuments.Abstractions\PdfDocuments.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Library\PdfDocuments\PdfDocuments.csproj" />
   </ItemGroup>
 
 </Project>
