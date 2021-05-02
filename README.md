@@ -108,8 +108,8 @@ Create a new class call **[HelloWorld.cs](https://github.com/porrey/PdfDocuments
 				// Add a basic text block using the style that was created.
 				//
 				return Task.FromResult(Pdf.TextBlockSection<Message>()
-										  .WithText((g, m) => m.Text)
-										  .WithStyles("HelloWorld.Text"));
+							  .WithText((g, m) => m.Text)
+							  .WithStyles("HelloWorld.Text"));
 			}
 		}
 	}
