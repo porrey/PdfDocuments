@@ -168,11 +168,11 @@ If everything worked, the PDF should look like this:
 In more complex documents, it may be necessaru to troubleshoot layout and fonts. There are a few debug flags that can be set to reveal the details of how the document was rendered.
 
 	helloWorld.DebugMode = helloWorld.DebugMode
-							.SetFlag(DebugMode.RevealGrid, true)
-							.SetFlag(DebugMode.RevealLayout, true)
-							.SetFlag(DebugMode.HideDetails, false)
-							.SetFlag(DebugMode.RevealFontDetails, true)
-							.SetFlag(DebugMode.OutlineText, false);
+			.SetFlag(DebugMode.RevealGrid, true)
+			.SetFlag(DebugMode.RevealLayout, true)
+			.SetFlag(DebugMode.HideDetails, false)
+			.SetFlag(DebugMode.RevealFontDetails, true)
+			.SetFlag(DebugMode.OutlineText, false);
 
 
 In the above code, the PDF renderer will draw the grid, the section outlines and the fonts used. This result in the PDF shown below.
