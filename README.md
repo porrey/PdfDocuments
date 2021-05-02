@@ -19,7 +19,7 @@ The library has debug flags to assist in troubleshooting layout issues while dev
 
 ## Simple Code Example
 
-The source for the simple example can be in the Examples folder of the project source code.
+The source code for the simple example can be found in the Examples folder of the project source code.
 
 ### Add the NuGet package
 
@@ -47,7 +47,7 @@ static async Task<int> Main(string[] args)
 
 ### Register Encoding
 
-Using the [PdfSharp](http://www.pdfsharp.com/PDFsharp/) library requires an encoding provider to be registered. Add the following code to the Main method in **Program.cs**.
+Using the [PdfSharp](http://www.pdfsharp.com/PDFsharp/) library requires an encoding provider to be registered. Add the following code to the ***Main*** method in **Program.cs**.
 
 ```
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);`
@@ -55,7 +55,7 @@ Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);`
 
 ### Create a Data Model
 
-The PDF Documents in this library are based on data models. The PDF document uses binding to retrieve data from the instance of the model passed when building the PDF document.
+PDF Documents created using this library are based on data models. The PDF document uses binding to retrieve data from the instance of the model passed when building the PDF document.
 
 Create a new class in the solution called **Message.cs** and paste the code shown below into the class.
 
