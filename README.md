@@ -1,5 +1,5 @@
 # PdfDocuments
-High level C# library for the easy creation of PDF documents using **PdfSharp**. Use this library to create beautiful and complex PDF's using a structure similar to XAML with model binding. Objects called PdfSections, are aligned to a grid allowing easy alignment of obejcts, flow and resizing capabilities.
+High level C# library for the easy creation of PDF documents using **PdfSharp**. Use this library to create beautiful and complex PDF's using a structure similar to XAML with model binding. Objects called PdfSections, are aligned to a grid allowing easy alignment of objects, flow and resizing capabilities.
 
 ## Examples
 
@@ -19,19 +19,19 @@ The library has debug flags to assist in troubleshooting layout issues while dev
 
 ## Simple Code Example
 
-The source code for the simple example can be found in the Examples folder of the project source code.
+The source for the simple example can be in the [Examples](https://github.com/porrey/PdfDocuments/tree/main/Src/PDF-Documents-Solution/Examples) folder of the project source code.
 
 ### Add the NuGet package
 
 Open Visual Studio and create a new Console application. Add the NuGet package.
 
 ```
-PM> Install-Packge PdfDocuments
+PM> Install-Package PdfDocuments
 ```
 
 ### Add the using statement
 
-In Visual Studio, open the **Program.cs** file and add the using statement for the library.
+In Visual Studio, open the **[Program.cs](https://github.com/porrey/PdfDocuments/blob/main/Src/PDF-Documents-Solution/Examples/PdfDocuments.Example.Simple/Program.cs)** file and add the using statement for the library.
 
 ```
 using PdfDocuments;
@@ -39,7 +39,7 @@ using PdfDocuments;
 
 ### Change Main method Signature
 
-This example uses async/await statements. This requires the main method signature to be changed as shown beolow.
+This example uses **async/await** statements. This requires the main method signature to be changed as shown below.
 
 ```
 static async Task<int> Main(string[] args)
@@ -47,17 +47,17 @@ static async Task<int> Main(string[] args)
 
 ### Register Encoding
 
-Using the [PdfSharp](http://www.pdfsharp.com/PDFsharp/) library requires an encoding provider to be registered. Add the following code to the ***Main*** method in **Program.cs**.
+Using the [PdfSharp](http://www.pdfsharp.com/PDFsharp/) library requires an encoding provider to be registered. Add the following code to the Main method in **Program.cs**.
 
 ```
-Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);`
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 ```
 
 ### Create a Data Model
 
-PDF Documents created using this library are based on data models. The PDF document uses binding to retrieve data from the instance of the model passed when building the PDF document.
+The PDF Documents in this library are based on data models. The PDF document uses binding to retrieve data from the instance of the model passed when building the PDF document.
 
-Create a new class in the solution called **Message.cs** and paste the code shown below into the class.
+Create a new class in the solution called **[Message.cs](https://github.com/porrey/PdfDocuments/blob/main/Src/PDF-Documents-Solution/Examples/PdfDocuments.Example.Simple/Message.cs)** and paste the code shown below into the class.
 
 	namespace PdfDocuments.Example.Simple
 	{
@@ -70,7 +70,7 @@ Create a new class in the solution called **Message.cs** and paste the code show
 
 ### Create PDF Document Generator Class
 
-Create a new class call **HelloWorld.cs** in the solution and copy the code below to the class.
+Create a new class call **[HelloWorld.cs](https://github.com/porrey/PdfDocuments/blob/main/Src/PDF-Documents-Solution/Examples/PdfDocuments.Example.Simple/HelloWorld.cs)** in the solution and copy the code below to the class.
 
 
 	using PdfSharp.Drawing;
@@ -165,7 +165,7 @@ If everything worked, the PDF should look like this:
 
 ### Troubleshooting the Layout
 
-In more complex documents, it may be necessaru to troubleshoot layout and fonts. There are a few debug flags that can be set to reveal the details of how the document was rendered.
+In more complex documents, it may be necessary to troubleshoot layout and fonts. There are a few debug flags that can be set to reveal the details of how the document was rendered.
 
 	helloWorld.DebugMode = helloWorld.DebugMode
 			.SetFlag(DebugMode.RevealGrid, true)
@@ -180,4 +180,3 @@ In the above code, the PDF renderer will draw the grid, the section outlines and
 ![Simple Debug PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Message-Debug.png)
 
 [View Actual PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Message-debug.pdf)
-
