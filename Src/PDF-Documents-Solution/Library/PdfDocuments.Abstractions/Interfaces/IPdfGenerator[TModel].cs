@@ -28,6 +28,6 @@ namespace PdfDocuments
 	public interface IPdfGenerator<TModel> : IPdfGenerator
 		where TModel : IPdfModel
 	{
-		Task<(bool, byte[])> Build(TModel model);
+		Task<(bool, byte[])> BuildAsync(TModel model);
 	}
 }

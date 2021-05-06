@@ -360,10 +360,10 @@ namespace PdfDocuments.Example.Invoice
 				// Invoice details
 				//
 				Pdf.DataGridSection<Invoice, InvoiceItem>()
-				   .AddColumn<Invoice, InvoiceItem, int>("Item Number", t => t.Id, .20, "{0:1000000000000}", "InvoiceDetails.Header.Item", "InvoiceDetails.Body.Left")
+				   .AddColumn<Invoice, InvoiceItem, int>("Item Number", t => t.Id, .45, "{0:1000000000000}", "InvoiceDetails.Header.Item", "InvoiceDetails.Body.Left")
 				   .AddColumn<Invoice, InvoiceItem, int>("Quantity", t => t.Quantity, .25, "{0:#,###}", "InvoiceDetails.Header.Other", "InvoiceDetails.Body.Other")
 				   .AddColumn<Invoice, InvoiceItem, decimal>("Unit Price", t => t.UnitPrice, .25, "{0:C}", "InvoiceDetails.Header.Other", "InvoiceDetails.Body.Other")
-				   .AddColumn<Invoice, InvoiceItem, decimal>("Amount", t => t.Amount, .30, "{0:C}", "InvoiceDetails.Header.Other", "InvoiceDetails.Body.Other")
+				   .AddColumn<Invoice, InvoiceItem, decimal>("Amount", t => t.Amount, .15, "{0:C}", "InvoiceDetails.Header.Other", "InvoiceDetails.Body.Other")
 				   .UseItems((g, m) => m.Items)
 				   .WithStyles("InvoiceDetails.Section"),
 

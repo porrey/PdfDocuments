@@ -72,22 +72,43 @@ namespace PdfDocuments
 			int rowHeight = 0;
 
 			//
-			// Determine the column width.
+			// Determine the column widths.
 			//
-			int columnWidth = bounds.Columns / this.DataColumns.Count();
+			double sum = this.DataColumns.Sum(t => t.RelativeWidth);
+
+			//
+			// The total of the column widths must be less
+			// than or equal to bounds.Columns
+			//
+			int[] columnWidth = (from tbl in this.DataColumns
+								 select (int)(bounds.Columns * (tbl.RelativeWidth / sum))).ToArray();
+
+			//
+			// Never under allocate the width.
+			//
+			if (columnWidth.Sum() < bounds.Columns)
+			{
+				//
+				// Allocate the missing width to the last column.
+				//
+				columnWidth[^1] += (bounds.Columns - columnWidth.Sum());
+			}
 
 			//
 			// Render the headers.
 			//
+			int i = 0;
+
 			foreach (PdfDataGridColumn column in this.DataColumns)
 			{
 				PdfTextElement<TModel> headerElement = new PdfTextElement<TModel>(column.ColumnHeader);
 				PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(column.HeaderStyleName);
 				PdfSize headerSize = headerElement.Measure(g, m, headerStyle);
-				PdfBounds headerBounds = new PdfBounds(leftColumn, topRow, columnWidth, headerSize.Rows).SubtractBounds(g, m, headerStyle.Margin.Resolve(g, m));
+				PdfBounds headerBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], headerSize.Rows).SubtractBounds(g, m, headerStyle.Margin.Resolve(g, m));
 				headerElement.Render(g, m, headerBounds, headerStyle);
-				leftColumn += columnWidth;
+				leftColumn += columnWidth[i];
 				rowHeight = headerSize.Rows;
+				i++;
 			}
 
 			//
@@ -108,165 +129,21 @@ namespace PdfDocuments
 				foreach (var item in items)
 				{
 					leftColumn = bounds.LeftColumn;
+					i = 0;
 
 					foreach (PdfDataGridColumn column in this.DataColumns)
 					{
 						PdfTextElement<TModel> dataElement = new PdfTextElement<TModel>(this.FormattedValue(column, item));
 						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName);
 						PdfSize dataSize = dataElement.Measure(g, m, dataStyle);
-						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth, dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
+						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
 						dataElement.Render(g, m, dataBounds, dataStyle);
-						leftColumn += columnWidth;
+						leftColumn += columnWidth[i];
 						rowHeight = dataSize.Rows;
+						i++;
 					}
 
 					topRow += rowHeight;
-				}
-			}
-
-			return Task.FromResult(returnValue);
-		}
-
-		protected Task<bool> OnRenderAsync1(PdfGridPage g, TModel m, PdfBounds bounds)
-		{
-			bool returnValue = true;
-
-			//
-			// Get the items.
-			//
-			IEnumerable<TItem> items = this.Items.Resolve(g, m);
-
-			if (items.Any())
-			{
-				//
-				// Calculate the column header sizes.
-				//
-				PdfBounds[] headerCellBounds = new PdfBounds[this.DataColumns.Count];
-				{
-					int columnIndex = 0;
-					int remainingColumns = bounds.Columns;
-
-					foreach (PdfDataGridColumn column in this.DataColumns)
-					{
-						//
-						// Get the cell style.
-						//
-						PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(column.HeaderStyleName);
-						PdfSpacing headerPadding = headerStyle.Padding.Resolve(g, m);
-						PdfSpacing headerCellPadding = headerStyle.CellPadding.Resolve(g, m);
-						PdfSize headerSize = g.MeasureText(headerStyle.Font.Resolve(g, m), column.ColumnHeader);
-
-						headerCellBounds[columnIndex] = new PdfBounds()
-						{
-							LeftColumn = columnIndex > 0 ? headerCellBounds[columnIndex - 1].RightColumn + 1 : bounds.LeftColumn,
-							TopRow = bounds.TopRow,
-							Rows = headerSize.Rows + headerPadding.Top + headerPadding.Bottom + headerCellPadding.Top + headerCellPadding.Bottom,
-							Columns = columnIndex < (this.DataColumns.Count - 1) ? (int)(bounds.Columns * column.RelativeWidth) : remainingColumns
-						};
-
-						remainingColumns -= headerCellBounds[columnIndex].Columns;
-						columnIndex++;
-					}
-				}
-
-				//
-				// Calculate the column body sizes.
-				//
-				PdfBounds[] valueCellBounds = new PdfBounds[this.DataColumns.Count];
-				{
-					int columnIndex = 0;
-					int remainingColumns = bounds.Columns;
-
-					foreach (PdfDataGridColumn column in this.DataColumns)
-					{
-						PdfStyle<TModel> bodyStyle = this.StyleManager.GetStyle(column.DataStyleName);
-						PdfSpacing bodyPadding = bodyStyle.Padding.Resolve(g, m);
-						PdfSpacing bodyCellPadding = bodyStyle.CellPadding.Resolve(g, m);
-						PdfSize valueSize = g.MeasureText(bodyStyle.Font.Resolve(g, m), this.FormattedValue(column, items.First()));
-
-						valueCellBounds[columnIndex] = new PdfBounds()
-						{
-							LeftColumn = columnIndex > 0 ? valueCellBounds[columnIndex - 1].RightColumn + 1 : bounds.LeftColumn,
-							TopRow = headerCellBounds[0].BottomRow,
-							Rows = valueSize.Rows + bodyPadding.Top + bodyPadding.Bottom + bodyPadding.Top + bodyPadding.Bottom,
-							Columns = columnIndex < (this.DataColumns.Count - 1) ? (int)(bounds.Columns * column.RelativeWidth) : remainingColumns
-						};
-
-						remainingColumns -= headerCellBounds[columnIndex].Columns;
-						columnIndex++;
-					}
-				}
-
-				//
-				// Print the data.
-				//
-				{
-					int columnIndex = 0;
-
-					foreach (PdfDataGridColumn column in this.DataColumns)
-					{
-						//
-						// Get the cell style.
-						//
-						PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(column.HeaderStyleName);
-						PdfSpacing headerPadding = headerStyle.Padding.Resolve(g, m);
-						PdfSpacing headerCellPadding = headerStyle.CellPadding.Resolve(g, m);
-
-						//
-						// Determine the text rectangle.
-						//
-						PdfBounds textBounds = headerCellBounds[columnIndex];
-						PdfBounds paddedBounds = textBounds.SubtractBounds(g, m, headerPadding);
-						PdfBounds cellPaddedBounds = paddedBounds.SubtractBounds(g, m, headerCellPadding);
-
-						//
-						// Draw the background
-						//
-						g.DrawFilledRectangle(paddedBounds, headerStyle.BackgroundColor.Resolve(g, m));
-
-						//
-						// Draw the text.
-						//
-						g.DrawText(column.ColumnHeader, headerStyle.Font.Resolve(g, m), cellPaddedBounds, headerStyle.TextAlignment.Resolve(g, m), headerStyle.ForegroundColor.Resolve(g, m));
-						columnIndex++;
-					}
-
-					//
-					// Print the data.
-					//
-					int topRow = valueCellBounds[0].TopRow;
-
-					foreach (TItem item in items)
-					{
-						columnIndex = 0;
-
-						foreach (PdfDataGridColumn column in this.DataColumns)
-						{
-							PdfStyle<TModel> bodyStyle = this.StyleManager.GetStyle(column.DataStyleName);
-							PdfSpacing bodyPadding = bodyStyle.Padding.Resolve(g, m);
-							PdfSpacing bodyCellPadding = bodyStyle.CellPadding.Resolve(g, m);
-
-							//
-							// Determine the text rectangle.
-							//
-							PdfBounds textBounds = valueCellBounds[columnIndex].WithTopRow(topRow);
-							PdfBounds paddedBounds = textBounds.SubtractBounds(g, m, bodyPadding);
-							PdfBounds cellPaddedBounds = paddedBounds.SubtractBounds(g, m, bodyCellPadding);
-
-							//
-							// Draw the background
-							//
-							g.DrawFilledRectangle(paddedBounds, bodyStyle.BackgroundColor.Resolve(g, m));
-
-							//
-							// Draw the text.
-							//
-							g.DrawText(this.FormattedValue(column, item), bodyStyle.Font.Resolve(g, m), cellPaddedBounds, bodyStyle.TextAlignment.Resolve(g, m), bodyStyle.ForegroundColor.Resolve(g, m));
-							columnIndex++;
-						}
-
-						topRow += valueCellBounds[0].Rows;
-					}
 				}
 			}
 

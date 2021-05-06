@@ -37,32 +37,6 @@ namespace PdfDocuments
 			this.StyleManager = styleManager;
 		}
 
-		public virtual async Task<(bool, byte[])> Build(TModel model)
-		{
-			(bool result, byte[] pdf) = (false, null);
-
-			//
-			//
-			//
-			using (PdfDocument document = new PdfDocument())
-			{
-				//
-				//
-				//
-				result = await this.OnCreatePdfAsync(document, model);
-
-				//
-				//
-				//
-				if (result)
-				{
-					pdf = await this.GetPdfByteArrayAsync(document);
-				}
-			}
-
-			return (result, pdf);
-		}
-
 		public IPdfStyleManager<TModel> StyleManager { get; set; }
 		public virtual Type DocumentModelType => typeof(TModel);
 		public virtual string DocumentTitle { get; set; }
@@ -72,6 +46,32 @@ namespace PdfDocuments
 		protected virtual PdfGrid Grid { get; set; }
 		protected virtual double PageWidth(PdfPage page) => page.Width - page.TrimMargins.Left - page.TrimMargins.Right;
 		protected virtual double PageHeight(PdfPage page) => page.Height - page.TrimMargins.Top - page.TrimMargins.Bottom;
+
+		public virtual async Task<(bool, byte[])> BuildAsync(TModel model)
+		{
+			(bool result, byte[] pdf) = (false, null);
+
+			//
+			// Create the document.
+			//
+			using (PdfDocument document = new PdfDocument())
+			{
+				//
+				// Create the pages.
+				//
+				result = await this.OnCreatePdfAsync(document, model);
+
+				//
+				// Get the byte stream.
+				//
+				if (result)
+				{
+					pdf = await this.GetPdfByteArrayAsync(document);
+				}
+			}
+
+			return (result, pdf);
+		}
 
 		protected virtual async Task<bool> OnCreatePdfAsync(PdfDocument document, TModel model)
 		{

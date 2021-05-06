@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <PackageLicenseUrl></PackageLicenseUrl>
 	  <Authors>Daniel M. Porrey</Authors>
@@ -10,9 +10,9 @@
 	  <Product></Product>
 	  <Copyright>Copyright © Daniel Porrey 2021. All Rights Reserved.</Copyright>
 	  <Description>Provides an interface abstraction for creating barcode images in a PDF document.</Description>
-	  <Version>1.0.0</Version>
-	  <FileVersion>1.0.0</FileVersion>
-	  <AssemblyVersion>1.0.0</AssemblyVersion>
+	  <Version>1.0.2</Version>
+	  <FileVersion>1.0.2</FileVersion>
+	  <AssemblyVersion>1.0.2</AssemblyVersion>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageProjectUrl>https://github.com/porrey/PdfDocuments</PackageProjectUrl>
 	  <RepositoryUrl>https://github.com/porrey/PdfDocuments</RepositoryUrl>
