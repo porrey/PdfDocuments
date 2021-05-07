@@ -16,12 +16,12 @@ namespace PdfDocuments.Example.Simple
 			//
 			// Create an instance of the style manager.
 			//
-			PdfStyleManager<Message> styleManager = new PdfStyleManager<Message>();
+			PdfStyleManager<Message> styleManager = new();
 
 			//
 			// Create an instance of the PDF generator.
 			//
-			HelloWorld helloWorld = new HelloWorld(styleManager);
+			HelloWorld helloWorld = new(styleManager);
 
 			//
 			// Set debug flags.
@@ -36,7 +36,7 @@ namespace PdfDocuments.Example.Simple
 			//
 			// Create an instance of the model.
 			//
-			Message model = new Message() { Id = "12345", Text = "Hello World" };
+			Message model = new() { Id = "12345", Text = "Hello World" };
 
 			//
 			// Create, save and open the PDF.

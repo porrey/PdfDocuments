@@ -71,6 +71,12 @@ namespace PdfDocuments
 			return new PdfEmptySection<TModel>();
 		}
 
+		public static IPdfSection<TModel> ContentSection<TModel>(IPdfSection<TModel> value)
+			where TModel : IPdfModel
+		{
+			return (new PdfContentSection<TModel>()).AddChildSection(value);
+		}
+
 		public static IPdfSection<TModel> HeaderContentSection<TModel>()
 			where TModel : IPdfModel
 		{
