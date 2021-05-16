@@ -10,9 +10,9 @@
 	  <Product></Product>
 	  <Copyright>Copyright © Daniel Porrey 2021. All Rights Reserved.</Copyright>
 	  <Description>Provides the core components necessary to create a grid layout for PdfSharp and build a PDF document laying out sections in this grid.</Description>
-	  <Version>1.0.2</Version>
-	  <FileVersion>1.0.2</FileVersion>
-	  <AssemblyVersion>1.0.2</AssemblyVersion>
+	  <Version>1.0.3</Version>
+	  <FileVersion>1.0.3</FileVersion>
+	  <AssemblyVersion>1.0.3</AssemblyVersion>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageProjectUrl>https://github.com/porrey/PdfDocuments</PackageProjectUrl>
 	  <RepositoryUrl>https://github.com/porrey/PdfDocuments</RepositoryUrl>

@@ -117,12 +117,15 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("BillTo.ContentBlock", Style.Create<Invoice>()
-						.UseFont("Arial", 11, XFontStyle.Regular)
-						.UsePadding(1, 2, 1, 2)
-						.UseMargin(0, 3, 0, 2)
 						.UseBorderColor(ColorPalette.Blue)
 						.UseBorderWidth(1)
-						.UseForegroundColor(ColorPalette.Transparent)
+						.Build());
+
+			this.StyleManager.Add("BillTo.Content", Style.Create<Invoice>()
+						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UsePadding(0, 0, 0, 0)
+						.UseMargin(0, 2, 0, 2)
+						//.UseForegroundColor(ColorPalette.Transparent)
 						.UseTextAlignment(XStringFormats.CenterLeft)
 						.Build());
 
@@ -333,27 +336,36 @@ namespace PdfDocuments.Example.Invoice
 					Pdf.HeaderContentSection<Invoice>()
 						.WithText("Bill To")
 						.WithStyles("BillTo.Header.Left")
-						.WithContentSection(Pdf.KeyValueSection<Invoice>
+						.WithContentSection
 						(
-							new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Name) },
-							new PdfKeyValueItem<Invoice>() { Key = "Address:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.AddressLine) },
-							new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.CityStateZip) },
-							new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Phone) }
-						)
-						.WithStyles("BillTo.ContentBlock", "BillTo.Key", "BillTo.Value")),
+							Pdf.OverlayStackSection<Invoice>
+							(
+								Pdf.KeyValueSection<Invoice>
+								(
+									new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Name) },
+									new PdfKeyValueItem<Invoice>() { Key = "Address:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.AddressLine) },
+									new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.CityStateZip) },
+									new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Phone) }
+								).WithStyles("BillTo.Content", "BillTo.Key", "BillTo.Value")
+							).WithStyles("BillTo.ContentBlock")
+						),
 
 					Pdf.HeaderContentSection<Invoice>()
 					   .WithText("From")
 					   .WithStyles("BillTo.Header.Right")
-					   .WithContentSection(Pdf.KeyValueSection<Invoice>
-						(
-							new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Name) },
-							new PdfKeyValueItem<Invoice>() { Key = "Address:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.AddressLine) },
-							new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.CityStateZip) },
-							new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Phone) }
+					   .WithContentSection
+					   (
+							Pdf.OverlayStackSection<Invoice>
+							(
+								Pdf.KeyValueSection<Invoice>
+								(
+									new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Name) },
+									new PdfKeyValueItem<Invoice>() { Key = "Address:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.AddressLine) },
+									new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.CityStateZip) },
+									new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Phone) }
+								).WithStyles("BillTo.Content", "BillTo.Key", "BillTo.Value")
+							).WithStyles("BillTo.ContentBlock")
 						)
-						.WithStyles("BillTo.ContentBlock", "BillTo.Key", "BillTo.Value"))
-
 				).WithStyles("BillTo.Section"),
 
 				//

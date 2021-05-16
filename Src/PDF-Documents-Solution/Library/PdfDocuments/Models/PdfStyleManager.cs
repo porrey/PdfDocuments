@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace PdfDocuments
 {
 	public class PdfStyleManager<TModel> : Dictionary<string, PdfStyle<TModel>>, IPdfStyleManager<TModel>
+			where TModel : IPdfModel
 	{
 		public const string Default = "Default";
 		public const string Debug = "Debug";

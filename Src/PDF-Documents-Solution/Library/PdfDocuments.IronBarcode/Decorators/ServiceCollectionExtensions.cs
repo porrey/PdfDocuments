@@ -21,48 +21,16 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Drawing;
-using IronBarCode;
-using PdfDocuments.Barcode;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PdfDocuments.IronBarcode
 {
-	public class IronBarcodeGenerator : IBarcodeGenerator
+	public static class ServiceCollectionExtensions
 	{
-		public IronBarcodeGenerator()
+		public static IServiceCollection AddIronBarcodeSupport(this IServiceCollection services, string licenseKey)
 		{
-			//
-			// Do not copy this license to other software applications. A license is required
-			// for additional applications.
-			//
-			IronBarCode.License.LicenseKey = "";
-		}
-
-		public Image Create(string data, int barcodeWidth, int barcodeHeight, BarCodeType type, Color color, Color backColor)
-		{
-			Image returnValue = null;
-
-			BarcodeEncoding bct = BarcodeEncoding.Code128;
-
-			switch (type)
-			{
-				case BarCodeType.Code128:
-					bct = BarcodeEncoding.Code128;
-					break;
-				case BarCodeType.Code39:
-					bct = BarcodeEncoding.Code39;
-					break;
-			}
-
-			GeneratedBarcode bc = BarcodeWriter.CreateBarcode(data, bct)
-					.ChangeBackgroundColor(backColor)
-					.ChangeBarCodeColor(color)
-					//.SetMargins(0, 0, 0, 0)
-					.ResizeTo(barcodeWidth, barcodeHeight);
-
-			returnValue = bc.ToImage();
-
-			return returnValue;
+			IronBarCode.License.LicenseKey = licenseKey;
+			return services;
 		}
 	}
 }

@@ -185,7 +185,7 @@ namespace PdfDocuments
 					double borderWidth = style.BorderWidth.Resolve(g, m);
 					if (borderWidth > 0.0)
 					{
-						g.DrawRectangle(this.ActualBounds, borderWidth, style.BorderColor.Resolve(g, m));
+						g.DrawRectangle(bounds, borderWidth, style.BorderColor.Resolve(g, m));
 					}
 				}
 			}

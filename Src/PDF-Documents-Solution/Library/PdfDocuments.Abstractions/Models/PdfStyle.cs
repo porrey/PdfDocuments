@@ -4,6 +4,7 @@ using PdfSharp.Drawing.Layout;
 namespace PdfDocuments
 {
 	public class PdfStyle<TModel> : IStyleBuilder<TModel>
+			where TModel : IPdfModel
 	{
 		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0;
 		public virtual BindProperty<double[], TModel> RelativeWidths { get; set; } = new double[] { 0 };

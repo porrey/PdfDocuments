@@ -21,8 +21,7 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using PdfSharp.Drawing.Layout;
-using System.Linq;
+using PdfSharp.Drawing;
 using System.Threading.Tasks;
 
 namespace PdfDocuments
@@ -43,7 +42,7 @@ namespace PdfDocuments
 				bounds.TopRow + padding.Top,
 				bounds.Columns - (padding.Left + padding.Right),
 				bounds.Rows - (padding.Top + padding.Bottom),
-				style.TextAlignment.Resolve(g, m),
+				XStringFormats.TopLeft,
 				style.ForegroundColor.Resolve(g, m),
 				style.ParagraphAlignment.Resolve(g, m));
 

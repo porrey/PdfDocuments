@@ -31,7 +31,7 @@ namespace PdfDocuments
 	public class PdfStackedTextSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public IList<BindProperty<string, TModel>> StackedItems { get; } = new List<BindProperty<string, TModel>>();
+		public IEnumerable<BindProperty<string, TModel>> StackedItems { get; set; }
 
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
@@ -71,7 +71,7 @@ namespace PdfDocuments
 					{
 						PdfSize size = g.MeasureText(style2.Font.Resolve(g, m));
 
-						g.DrawText(item.Resolve(g, m), style2.Font.Resolve(g, m),
+						g.DrawText(text, style2.Font.Resolve(g, m),
 							left,
 							top,
 							bounds.Columns - (padding2.Left + padding2.Right),
@@ -84,7 +84,7 @@ namespace PdfDocuments
 					{
 						PdfSize size = g.MeasureText(style1.Font.Resolve(g, m));
 
-						g.DrawText(item.Resolve(g, m), style1.Font.Resolve(g, m),
+						g.DrawText(text, style1.Font.Resolve(g, m),
 							left,
 							top,
 							bounds.Columns - (padding1.Left + padding1.Right),

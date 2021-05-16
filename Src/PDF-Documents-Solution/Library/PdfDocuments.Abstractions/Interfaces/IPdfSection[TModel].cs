@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 namespace PdfDocuments
 {
 	public interface IPdfSection<TModel>
+			where TModel : IPdfModel
 	{
 		string Key { get; set; }
 		IPdfStyleManager<TModel> StyleManager { get; set; }

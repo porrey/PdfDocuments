@@ -21,17 +21,50 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using Microsoft.Extensions.DependencyInjection;
-using PdfDocuments.Barcode;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace PdfDocuments.IronBarcode
+namespace PdfDocuments
 {
-	public static class ServiceCollectionExtensions
+	public class PdfOverlayStackSection<TModel> : PdfSection<TModel>
+		where TModel : IPdfModel
 	{
-		public static IServiceCollection AddIronBarcodeSupport(this IServiceCollection services)
+		public PdfOverlayStackSection()
 		{
-			services.AddScoped<IBarcodeGenerator, IronBarcodeGenerator>();
-			return services;
+		}
+
+		public PdfOverlayStackSection(params IPdfSection<TModel>[] children)
+			: base(children)
+		{
+		}
+
+		protected override async Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			bool returnValue = true;
+
+			//
+			// Get a list of each section to be rendered.
+			//
+			IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(g, m)).ToArray();
+
+			foreach (IPdfSection<TModel> section in sections)
+			{
+				section.ActualBounds = bounds;
+			}
+
+			//
+			// Allow each section to perform a layout.
+			//
+			foreach (IPdfSection<TModel> section in sections)
+			{
+				if (!await section.LayoutAsync(g, m))
+				{
+					returnValue = false;
+					break;
+				}
+			}
+
+			return returnValue;
 		}
 	}
 }

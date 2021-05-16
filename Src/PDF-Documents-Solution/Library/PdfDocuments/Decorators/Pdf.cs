@@ -59,6 +59,18 @@ namespace PdfDocuments
 			return new PdfHorizontalStackSection<TModel>(children);
 		}
 
+		public static IPdfSection<TModel> OverlayStackSection<TModel>()
+			where TModel : IPdfModel
+		{
+			return new PdfOverlayStackSection<TModel>();
+		}
+
+		public static IPdfSection<TModel> OverlayStackSection<TModel>(params IPdfSection<TModel>[] children)
+			where TModel : IPdfModel
+		{
+			return new PdfOverlayStackSection<TModel>(children);
+		}
+
 		public static IPdfSection<TModel> SignatureSection<TModel>()
 			where TModel : IPdfModel
 		{
@@ -120,6 +132,7 @@ namespace PdfDocuments
 		}
 
 		public static IPdfSection<TModel> WithStyles<TModel>(this IPdfSection<TModel> section, params string[] styleNames)
+			where TModel : IPdfModel
 		{
 			section.StyleNames = styleNames;
 			return section;
@@ -379,6 +392,35 @@ namespace PdfDocuments
 			if (section is PdfPageFooterSection<TModel> footerSection)
 			{
 				footerSection.BottomRightText = value;
+			}
+
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithStackedItems<TModel>(this IPdfSection<TModel> section, params BindProperty<string, TModel>[] values)
+			where TModel : IPdfModel
+		{
+			if (section is PdfStackedTextSection<TModel> stackedSection)
+			{
+				stackedSection.StackedItems = values;
+			}
+
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithStackedItems<TModel>(this IPdfSection<TModel> section, params BindPropertyAction<string, TModel>[] values)
+			where TModel : IPdfModel
+		{
+			if (section is PdfStackedTextSection<TModel> stackedSection)
+			{
+				IList<BindProperty<string, TModel>> items = new List<BindProperty<string, TModel>>();
+
+				foreach (var value in values)
+				{
+					items.Add(value);
+				}
+
+				stackedSection.StackedItems = items;
 			}
 
 			return section;

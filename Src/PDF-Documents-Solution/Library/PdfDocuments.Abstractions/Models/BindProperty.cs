@@ -21,17 +21,22 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System;
 using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
-	public delegate TResult BindPropertyAction<TResult, TModel>(PdfGridPage gp, TModel m);
+	public delegate TResult BindPropertyAction<TResult, TModel>(PdfGridPage gp, TModel m) where TModel : IPdfModel;
 
 	public class BindProperty<TProperty, TModel>
+		where TModel : IPdfModel
 	{
 		public BindProperty()
 		{
+		}
+
+		public BindProperty(BindProperty<TProperty, TModel> action)
+		{
+			this.Action = action;
 		}
 
 		public BindProperty(BindPropertyAction<TProperty, TModel> action)
@@ -41,26 +46,37 @@ namespace PdfDocuments
 
 		public BindPropertyAction<TProperty, TModel> Action { get; set; }
 
-		public TProperty Resolve(PdfGridPage gp, TModel m)
+		public TProperty Resolve(PdfGridPage g, TModel m)
 		{
 			TProperty returnValue = default;
 
 			if (this.Action != null)
 			{
-				returnValue = this.Action.Invoke(gp, m);
+				returnValue = this.Action.Invoke(g, m);
 			}
 
 			return returnValue;
 		}
 
-		public Task<TProperty> GetValueAsync(PdfGridPage gp, TModel m)
+		public Task<TProperty> ResolveAsync(PdfGridPage g, TModel m)
 		{
-			return Task.FromResult(this.Resolve(gp, m));
+			return Task.FromResult(this.Resolve(g, m));
+		}
+
+		public void SetAction(BindProperty<TProperty, TModel> action)
+		{
+			this.Action = action;
 		}
 
 		public void SetAction(BindPropertyAction<TProperty, TModel> action)
 		{
 			this.Action = action;
+		}
+
+		public Task SetActionAsync(BindProperty<TProperty, TModel> action)
+		{
+			this.Action = action;
+			return Task.FromResult(0);
 		}
 
 		public Task SetActionAsync(BindPropertyAction<TProperty, TModel> action)
@@ -71,31 +87,23 @@ namespace PdfDocuments
 
 		public static implicit operator BindProperty<TProperty, TModel>(TProperty source)
 		{
-			return new BindProperty<TProperty, TModel>()
-			{
-				Action = (gp, m) => { return source; }
-			};
+			return new BindProperty<TProperty, TModel>((gp, m) => source);
 		}
 
-		public static implicit operator BindProperty<TProperty, TModel>(BindPropertyAction<TProperty, TModel> source)
+		public static implicit operator BindProperty<TProperty, TModel>(BindPropertyAction<TProperty, TModel> model)
 		{
 			return new BindProperty<TProperty, TModel>()
 			{
-				Action = source
+				Action = model
 			};
 		}
 
-		public static implicit operator BindPropertyAction<TProperty, TModel>(BindProperty<TProperty, TModel> source)
+		public static implicit operator BindPropertyAction<TProperty, TModel>(BindProperty<TProperty, TModel> model)
 		{
 			return new BindProperty<TProperty, TModel>()
 			{
-				Action = source
+				Action = model
 			};
-		}
-
-		public object First()
-		{
-			throw new NotImplementedException();
 		}
 	}
 }
