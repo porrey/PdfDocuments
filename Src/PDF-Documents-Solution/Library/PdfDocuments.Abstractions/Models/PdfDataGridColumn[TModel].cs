@@ -21,9 +21,18 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using System.Linq.Expressions;
+
 namespace PdfDocuments
 {
-	public class PdfDataGridColumn : PdfDataGridColumn<NullModel>
+	public class PdfDataGridColumn<TModel>
+		where TModel : IPdfModel
 	{
+		public BindProperty<string, TModel> HeaderStyleName { get; set; }
+		public BindProperty<string, TModel> DataStyleName { get; set; }
+		public BindProperty<string, TModel> ColumnHeader { get; set; }
+		public BindProperty<double, TModel> RelativeWidth { get; set; }
+		public BindProperty<string, TModel> StringFormat { get; set; }
+		public MemberExpression MemberExpression { get; set; }
 	}
 }

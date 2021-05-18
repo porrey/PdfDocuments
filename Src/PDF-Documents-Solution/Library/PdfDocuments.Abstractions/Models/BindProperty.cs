@@ -25,7 +25,8 @@ using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
-	public delegate TResult BindPropertyAction<TResult, TModel>(PdfGridPage gp, TModel m) where TModel : IPdfModel;
+	public delegate TResult BindPropertyAction<TResult, TModel>(PdfGridPage gp, TModel m)
+		where TModel : IPdfModel;
 
 	public class BindProperty<TProperty, TModel>
 		where TModel : IPdfModel

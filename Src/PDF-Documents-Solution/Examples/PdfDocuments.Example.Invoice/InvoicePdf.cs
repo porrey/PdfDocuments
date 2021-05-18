@@ -125,7 +125,6 @@ namespace PdfDocuments.Example.Invoice
 						.UseFont("Arial", 11, XFontStyle.Regular)
 						.UsePadding(0, 0, 0, 0)
 						.UseMargin(0, 2, 0, 2)
-						//.UseForegroundColor(ColorPalette.Transparent)
 						.UseTextAlignment(XStringFormats.CenterLeft)
 						.Build());
 
@@ -293,10 +292,10 @@ namespace PdfDocuments.Example.Invoice
 					Pdf.EmptySection<Invoice>(),
 					Pdf.KeyValueSection<Invoice>
 					(
-						new PdfKeyValueItem<Invoice>() { Key = "Invoice Number:", Value = new BindProperty<string, Invoice>((g, m) => $"{m.Id:00000000}") },
-						new PdfKeyValueItem<Invoice>() { Key = "Invoice Date:", Value = new BindProperty<string, Invoice>((g, m) => m.InvoiceDate.ToLongDateString()) },
-						new PdfKeyValueItem<Invoice>() { Key = "Terms:", Value = new BindProperty<string, Invoice>((g, m) => m.Terms) },
-						new PdfKeyValueItem<Invoice>() { Key = "Invoice Due Date:", Value = new BindProperty<string, Invoice>((g, m) => m.DueDate.ToLongDateString()) }
+						new PdfKeyValueItem<Invoice>("Invoice Number:", (g, m) => $"{m.Id:00000000}"),
+						new PdfKeyValueItem<Invoice>("Invoice Date:", (g, m) => m.InvoiceDate.ToLongDateString()),
+						new PdfKeyValueItem<Invoice>("Terms:", (g, m) => m.Terms),
+						new PdfKeyValueItem<Invoice>("Invoice Due Date:", (g, m) => m.DueDate.ToLongDateString())
 					)
 					.WithStyles("InvoiceNumber", "InvoiceNumber.Key", "InvoiceNumber.Value")
 				).WithStyles("InvoiceNumber.Section"),
@@ -342,10 +341,10 @@ namespace PdfDocuments.Example.Invoice
 							(
 								Pdf.KeyValueSection<Invoice>
 								(
-									new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Name) },
-									new PdfKeyValueItem<Invoice>() { Key = "Address:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.AddressLine) },
-									new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.CityStateZip) },
-									new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillTo.Phone) }
+									new PdfKeyValueItem<Invoice>("Name:", (g, m) => m.BillTo.Name),
+									new PdfKeyValueItem<Invoice>("Address:", (g, m) => m.BillTo.AddressLine),
+									new PdfKeyValueItem<Invoice>("City/State/Zip:", (g, m) => m.BillTo.CityStateZip),
+									new PdfKeyValueItem<Invoice>("Phone:", (g, m) => m.BillTo.Phone)
 								).WithStyles("BillTo.Content", "BillTo.Key", "BillTo.Value")
 							).WithStyles("BillTo.ContentBlock")
 						),
@@ -359,10 +358,10 @@ namespace PdfDocuments.Example.Invoice
 							(
 								Pdf.KeyValueSection<Invoice>
 								(
-									new PdfKeyValueItem<Invoice>() { Key = "Name:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Name) },
-									new PdfKeyValueItem<Invoice>() { Key = "Address:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.AddressLine) },
-									new PdfKeyValueItem<Invoice>() { Key = "City/State/Zip:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.CityStateZip) },
-									new PdfKeyValueItem<Invoice>() { Key = "Phone:", Value = new BindProperty<string, Invoice>((g, m) => m.BillFrom.Phone) }
+									new PdfKeyValueItem<Invoice>("Name:", (g, m) => m.BillFrom.Name),
+									new PdfKeyValueItem<Invoice>("Address:", (g, m) => m.BillFrom.AddressLine),
+									new PdfKeyValueItem<Invoice>("City/State/Zip:", (g, m) => m.BillFrom.CityStateZip),
+									new PdfKeyValueItem<Invoice>("Phone:", (g, m) => m.BillFrom.Phone)
 								).WithStyles("BillTo.Content", "BillTo.Key", "BillTo.Value")
 							).WithStyles("BillTo.ContentBlock")
 						)
@@ -387,9 +386,9 @@ namespace PdfDocuments.Example.Invoice
 					Pdf.EmptySection<Invoice>(),
 					Pdf.KeyValueSection<Invoice>
 						(
-							new PdfKeyValueItem<Invoice>() { Key = "Sub Total:", Value = new BindProperty<string, Invoice>((g, m) => m.Items.Sum(t => t.Amount).ToString("C")) },
-							new PdfKeyValueItem<Invoice>() { Key = "Tax (6.0%):", Value = new BindProperty<string, Invoice>((g, m) => (m.Items.Sum(t => t.Amount) * .06M).ToString("C")) },
-							new PdfKeyValueItem<Invoice>() { Key = "Total:", Value = new BindProperty<string, Invoice>((g, m) => (m.Items.Sum(t => t.Amount) * 1.06M).ToString("C")) })
+							new PdfKeyValueItem<Invoice>("Sub Total:", (g, m) => m.Items.Sum(t => t.Amount).ToString("C")),
+							new PdfKeyValueItem<Invoice>("Tax (6.0%):", (g, m) => (m.Items.Sum(t => t.Amount) * .06M).ToString("C")),
+							new PdfKeyValueItem<Invoice>("Total:", (g, m) => (m.Items.Sum(t => t.Amount) * 1.06M).ToString("C")))
 						.WithStyles("Totals", "Totals.Key", "Totals.Value")
 				).WithStyles("Totals.Section"),
 

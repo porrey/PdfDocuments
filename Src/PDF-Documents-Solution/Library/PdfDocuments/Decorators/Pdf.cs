@@ -144,12 +144,22 @@ namespace PdfDocuments
 			return new PdfDataGridSection<TModel, TItem>();
 		}
 
-		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, string columnHeader, Expression<Func<TItem, TProperty>> expression, double relativeWidth, string format, string headerStyleName, string dataStyleName)
+		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, BindProperty<string, TModel> columnHeader, Expression<Func<TItem, TProperty>> expression, BindProperty<double, TModel> relativeWidth, BindProperty<string, TModel> format, BindProperty<string, TModel> headerStyleName, BindProperty<string, TModel> cellStyleName)
 			where TModel : IPdfModel
 		{
 			if (section is PdfDataGridSection<TModel, TItem> s)
 			{
-				s.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, dataStyleName);
+				s.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
+			}
+			return section;
+		}
+
+		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> columnHeader, Expression<Func<TItem, TProperty>> expression, BindPropertyAction<double, TModel> relativeWidth, BindPropertyAction<string, TModel> format, BindPropertyAction<string, TModel> headerStyleName, BindPropertyAction<string, TModel> cellStyleName)
+			where TModel : IPdfModel
+		{
+			if (section is PdfDataGridSection<TModel, TItem> s)
+			{
+				s.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
 			}
 			return section;
 		}

@@ -33,12 +33,28 @@ namespace PdfDocuments
 	public class PdfDataGridSection<TModel, TItem> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public IList<PdfDataGridColumn> DataColumns { get; } = new List<PdfDataGridColumn>();
+		public IList<PdfDataGridColumn<TModel>> DataColumns { get; } = new List<PdfDataGridColumn<TModel>>();
 		public BindProperty<IEnumerable<TItem>, TModel> Items { get; set; } = new TItem[0];
 
-		public virtual PdfDataGridColumn AddDataColumn<TProperty>(string columnHeader, Expression<Func<TItem, TProperty>> expression, double relativeWidth, string format, string headerStyleName, string cellStyleName)
+		public virtual PdfDataGridColumn<TModel> AddDataColumn<TProperty>(BindProperty<string, TModel> columnHeader, Expression<Func<TItem, TProperty>> expression, BindProperty<double, TModel> relativeWidth, BindProperty<string, TModel> format, BindProperty<string, TModel> headerStyleName, BindProperty<string, TModel> cellStyleName)
 		{
-			PdfDataGridColumn column = new PdfDataGridColumn()
+			PdfDataGridColumn<TModel> column = new PdfDataGridColumn<TModel>()
+			{
+				HeaderStyleName = headerStyleName,
+				DataStyleName = cellStyleName,
+				ColumnHeader = columnHeader,
+				MemberExpression = expression.Body as MemberExpression,
+				RelativeWidth = relativeWidth,
+				StringFormat = format
+			};
+
+			this.DataColumns.Add(column);
+			return column;
+		}
+
+		public virtual PdfDataGridColumn<TModel> AddDataColumn<TProperty>(BindPropertyAction<string, TModel> columnHeader, Expression<Func<TItem, TProperty>> expression, BindPropertyAction<double, TModel> relativeWidth, BindPropertyAction<string, TModel> format, BindPropertyAction<string, TModel> headerStyleName, BindPropertyAction<string, TModel> cellStyleName)
+		{
+			PdfDataGridColumn<TModel> column = new PdfDataGridColumn<TModel>()
 			{
 				HeaderStyleName = headerStyleName,
 				DataStyleName = cellStyleName,
@@ -74,14 +90,14 @@ namespace PdfDocuments
 			//
 			// Determine the column widths.
 			//
-			double sum = this.DataColumns.Sum(t => t.RelativeWidth);
+			double sum = this.DataColumns.Sum(t => t.RelativeWidth.Resolve(g, m));
 
 			//
 			// The total of the column widths must be less
 			// than or equal to bounds.Columns
 			//
 			int[] columnWidth = (from tbl in this.DataColumns
-								 select (int)(bounds.Columns * (tbl.RelativeWidth / sum))).ToArray();
+								 select (int)(bounds.Columns * (tbl.RelativeWidth.Resolve(g, m) / sum))).ToArray();
 
 			//
 			// Never under allocate the width.
@@ -99,10 +115,10 @@ namespace PdfDocuments
 			//
 			int i = 0;
 
-			foreach (PdfDataGridColumn column in this.DataColumns)
+			foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
 			{
-				PdfTextElement<TModel> headerElement = new PdfTextElement<TModel>(column.ColumnHeader);
-				PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(column.HeaderStyleName);
+				PdfTextElement<TModel> headerElement = new PdfTextElement<TModel>(column.ColumnHeader.Resolve(g, m));
+				PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(column.HeaderStyleName.Resolve(g, m));
 				PdfSize headerSize = headerElement.Measure(g, m, headerStyle);
 				PdfBounds headerBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], headerSize.Rows).SubtractBounds(g, m, headerStyle.Margin.Resolve(g, m));
 				headerElement.Render(g, m, headerBounds, headerStyle);
@@ -131,10 +147,10 @@ namespace PdfDocuments
 					leftColumn = bounds.LeftColumn;
 					i = 0;
 
-					foreach (PdfDataGridColumn column in this.DataColumns)
+					foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
 					{
-						PdfTextElement<TModel> dataElement = new PdfTextElement<TModel>(this.FormattedValue(column, item));
-						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName);
+						PdfTextElement<TModel> dataElement = new PdfTextElement<TModel>(this.FormattedValue(g, m, column, item));
+						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
 						PdfSize dataSize = dataElement.Measure(g, m, dataStyle);
 						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
 						dataElement.Render(g, m, dataBounds, dataStyle);
@@ -150,14 +166,14 @@ namespace PdfDocuments
 			return Task.FromResult(returnValue);
 		}
 
-		private string FormattedValue(PdfDataGridColumn column, TItem item)
+		private string FormattedValue(PdfGridPage g, TModel m, PdfDataGridColumn<TModel> column, TItem item)
 		{
 			//
 			// For the property value.
 			//
 			PropertyInfo property = column.MemberExpression.Member as PropertyInfo;
 			object value = property.GetValue(item);
-			return column.StringFormat != null ? string.Format(column.StringFormat, value) : Convert.ToString(value);
+			return column.StringFormat != null ? string.Format(column.StringFormat.Resolve(g, m), value) : Convert.ToString(value);
 		}
 	}
 }
