@@ -26,11 +26,6 @@ using PdfSharp.Drawing.Layout;
 
 namespace PdfDocuments
 {
-	public interface IStyleBuilder<TModel>
-			where TModel : IPdfModel
-	{
-	}
-
 	public static class Style
 	{
 		public static IStyleBuilder<TModel> Create<TModel>()

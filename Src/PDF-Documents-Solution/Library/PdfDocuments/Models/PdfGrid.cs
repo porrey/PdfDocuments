@@ -51,41 +51,41 @@ namespace PdfDocuments
 		public int Rows { get; set; }
 		public int Columns { get; set; }
 
-		public double Left(int columnIndex)
+		public virtual double Left(int columnIndex)
 		{
 			return this.XOffset + ((columnIndex - 1) * this.ColumnWidth);
 		}
 
-		public double Right(int columnIndex)
+		public virtual double Right(int columnIndex)
 		{
 			return this.XOffset + (columnIndex * this.ColumnWidth);
 		}
 
-		public double Top(int rowIndex)
+		public virtual double Top(int rowIndex)
 		{
 			return this.YOffset + ((rowIndex - 1) * this.RowHeight);
 		}
 
-		public double Bottom(int rowIndex)
+		public virtual double Bottom(int rowIndex)
 		{
 			return this.YOffset + (rowIndex * this.RowHeight);
 		}
 
-		public double ColumnWidth => this.Width / this.Columns;
+		public virtual double ColumnWidth => this.Width / this.Columns;
 
-		public double ColumnsWidth(int columnCount)
+		public virtual double ColumnsWidth(int columnCount)
 		{
 			return this.ColumnWidth * columnCount;
 		}
 
-		public double RowHeight => this.Height / this.Rows;
+		public virtual double RowHeight => this.Height / this.Rows;
 
-		public double RowsHeight(int rowCount)
+		public virtual double RowsHeight(int rowCount)
 		{
 			return this.RowHeight * rowCount;
 		}
 
-		public PdfBounds GetBounds()
+		public virtual PdfBounds GetBounds()
 		{
 			return new PdfBounds(1, 1, this.Columns, this.Rows);
 		}

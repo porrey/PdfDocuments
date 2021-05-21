@@ -21,12 +21,11 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-
 namespace PdfDocuments
 {
-	public class PdfSize
+	public interface IPdfElement<TModel> where TModel : IPdfModel
 	{
-		public int Columns { get; set; }
-		public int Rows { get; set; }
+		PdfSize Measure(PdfGridPage g, TModel m, PdfStyle<TModel> style);
+		void Render(PdfGridPage g, TModel m, PdfBounds bounds, PdfStyle<TModel> style, object state);
 	}
 }

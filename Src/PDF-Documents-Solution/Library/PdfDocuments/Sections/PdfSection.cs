@@ -48,16 +48,16 @@ namespace PdfDocuments
 		}
 
 		public virtual string Key { get; set; }
-		public BindProperty<string, TModel> Text { get; set; } = string.Empty;
+		public virtual BindProperty<string, TModel> Text { get; set; } = string.Empty;
 		public virtual IPdfSection<TModel> ParentSection { get; set; }
 		public virtual IList<IPdfSection<TModel>> Children { get; } = new List<IPdfSection<TModel>>();
 		public virtual PdfBounds ActualBounds { get; set; } = new PdfBounds(0, 0, 0, 0);
 		public virtual BindProperty<bool, TModel> ShouldRender { get; set; } = true;
-		public BindProperty<string, TModel> WaterMarkImagePath { get; set; } = string.Empty;
-		public IEnumerable<string> StyleNames { get; set; } = new string[] { PdfStyleManager<TModel>.Default };
+		public virtual BindProperty<string, TModel> WaterMarkImagePath { get; set; } = string.Empty;
+		public virtual IEnumerable<string> StyleNames { get; set; } = new string[] { PdfStyleManager<TModel>.Default };
 
 		IPdfStyleManager<TModel> _styleManager = null;
-		public IPdfStyleManager<TModel> StyleManager
+		public virtual  IPdfStyleManager<TModel> StyleManager
 		{
 			get
 			{

@@ -29,8 +29,8 @@ namespace PdfDocuments
 	public class PdfPageHeaderSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public BindProperty<string, TModel> Logo { get; set; } = string.Empty;
-		public BindProperty<string, TModel> Title { get; set; } = string.Empty;
+		public virtual BindProperty<string, TModel> Logo { get; set; } = string.Empty;
+		public virtual BindProperty<string, TModel> Title { get; set; } = string.Empty;
 
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{

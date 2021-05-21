@@ -24,9 +24,31 @@
 
 namespace PdfDocuments
 {
-	public class PdfPoint
+	public class PdfBounds
 	{
-		public int Column { get; set; }
-		public int Row { get; set; }
+		public PdfBounds()
+		{
+		}
+
+		public PdfBounds(int leftColumn, int topRow, int columns, int rows)
+		{
+			this.TopRow = topRow;
+			this.LeftColumn = leftColumn;
+			this.Rows = rows;
+			this.Columns = columns;
+		}
+
+		public virtual int TopRow { get; set; }
+		public virtual int LeftColumn { get; set; }
+		public virtual int Rows { get; set; }
+		public virtual int Columns { get; set; }
+
+		public virtual int RightColumn => this.LeftColumn + this.Columns - 1;
+		public virtual int BottomRow => this.TopRow + this.Rows - 1;
+
+		public override string ToString()
+		{
+			return $"{this.LeftColumn}, {this.TopRow}, {this.Columns}, {this.Rows}";
+		}
 	}
 }

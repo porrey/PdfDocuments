@@ -10,9 +10,9 @@
 		<Product></Product>
 		<Copyright>Copyright © Daniel Porrey 2021. All Rights Reserved.</Copyright>
 		<Description>Provides an implementation for creating barcode images in a PDF document using IronBarcode. Requires a separate license to use.</Description>
-		<Version>1.1.0</Version>
-		<FileVersion>1.1.0</FileVersion>
-		<AssemblyVersion>1.1.0</AssemblyVersion>
+		<Version>1.2.0</Version>
+		<FileVersion>1.2.0</FileVersion>
+		<AssemblyVersion>1.2.0</AssemblyVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/porrey/PdfDocuments</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/porrey/PdfDocuments</RepositoryUrl>

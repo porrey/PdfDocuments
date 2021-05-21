@@ -28,6 +28,8 @@ namespace PdfDocuments
 	public delegate TResult BindPropertyAction<TResult, TModel>(PdfGridPage gp, TModel m)
 		where TModel : IPdfModel;
 
+	public delegate TProperty HookAction<TProperty>(TProperty obj, object state);
+
 	public class BindProperty<TProperty, TModel>
 		where TModel : IPdfModel
 	{
@@ -47,43 +49,55 @@ namespace PdfDocuments
 
 		public BindPropertyAction<TProperty, TModel> Action { get; set; }
 
-		public TProperty Resolve(PdfGridPage g, TModel m)
+		public HookAction<TProperty> Hook { get; set; }
+
+		public virtual TProperty Resolve(PdfGridPage g, TModel m, object state = null)
+		{
+			return this.OnResolve(g, m, state);
+		}
+
+		public virtual Task<TProperty> ResolveAsync(PdfGridPage g, TModel m)
+		{
+			return Task.FromResult(this.Resolve(g, m));
+		}
+
+		public virtual void SetAction(BindProperty<TProperty, TModel> action)
+		{
+			this.Action = action;
+		}
+
+		public virtual void SetAction(BindPropertyAction<TProperty, TModel> action)
+		{
+			this.Action = action;
+		}
+
+		public virtual Task SetActionAsync(BindProperty<TProperty, TModel> action)
+		{
+			this.Action = action;
+			return Task.FromResult(0);
+		}
+
+		public virtual Task SetActionAsync(BindPropertyAction<TProperty, TModel> action)
+		{
+			this.Action = action;
+			return Task.FromResult(0);
+		}
+
+		protected virtual TProperty OnResolve(PdfGridPage g, TModel m, object state = null)
 		{
 			TProperty returnValue = default;
 
 			if (this.Action != null)
 			{
 				returnValue = this.Action.Invoke(g, m);
+
+				if (this.Hook != null)
+				{
+					returnValue = this.Hook.Invoke(returnValue, state);
+				}
 			}
 
 			return returnValue;
-		}
-
-		public Task<TProperty> ResolveAsync(PdfGridPage g, TModel m)
-		{
-			return Task.FromResult(this.Resolve(g, m));
-		}
-
-		public void SetAction(BindProperty<TProperty, TModel> action)
-		{
-			this.Action = action;
-		}
-
-		public void SetAction(BindPropertyAction<TProperty, TModel> action)
-		{
-			this.Action = action;
-		}
-
-		public Task SetActionAsync(BindProperty<TProperty, TModel> action)
-		{
-			this.Action = action;
-			return Task.FromResult(0);
-		}
-
-		public Task SetActionAsync(BindPropertyAction<TProperty, TModel> action)
-		{
-			this.Action = action;
-			return Task.FromResult(0);
 		}
 
 		public static implicit operator BindProperty<TProperty, TModel>(TProperty source)

@@ -21,21 +21,18 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
+using System.Linq.Expressions;
 
 namespace PdfDocuments
 {
-	public class PdfGridPage
+	public class PdfDataGridColumn<TModel>
+		where TModel : IPdfModel
 	{
-		public string CurrentService { get; set; }
-		public string DocumentTitle { get; set; }
-		public PdfDocument Document { get; set; }
-		public PdfPage Page { get; set; }
-		public PdfGrid Grid { get; set; }
-		public int PageNumber { get; set; }
-		public XGraphics Graphics { get; set; }
-		public string ImagePath { get; set; }
-		public DebugMode DebugMode { get; set; }
+		public virtual BindProperty<string, TModel> HeaderStyleName { get; set; }
+		public virtual BindProperty<string, TModel> DataStyleName { get; set; }
+		public virtual BindProperty<string, TModel> ColumnHeader { get; set; }
+		public virtual BindProperty<double, TModel> RelativeWidth { get; set; }
+		public virtual BindProperty<string, TModel> StringFormat { get; set; }
+		public virtual MemberExpression MemberExpression { get; set; }
 	}
 }

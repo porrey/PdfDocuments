@@ -48,6 +48,7 @@ namespace PdfDocuments
 			g = this.L;
 			b = this.L;
 			v = (this.L <= 0.5) ? (this.L * (1.0 + this.S)) : (this.L + this.S - this.L * this.S);
+			
 			if (v > 0)
 			{
 				double m;

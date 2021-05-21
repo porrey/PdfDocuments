@@ -21,34 +21,21 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 
 namespace PdfDocuments
 {
-	public class PdfBounds
+	public class PdfGridPage
 	{
-		public PdfBounds()
-		{
-		}
-
-		public PdfBounds(int leftColumn, int topRow, int columns, int rows)
-		{
-			this.TopRow = topRow;
-			this.LeftColumn = leftColumn;
-			this.Rows = rows;
-			this.Columns = columns;
-		}
-
-		public int TopRow { get; set; }
-		public int LeftColumn { get; set; }
-		public int Rows { get; set; }
-		public int Columns { get; set; }
-
-		public int RightColumn => this.LeftColumn + this.Columns - 1;
-		public int BottomRow => this.TopRow + this.Rows - 1;
-
-		public override string ToString()
-		{
-			return $"{this.LeftColumn}, {this.TopRow}, {this.Columns}, {this.Rows}";
-		}
+		public virtual string CurrentService { get; set; }
+		public virtual string DocumentTitle { get; set; }
+		public virtual PdfDocument Document { get; set; }
+		public virtual PdfPage Page { get; set; }
+		public virtual PdfGrid Grid { get; set; }
+		public virtual int PageNumber { get; set; }
+		public virtual XGraphics Graphics { get; set; }
+		public virtual string ImagePath { get; set; }
+		public virtual DebugMode DebugMode { get; set; }
 	}
 }

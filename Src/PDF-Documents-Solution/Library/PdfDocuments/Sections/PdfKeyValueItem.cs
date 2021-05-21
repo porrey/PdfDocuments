@@ -21,18 +21,38 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Linq.Expressions;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
-	public class PdfDataGridColumn<TModel>
+	public class PdfKeyValueItem<TModel>
 		where TModel : IPdfModel
 	{
-		public BindProperty<string, TModel> HeaderStyleName { get; set; }
-		public BindProperty<string, TModel> DataStyleName { get; set; }
-		public BindProperty<string, TModel> ColumnHeader { get; set; }
-		public BindProperty<double, TModel> RelativeWidth { get; set; }
-		public BindProperty<string, TModel> StringFormat { get; set; }
-		public MemberExpression MemberExpression { get; set; }
+		public PdfKeyValueItem()
+		{
+		}
+
+		public PdfKeyValueItem(string key, string value)
+		{
+			this.Key = key;
+			this.Value = value;
+		}
+
+		public PdfKeyValueItem(string key, BindProperty<string, TModel> value)
+		{
+			this.Key = key;
+			this.Value = value;
+		}
+
+		public PdfKeyValueItem(string key, BindPropertyAction<string, TModel> value)
+		{
+			this.Key = key;
+			this.Value = value;
+		}
+
+		public string Key { get; set; }
+		public BindProperty<string, TModel> Value { get; set; }
 	}
 }

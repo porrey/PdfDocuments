@@ -32,9 +32,9 @@ namespace PdfDocuments
 			this.Text = text;
 		}
 
-		public string Text { get; set; }
+		public virtual string Text { get; set; }
 
-		public PdfSize Measure(PdfGridPage g, TModel m, PdfStyle<TModel> style)
+		public virtual PdfSize Measure(PdfGridPage g, TModel m, PdfStyle<TModel> style)
 		{
 			PdfSize returnValue = new PdfSize();
 
@@ -68,38 +68,38 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		public void Render(PdfGridPage g, TModel m, PdfBounds bounds, PdfStyle<TModel> style)
+		public virtual void Render(PdfGridPage g, TModel m, PdfBounds bounds, PdfStyle<TModel> style, object state = null)
 		{
 			//
 			// Apply margin. Nothing is drawn in the margin.
 			//
-			PdfBounds marginBounds = bounds.SubtractBounds(g, m, style.Margin.Resolve(g, m));
+			PdfBounds marginBounds = bounds.SubtractBounds(g, m, style.Margin.Resolve(g, m, state));
 
 			//
 			// Draw the background.
 			//
-			g.DrawFilledRectangle(marginBounds, style.BackgroundColor.Resolve(g, m));
+			g.DrawFilledRectangle(marginBounds, style.BackgroundColor.Resolve(g, m, state));
 
 			//
 			// Draw the border.
 			//
-			XPen pen = new XPen(style.BorderColor.Resolve(g, m), style.BorderWidth.Resolve(g, m));
+			XPen pen = new XPen(style.BorderColor.Resolve(g, m, state), style.BorderWidth.Resolve(g, m, state));
 			g.DrawRectangle(marginBounds, pen);
 
 			//
 			// Apply padding. This is where the fill and border will extend to.
 			//
-			PdfBounds elementBounds = marginBounds.SubtractBounds(g, m, style.Padding.Resolve(g, m));
-			
+			PdfBounds elementBounds = marginBounds.SubtractBounds(g, m, style.Padding.Resolve(g, m, state));
+
 			//
 			// Pad the text. This allows the border and fill to extend beyond the text.
 			//
-			PdfBounds textBounds = elementBounds.SubtractBounds(g, m, style.CellPadding.Resolve(g, m));
+			PdfBounds textBounds = elementBounds.SubtractBounds(g, m, style.CellPadding.Resolve(g, m, state));
 
 			//
 			// Draw the text.
 			//
-			g.DrawText(this.Text, style.Font.Resolve(g, m), textBounds, style.TextAlignment.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
+			g.DrawText(this.Text, style.Font.Resolve(g, m, state), textBounds, style.TextAlignment.Resolve(g, m, state), style.ForegroundColor.Resolve(g, m, state));
 		}
 	}
 }

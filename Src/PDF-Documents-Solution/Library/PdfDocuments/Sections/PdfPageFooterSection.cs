@@ -30,10 +30,10 @@ namespace PdfDocuments
 	public class PdfPageFooterSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public BindProperty<string, TModel> TopLeftText { get; set; } = string.Empty;
-		public BindProperty<string, TModel> TopRightText { get; set; } = string.Empty;
-		public BindProperty<string, TModel> BottomLeftText { get; set; } = string.Empty;
-		public BindProperty<string, TModel> BottomRightText { get; set; } = string.Empty;
+		public virtual BindProperty<string, TModel> TopLeftText { get; set; } = string.Empty;
+		public virtual BindProperty<string, TModel> TopRightText { get; set; } = string.Empty;
+		public virtual BindProperty<string, TModel> BottomLeftText { get; set; } = string.Empty;
+		public virtual BindProperty<string, TModel> BottomRightText { get; set; } = string.Empty;
 
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{

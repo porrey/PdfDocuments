@@ -37,7 +37,7 @@ namespace PdfDocuments
 			this.StyleManager = styleManager;
 		}
 
-		public IPdfStyleManager<TModel> StyleManager { get; set; }
+		public virtual IPdfStyleManager<TModel> StyleManager { get; set; }
 		public virtual Type DocumentModelType => typeof(TModel);
 		public virtual string DocumentTitle { get; set; }
 		public virtual DebugMode DebugMode { get; set; } = DebugMode.None;

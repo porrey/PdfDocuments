@@ -35,6 +35,21 @@ namespace PdfDocuments.Example.Invoice
 		{
 		}
 
+		protected override Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
+		{
+			return Task.FromResult(new PdfGrid(this.PageWidth(page), this.PageHeight(page), 400, 160));
+		}
+
+		protected override Task<string> OnGetDocumentTitleAsync(Invoice model)
+		{
+			return Task.FromResult("Invoice");
+		}
+
+		protected override Task<int> OnGetPageCountAsync(Invoice model)
+		{
+			return Task.FromResult(1);
+		}
+
 		protected override Task OnInitializeStylesAsync(IPdfStyleManager<Invoice> styleManager)
 		{
 			//
@@ -255,21 +270,6 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			return Task.CompletedTask;
-		}
-
-		protected override Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
-		{
-			return Task.FromResult(new PdfGrid(this.PageWidth(page), this.PageHeight(page), 400, 160));
-		}
-
-		protected override Task<string> OnGetDocumentTitleAsync(Invoice model)
-		{
-			return Task.FromResult("Invoice");
-		}
-
-		protected override Task<int> OnGetPageCountAsync(Invoice model)
-		{
-			return Task.FromResult(1);
 		}
 
 		protected override Task<IPdfSection<Invoice>> OnAddContentAsync()

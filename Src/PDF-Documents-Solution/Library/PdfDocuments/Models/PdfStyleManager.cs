@@ -41,7 +41,7 @@ namespace PdfDocuments
 			this.Add(PdfStyleManager<TModel>.Debug, new PdfStyle<TModel>() { Font = new XFont("Arial Narrow", 8, XFontStyle.Regular) });
 		}
 
-		public PdfStyle<TModel> GetStyle(string name)
+		public virtual PdfStyle<TModel> GetStyle(string name)
 		{
 			PdfStyle<TModel> returnValue = this[PdfStyleManager<TModel>.Default];
 
@@ -53,7 +53,7 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		public void Replace(string name, PdfStyle<TModel> style)
+		public virtual void Replace(string name, PdfStyle<TModel> style)
 		{
 			if (this.ContainsKey(name))
 			{

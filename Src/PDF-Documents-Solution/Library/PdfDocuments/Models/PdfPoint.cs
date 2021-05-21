@@ -21,41 +21,12 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace PdfDocuments
 {
-	public class PdfGeneratorFactory : IPdfGeneratorFactory
+	public class PdfPoint
 	{
-		public PdfGeneratorFactory(IServiceProvider serviceProvider)
-		{
-			this.ServiceProvider = serviceProvider;
-		}
-
-		protected virtual IServiceProvider ServiceProvider { get; set; }
-
-		public virtual Task<IPdfGenerator<TModel>> GetAsync<TModel>()
-			where TModel : IPdfModel
-		{
-			IPdfGenerator<TModel> returnValue = null;
-
-			IEnumerable<IPdfGenerator> items = this.ServiceProvider.GetRequiredService<IEnumerable<IPdfGenerator>>();
-			IPdfGenerator item = items.Where(t => t.DocumentModelType == typeof(TModel)).SingleOrDefault();
-
-			if (item != null)
-			{
-				returnValue = item as IPdfGenerator<TModel>;
-			}
-			else
-			{
-				throw new Exception($"A PDF generator for document type '{typeof(TModel).Name}' was not found.");
-			}
-
-			return Task.FromResult(returnValue);
-		}
+		public virtual int Column { get; set; }
+		public virtual int Row { get; set; }
 	}
 }

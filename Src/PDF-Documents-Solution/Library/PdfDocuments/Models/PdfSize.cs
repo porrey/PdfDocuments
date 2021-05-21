@@ -21,18 +21,12 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Drawing;
 
-namespace PdfDocuments.Barcode
+namespace PdfDocuments
 {
-	public enum BarCodeType
+	public class PdfSize
 	{
-		Code128,
-		Code39
-	}
-
-	public interface IBarcodeGenerator
-	{
-		Image Create(string data, int barcodeWidth, int barcodeHeight, BarCodeType type, Color color, Color backColor);
+		public virtual int Columns { get; set; }
+		public virtual int Rows { get; set; }
 	}
 }

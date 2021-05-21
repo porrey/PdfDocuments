@@ -27,35 +27,6 @@ using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
-	public class PdfKeyValueItem<TModel>
-		where TModel : IPdfModel
-	{
-		public PdfKeyValueItem()
-		{
-		}
-
-		public PdfKeyValueItem(string key, string value)
-		{
-			this.Key = key;
-			this.Value = value;
-		}
-
-		public PdfKeyValueItem(string key, BindProperty<string, TModel> value)
-		{
-			this.Key = key;
-			this.Value = value;
-		}
-
-		public PdfKeyValueItem(string key, BindPropertyAction<string, TModel> value)
-		{
-			this.Key = key;
-			this.Value = value;
-		}
-
-		public string Key { get; set; }
-		public BindProperty<string, TModel> Value { get; set; }
-	}
-
 	public class PdfKeyValueSection<TModel> : PdfSection<TModel>
 		where TModel : IPdfModel
 	{

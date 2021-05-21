@@ -38,10 +38,10 @@ namespace PdfDocuments
 			this.Bottom = bottom;
 		}
 
-		public int Top { get; set; }
-		public int Bottom { get; set; }
-		public int Right { get; set; }
-		public int Left { get; set; }
+		public virtual int Top { get; set; }
+		public virtual int Bottom { get; set; }
+		public virtual int Right { get; set; }
+		public virtual int Left { get; set; }
 
 		public static implicit operator PdfSpacing((int Left, int Top, int Right, int Bottom) item)
 		{
