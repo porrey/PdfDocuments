@@ -9,7 +9,7 @@
 		<Company>Daniel M. Porrey</Company>
 		<Product></Product>
 		<Copyright>Copyright © Daniel Porrey 2021. All Rights Reserved.</Copyright>
-		<Description>Provides an implementation for creating barcode images in a PDF document using IronBarcode. Requires a separate license to use.</Description>
+		<Description>Provides the components necessary to add barcode images in a PDF document using IronBarcode. Requires a separate license to use.</Description>
 		<Version>1.2.0</Version>
 		<FileVersion>1.2.0</FileVersion>
 		<AssemblyVersion>1.2.0</AssemblyVersion>
