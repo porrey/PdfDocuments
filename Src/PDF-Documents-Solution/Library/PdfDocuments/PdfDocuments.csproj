@@ -9,7 +9,7 @@
 	  <Company>Daniel M. Porrey</Company>
 	  <Product></Product>
 	  <Copyright>Copyright © Daniel Porrey 2021. All Rights Reserved.</Copyright>
-	  <Description>Provides the components necessary to generate rich PDF documents with PdfSharp.</Description>
+	  <Description>High level C# library for the easy creation of PDF documents using PdfSharp.</Description>
 	  <Version>1.2.0</Version>
 	  <FileVersion>1.2.0</FileVersion>
 	  <AssemblyVersion>1.2.0</AssemblyVersion>
