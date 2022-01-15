@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>netstandard2.1;net5.0</TargetFrameworks>
+	  <TargetFrameworks>net6.0</TargetFrameworks>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	  <PackageLicenseUrl></PackageLicenseUrl>
 	  <Authors>Daniel M. Porrey</Authors>
 	  <Company>Daniel M. Porrey</Company>
 	  <Product></Product>
-	  <Copyright>Copyright © Daniel Porrey 2021. All Rights Reserved.</Copyright>
+	  <Copyright>Copyright © Daniel Porrey 2021-2022. All Rights Reserved.</Copyright>
 	  <Description>High level C# library for the easy creation of PDF documents using PdfSharp.</Description>
-	  <Version>1.2.0</Version>
-	  <FileVersion>1.2.0</FileVersion>
-	  <AssemblyVersion>1.2.0</AssemblyVersion>
+	  <Version>6.0.0</Version>
+	  <FileVersion>6.0.0</FileVersion>
+	  <AssemblyVersion>6.0.0</AssemblyVersion>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageProjectUrl>https://github.com/porrey/PdfDocuments</PackageProjectUrl>
 	  <RepositoryUrl>https://github.com/porrey/PdfDocuments</RepositoryUrl>
@@ -27,10 +27,12 @@
 	  <IncludeSymbols>true</IncludeSymbols>
 	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	  <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <PackageTags>pdf;document;barcode</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
     <PackageReference Include="PDFsharpNetStandard2" Version="1.51.4845" />
   </ItemGroup>
 
@@ -38,6 +40,10 @@
     <None Include="..\..\..\..\Images\PdfDcouments.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+    </None>
+    <None Include="X:\Documents\GitHub\PdfDocuments\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
