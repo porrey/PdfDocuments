@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0</TargetFrameworks>
+		<TargetFrameworks>net8.0</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<PackageLicenseUrl></PackageLicenseUrl>
 		<Authors>Daniel M. Porrey</Authors>
 		<Company>Daniel M. Porrey</Company>
 		<Product></Product>
-		<Copyright>Copyright © Daniel Porrey 2021-2022. All Rights Reserved.</Copyright>
+		<Copyright>Copyright © Daniel Porrey 2021-2024. All Rights Reserved.</Copyright>
 		<Description>High level C# library for the easy creation of barcodes in PDF documents using PdfSharp.</Description>
-		<Version>6.0.0</Version>
-		<FileVersion>6.0.0</FileVersion>
-		<AssemblyVersion>6.0.0</AssemblyVersion>
+		<Version>8.0.0</Version>
+		<FileVersion>8.0.0</FileVersion>
+		<AssemblyVersion>8.0.0</AssemblyVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/porrey/PdfDocuments</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/porrey/PdfDocuments</RepositoryUrl>
@@ -30,9 +30,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BarCode" Version="2021.12.21" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+		<PackageReference Include="BarCode" Version="2023.12.4" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

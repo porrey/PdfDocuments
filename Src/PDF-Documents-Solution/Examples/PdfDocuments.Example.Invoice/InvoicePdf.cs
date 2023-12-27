@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021 Daniel Porrey
+ *	Copyright (c) 2021-2024 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,10 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
 using System.Linq;
 using System.Threading.Tasks;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 
 namespace PdfDocuments.Example.Invoice
 {
