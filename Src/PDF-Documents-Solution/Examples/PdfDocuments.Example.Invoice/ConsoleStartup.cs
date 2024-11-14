@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2024 Daniel Porrey
+ *	Copyright (c) 2021-2025 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@
 using Diamond.Core.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PdfSharp.Fonts;
 using Serilog;
 
 namespace PdfDocuments.Example.Invoice
@@ -47,7 +48,9 @@ namespace PdfDocuments.Example.Invoice
 
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.AddPdfDocuments()
+            //GlobalFontSettings.FontResolver = 
+
+            services.AddPdfDocuments()
 					.AddScoped<IPdfGenerator, InvoicePdf>()
 					.AddPdfStyleManager<Invoice>()
 					.AddHostedService<HostedServiceExample>();

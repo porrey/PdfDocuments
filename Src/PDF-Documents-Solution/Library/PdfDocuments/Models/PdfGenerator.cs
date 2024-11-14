@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2024 Daniel Porrey
+ *	Copyright (c) 2021-2025 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -44,8 +44,8 @@ namespace PdfDocuments
 		public virtual IPdfSection<TModel> RootSection { get; protected set; }
 
 		protected virtual PdfGrid Grid { get; set; }
-		protected virtual double PageWidth(PdfPage page) => page.Width - page.TrimMargins.Left - page.TrimMargins.Right;
-		protected virtual double PageHeight(PdfPage page) => page.Height - page.TrimMargins.Top - page.TrimMargins.Bottom;
+		protected virtual XUnit PageWidth(PdfPage page) => page.Width - page.TrimMargins.Left - page.TrimMargins.Right;
+		protected virtual XUnit PageHeight(PdfPage page) => page.Height - page.TrimMargins.Top - page.TrimMargins.Bottom;
 
 		public virtual async Task<(bool, byte[])> BuildAsync(TModel model)
 		{
@@ -54,7 +54,7 @@ namespace PdfDocuments
 			//
 			// Create the document.
 			//
-			using (PdfDocument document = new PdfDocument())
+			using (PdfDocument document = new())
 			{
 				//
 				// Create the pages.
@@ -136,7 +136,7 @@ namespace PdfDocuments
 
 		protected virtual Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
 		{
-			return Task.FromResult(new PdfGrid(this.PageWidth(page), this.PageHeight(page), 200, 80));
+			return Task.FromResult(new PdfGrid(this.PageWidth(page).Point, this.PageHeight(page).Point, 200, 80));
 		}
 
 		protected virtual Task<int> OnGetPageCountAsync(TModel model)
@@ -177,7 +177,7 @@ namespace PdfDocuments
 
 			using (XGraphics gfx = XGraphics.FromPdfPage(page))
 			{
-				using (XForm form = new XForm(document, this.PageWidth(page), this.PageHeight(page)))
+				using (XForm form = new(document, this.PageWidth(page), this.PageHeight(page)))
 				{
 					using (XGraphics g = XGraphics.FromForm(form))
 					{
@@ -239,7 +239,7 @@ namespace PdfDocuments
 						//
 						// Draw the page.
 						//
-						gfx.DrawImage(form, page.TrimMargins.Left, page.TrimMargins.Top);
+						gfx.DrawImage(form, page.TrimMargins.Left.Point, page.TrimMargins.Top.Point);
 					}
 				}
 			}

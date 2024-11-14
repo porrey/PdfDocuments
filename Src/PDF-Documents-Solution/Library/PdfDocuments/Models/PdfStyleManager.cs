@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2024 Daniel Porrey
+ *	Copyright (c) 2021-2025 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ namespace PdfDocuments
 			// Add default style.
 			//
 			this.Add(PdfStyleManager<TModel>.Default, new PdfStyle<TModel>());
-			this.Add(PdfStyleManager<TModel>.Debug, new PdfStyle<TModel>() { Font = new XFont("Arial Narrow", 8, XFontStyle.Regular) });
+			this.Add(PdfStyleManager<TModel>.Debug, new PdfStyle<TModel>() { Font = new XFont("Arial", 8, XFontStyleEx.Regular) });
 		}
 
 		public virtual PdfStyle<TModel> GetStyle(string name)

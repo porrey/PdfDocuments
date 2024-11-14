@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2024 Daniel Porrey
+ *	Copyright (c) 2021-2025 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -32,9 +32,9 @@ namespace PdfDocuments
 		{
 			return new XSize()
 			{
-				Width = page.Width.Value / page.Width.Inch,
-				Height = page.Height.Value / page.Height.Inch
-			};
+				Width = page.Width.Value / page.Width.Point,
+				Height = page.Height.Value / page.Height.Point
+            };
 		}
 	}
 }

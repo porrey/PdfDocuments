@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2024 Daniel Porrey
+ *	Copyright (c) 2021-2025 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ namespace PdfDocuments.Example.Invoice
 
 		protected override Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
 		{
-			return Task.FromResult(new PdfGrid(this.PageWidth(page), this.PageHeight(page), 400, 160));
+			return Task.FromResult(new PdfGrid(this.PageWidth(page).Point, this.PageHeight(page).Point, 400, 160));
 		}
 
 		protected override Task<string> OnGetDocumentTitleAsync(Invoice model)
@@ -56,7 +56,7 @@ namespace PdfDocuments.Example.Invoice
 			// Build the styles.
 			//
 			this.StyleManager.Add("PageHeader.Section", Style.Create<Invoice>()
-						.UseFont("Arial Narrow", 48)
+						.UseFont("Arial", 48)
 						.UseForegroundColor(ColorPalette.Blue)
 						.UseBorderColor(ColorPalette.Red)
 						.UseBorderWidth(1)
@@ -79,7 +79,7 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("InvoiceNumber.Key", Style.Create<Invoice>()
-						.UseFont("Times New Roman", 11.75, XFontStyle.Bold)
+						.UseFont("Times New Roman", 11.75, XFontStyleEx.Bold)
 						.UsePadding(1, 1, 1, 1)
 						.UseForegroundColor(ColorPalette.Gray)
 						.UseTextAlignment(XStringFormats.CenterRight)
@@ -87,7 +87,7 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("InvoiceNumber.Value", Style.Copy(this.StyleManager.GetStyle("InvoiceNumber.Key"))
-						.UseFont("Times New Roman", 11.75, XFontStyle.Regular)
+						.UseFont("Times New Roman", 11.75, XFontStyleEx.Regular)
 						.Build());
 
 			//
@@ -98,7 +98,7 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("Reference.Header.1", Style.Create<Invoice>()
-						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UseFont("Arial", 11, XFontStyleEx.Regular)
 						.UsePadding(1, 2, 1, 2)
 						.UseMargin(0, 0, 1, 0)
 						.UseForegroundColor(ColorPalette.White)
@@ -115,7 +115,7 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("Reference.Body", Style.Create<Invoice>()
-						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UseFont("Arial", 11, XFontStyleEx.Regular)
 						.UseBorderColor(ColorPalette.Blue)
 						.UseBorderWidth(1)
 						.UseCellPadding(1, 2, 1, 2)
@@ -137,14 +137,14 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("BillTo.Content", Style.Create<Invoice>()
-						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UseFont("Arial", 11, XFontStyleEx.Regular)
 						.UsePadding(0, 0, 0, 0)
 						.UseMargin(0, 2, 0, 2)
 						.UseTextAlignment(XStringFormats.CenterLeft)
 						.Build());
 
 			this.StyleManager.Add("BillTo.Header.Left", Style.Create<Invoice>()
-						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UseFont("Arial", 11, XFontStyleEx.Regular)
 						.UsePadding(1, 3, 1, 3)
 						.UseMargin(0, 2, 1, 2)
 						.UseBackgroundColor(ColorPalette.Red)
@@ -157,7 +157,7 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("BillTo.Key", Style.Create<Invoice>()
-						.UseFont("Arial", 11, XFontStyle.Regular)
+						.UseFont("Arial", 11, XFontStyleEx.Regular)
 						.UsePadding(1, 1, 1, 1)
 						.UseForegroundColor(ColorPalette.LightGray)
 						.UseTextAlignment(XStringFormats.CenterRight)
@@ -165,7 +165,7 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("BillTo.Value", Style.Copy(this.StyleManager.GetStyle("BillTo.Key"))
-						.UseFont("Arial", 11, XFontStyle.Bold)
+						.UseFont("Arial", 11, XFontStyleEx.Bold)
 						.UseForegroundColor(ColorPalette.Gray)
 						.UseTextAlignment(XStringFormats.CenterLeft)
 						.Build());
@@ -178,7 +178,7 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("InvoiceDetails.Header.Item", Style.Create<Invoice>()
-						.UseFont("Times New Roman", 13, XFontStyle.Bold)
+						.UseFont("Times New Roman", 13, XFontStyleEx.Bold)
 						.UseMargin(0, 1, 0, 1)
 						.UsePadding(0, 2, 1, 2)
 						.UseCellPadding(1, 1, 1, 1)
@@ -193,7 +193,7 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("InvoiceDetails.Body.Left", Style.Create<Invoice>()
-						.UseFont("Times New Roman", 13, XFontStyle.Regular)
+						.UseFont("Times New Roman", 13, XFontStyleEx.Regular)
 						.UseMargin(0, 1, 0, 1)
 						.UsePadding(0, 2, 1, 2)
 						.UseCellPadding(1, 1, 1, 1)
@@ -221,7 +221,7 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("Totals.Key", Style.Create<Invoice>()
-						.UseFont("Arial", 11.75, XFontStyle.Regular)
+						.UseFont("Arial", 11.75, XFontStyleEx.Regular)
 						.UseMargin(1, 1, 0, 1)
 						.UsePadding(1, 1, 1, 1)
 						.UseCellPadding(2, 2, 2, 2)
@@ -232,14 +232,14 @@ namespace PdfDocuments.Example.Invoice
 						.Build());
 
 			this.StyleManager.Add("Totals.Value", Style.Copy(this.StyleManager.GetStyle("Totals.Key"))
-						.UseFont("Arial", 11.75, XFontStyle.Bold)
+						.UseFont("Arial", 11.75, XFontStyleEx.Bold)
 						.Build());
 
 			//
 			// Signature
 			//
 			this.StyleManager.Add("Signature.Section", Style.Create<Invoice>()
-						.UseFont("Arial", 10, XFontStyle.Regular)
+						.UseFont("Arial", 10, XFontStyleEx.Regular)
 						.UseBorderWidth(1)
 						.UseForegroundColor(ColorPalette.Gray)
 						.UseTextAlignment(XStringFormats.CenterLeft)
@@ -251,7 +251,7 @@ namespace PdfDocuments.Example.Invoice
 			// Tag line
 			//
 			this.StyleManager.Add("ThankYou.Section", Style.Create<Invoice>()
-						.UseFont("Arial", 12, XFontStyle.Italic)
+						.UseFont("Arial", 12, XFontStyleEx.Italic)
 						.UsePadding(0, 2, 1, 2)
 						.UseMargin(0, 3, 0, 0)
 						.UseForegroundColor(ColorPalette.Red)
@@ -263,7 +263,7 @@ namespace PdfDocuments.Example.Invoice
 			// Footer
 			//
 			this.StyleManager.Add("PageFooter.Section", Style.Create<Invoice>()
-						.UseFont("Arial Narrow", 7, XFontStyle.Regular)
+						.UseFont("Arial", 7, XFontStyleEx.Regular)
 						.UseRelativeHeight(.035)
 						.UseMargin(0, 5, 0, 0)
 						.UseForegroundColor(ColorPalette.LightGray)
