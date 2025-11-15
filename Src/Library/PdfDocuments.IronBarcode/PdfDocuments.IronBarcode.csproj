@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<PackageLicenseUrl></PackageLicenseUrl>
+		<Authors>Daniel M. Porrey</Authors>
+		<Company>Daniel M. Porrey</Company>
+		<Product></Product>
+		<Copyright>Copyright © Daniel Porrey 2021-2025. All Rights Reserved.</Copyright>
+		<Description>High level C# library for the easy creation of barcodes in PDF documents using PdfSharp.</Description>
+		<Version>10.0.0</Version>
+		<FileVersion>10.0.0</FileVersion>
+		<AssemblyVersion>10.0.0</AssemblyVersion>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/porrey/PdfDocuments</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/porrey/PdfDocuments</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageIcon>PdfDcouments.png</PackageIcon>
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<PackageIconUrl></PackageIconUrl>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BarCode" Version="2025.11.4" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\..\..\Images\PdfDcouments.png">
+	    <Pack>True</Pack>
+	    <PackagePath></PackagePath>
+	  </None>
+	  <None Include="..\..\..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\PdfDocuments\PdfDocuments.csproj" />
+	</ItemGroup>
+
+
+</Project>
