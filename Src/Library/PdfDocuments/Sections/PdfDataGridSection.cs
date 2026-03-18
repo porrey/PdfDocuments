@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -30,15 +30,15 @@ using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
-	public class PdfDataGridSection<TModel, TItem> : PdfSection<TModel>
+	public class PdfDataGridSection<TModel, TItem> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
-		public virtual IList<PdfDataGridColumn<TModel>> DataColumns { get; } = new List<PdfDataGridColumn<TModel>>();
+		public virtual IList<PdfDataGridColumn<TModel>> DataColumns { get; } = [];
 		public virtual BindProperty<IEnumerable<TItem>, TModel> Items { get; set; } = new TItem[0];
 
 		public virtual PdfDataGridColumn<TModel> AddDataColumn<TProperty>(BindProperty<string, TModel> columnHeader, Expression<Func<TItem, TProperty>> expression, BindProperty<double, TModel> relativeWidth, BindProperty<string, TModel> format, BindProperty<string, TModel> headerStyleName, BindProperty<string, TModel> cellStyleName)
 		{
-			PdfDataGridColumn<TModel> column = new PdfDataGridColumn<TModel>()
+			PdfDataGridColumn<TModel> column = new()
 			{
 				HeaderStyleName = headerStyleName,
 				DataStyleName = cellStyleName,

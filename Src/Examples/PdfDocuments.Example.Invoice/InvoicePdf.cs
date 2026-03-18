@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -413,7 +413,7 @@ namespace PdfDocuments.Example.Invoice
 				Pdf.PageFooterSection<Invoice>()
 					.WithTopLeftText("Contact us immediately with any questions")
 					.WithTopRightText((g, m) => $"Page {g.PageNumber} of {g.Document.PageCount}")
-					.WithBottomLeftText("Copyright Daniel Porrey. All right reserved.")
+					.WithBottomLeftText("Copyright Daniel Porrey. All rights reserved.")
 					.WithBottomRightText((g, m) => $"Invoiced: {m.InvoiceDate.ToLongDateString()}")
 					.WithStyles("PageFooter.Section")
 			)

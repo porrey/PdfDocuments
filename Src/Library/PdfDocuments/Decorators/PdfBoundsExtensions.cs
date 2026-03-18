@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ namespace PdfDocuments
 	{
 		public static PdfPoint AlignHorizontally(this PdfBounds outerBounds, PdfBounds innerBounds, PdfHorizontalAlignment alignment)
 		{
-			PdfPoint returnValue = new PdfPoint() { Column = innerBounds.LeftColumn, Row = innerBounds.TopRow };
+			PdfPoint returnValue = new() { Column = innerBounds.LeftColumn, Row = innerBounds.TopRow };
 
 			switch (alignment)
 			{
@@ -51,7 +51,7 @@ namespace PdfDocuments
 
 		public static PdfPoint AlignVertically(this PdfBounds outerBounds, PdfBounds innerBounds, PdfVerticalAlignment alignment)
 		{
-			PdfPoint returnValue = new PdfPoint() { Column = innerBounds.LeftColumn, Row = innerBounds.TopRow };
+			PdfPoint returnValue = new() { Column = innerBounds.LeftColumn, Row = innerBounds.TopRow };
 
 			switch (alignment)
 			{

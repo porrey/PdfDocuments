@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -41,9 +41,8 @@ namespace PdfDocuments
 		public virtual Type DocumentModelType => typeof(TModel);
 		public virtual string DocumentTitle { get; set; }
 		public virtual DebugMode DebugMode { get; set; } = DebugMode.None;
-		public virtual IPdfSection<TModel> RootSection { get; protected set; }
 
-		protected virtual PdfGrid Grid { get; set; }
+		//protected virtual PdfGrid Grid { get; set; }
 		protected virtual XUnit PageWidth(PdfPage page) => page.Width - page.TrimMargins.Left - page.TrimMargins.Right;
 		protected virtual XUnit PageHeight(PdfPage page) => page.Height - page.TrimMargins.Top - page.TrimMargins.Bottom;
 
@@ -66,7 +65,7 @@ namespace PdfDocuments
 				//
 				if (result)
 				{
-					pdf = await this.GetPdfByteArrayAsync(document);
+					pdf = await this.GetPdfByteArrayAsync(document, model);
 				}
 			}
 
@@ -90,8 +89,7 @@ namespace PdfDocuments
 			//
 			// Create the document sections.
 			//
-			this.RootSection = await this.OnAddContentAsync();
-			this.RootSection.StyleManager = this.StyleManager;
+			IPdfSection<TModel> rootSection = await this.OnAddContentAsync();
 
 			//
 			// Render the pages.
@@ -108,12 +106,12 @@ namespace PdfDocuments
 				//
 				// Set grid layout.
 				//
-				this.Grid = await this.OnSetPageGridAsync(page);
+				PdfGrid grid = await this.OnSetPageGridAsync(page);
 
 				//
 				// Render the document page.
 				//
-				returnValue = await this.OnRenderDocumentAsync(document, page, pageNumber, model);
+				returnValue = await this.OnRenderDocumentAsync(rootSection, grid, document, page, pageNumber, model);
 
 				//
 				// Increment the page number.
@@ -171,7 +169,7 @@ namespace PdfDocuments
 			return Task.FromResult<IPdfSection<TModel>>(new PdfContentSection<TModel>());
 		}
 
-		protected virtual async Task<bool> OnRenderDocumentAsync(PdfDocument document, PdfPage page, int pageNumber, TModel model)
+		protected virtual async Task<bool> OnRenderDocumentAsync(IPdfSection<TModel> section, PdfGrid grid, PdfDocument document, PdfPage page, int pageNumber, TModel model)
 		{
 			bool returnValue = false;
 
@@ -179,7 +177,7 @@ namespace PdfDocuments
 			{
 				using (XForm form = new(document, this.PageWidth(page), this.PageHeight(page)))
 				{
-					using (XGraphics g = XGraphics.FromForm(form))
+					using (XGraphics graphics = XGraphics.FromForm(form))
 					{
 						//
 						// Get the document title.
@@ -189,13 +187,13 @@ namespace PdfDocuments
 						//
 						// Create the page grid instance.
 						//
-						PdfGridPage gridPage = new PdfGridPage()
+						PdfGridPage gridPage = new()
 						{
 							DocumentTitle = this.DocumentTitle,
 							Document = document,
 							Page = page,
-							Graphics = g,
-							Grid = this.Grid,
+							Graphics = graphics,
+							Grid = grid,
 							PageNumber = pageNumber,
 							DebugMode = this.DebugMode
 						};
@@ -203,11 +201,11 @@ namespace PdfDocuments
 						//
 						// Layout and render the sections.
 						//
-						if (await this.OnLayoutSectionsAsync(gridPage, model))
+						if (await this.OnLayoutSectionsAsync(section, gridPage, model))
 						{
 							if (!this.DebugMode.HasFlag(DebugMode.HideDetails))
 							{
-								returnValue = await this.OnRenderSectionsAsync(gridPage, model);
+								returnValue = await this.OnRenderSectionsAsync(section, gridPage, model);
 							}
 							else
 							{
@@ -224,7 +222,7 @@ namespace PdfDocuments
 							//
 							// Have the primary section render the debug elements.
 							//
-							await this.RootSection.RenderDebugAsync(gridPage, model);
+							await section.RenderDebugAsync(gridPage, model);
 						}
 
 						if (this.DebugMode.HasFlag(DebugMode.RevealGrid))
@@ -247,21 +245,21 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		protected virtual async Task<bool> OnLayoutSectionsAsync(PdfGridPage g, TModel m)
+		protected virtual async Task<bool> OnLayoutSectionsAsync(IPdfSection<TModel> section, PdfGridPage grid, TModel m)
 		{
 			bool returnValue = false;
 
 			//
 			// Set the report section bounds to the full page.
 			//
-			this.RootSection.ActualBounds = g.Grid.GetBounds();
+			section.ActualBounds = grid.Grid.GetBounds();
 
 			//
 			// Call layout on the primary section if it is being rendered.
 			//
-			if (this.RootSection.ShouldRender.Resolve(g, m))
+			if (section.ShouldRender.Resolve(grid, m))
 			{
-				if (await this.RootSection.LayoutAsync(g, m))
+				if (await section.LayoutAsync(grid, m))
 				{
 					returnValue = true;
 				}
@@ -270,21 +268,21 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		protected virtual async Task<bool> OnRenderSectionsAsync(PdfGridPage g, TModel m)
+		protected virtual async Task<bool> OnRenderSectionsAsync(IPdfSection<TModel> section, PdfGridPage grid, TModel m)
 		{
 			bool returnValue = false;
 
 			//
 			// Set the report section bounds to the full page.
 			//
-			this.RootSection.ActualBounds = g.Grid.GetBounds();
+			section.ActualBounds = grid.Grid.GetBounds();
 
 			//
 			// Call layout on the primary section if it is being rendered.
 			//
-			if (this.RootSection.ShouldRender.Resolve(g, m))
+			if (section.ShouldRender.Resolve(grid, m))
 			{
-				if (await this.RootSection.RenderAsync(g, m))
+				if (await section.RenderAsync(grid, m))
 				{
 					returnValue = true;
 				}
@@ -293,11 +291,11 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		protected virtual Task<byte[]> GetPdfByteArrayAsync(PdfDocument document)
+		protected virtual Task<byte[]> GetPdfByteArrayAsync(PdfDocument document, TModel model)
 		{
 			byte[] returnValue = null;
 
-			using (MemoryStream stream = new MemoryStream())
+			using (MemoryStream stream = new())
 			{
 				document.Save(stream, false);
 				returnValue = stream.ToArray();

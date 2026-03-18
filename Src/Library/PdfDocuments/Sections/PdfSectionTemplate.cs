@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -21,24 +21,23 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using PdfSharp.Drawing;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
-	public abstract class PdfSection<TModel> : IPdfSection<TModel>
+	public abstract class PdfSectionTemplate<TModel> : IPdfSection<TModel>
 		where TModel : IPdfModel
 	{
-		public PdfSection()
+		public PdfSectionTemplate()
 		{
 			this.SetKey();
 		}
 
-		public PdfSection(params IPdfSection<TModel>[] children)
+		public PdfSectionTemplate(params IPdfSection<TModel>[] children)
 			: this()
 		{
 			foreach (IPdfSection<TModel> child in children)
@@ -50,14 +49,14 @@ namespace PdfDocuments
 		public virtual string Key { get; set; }
 		public virtual BindProperty<string, TModel> Text { get; set; } = string.Empty;
 		public virtual IPdfSection<TModel> ParentSection { get; set; }
-		public virtual IList<IPdfSection<TModel>> Children { get; } = new List<IPdfSection<TModel>>();
+		public virtual IList<IPdfSection<TModel>> Children { get; } = [];
 		public virtual PdfBounds ActualBounds { get; set; } = new PdfBounds(0, 0, 0, 0);
 		public virtual BindProperty<bool, TModel> ShouldRender { get; set; } = true;
 		public virtual BindProperty<string, TModel> WaterMarkImagePath { get; set; } = string.Empty;
-		public virtual IEnumerable<string> StyleNames { get; set; } = new string[] { PdfStyleManager<TModel>.Default };
+		public virtual IEnumerable<string> StyleNames { get; set; } = [PdfStyleManager<TModel>.Default];
 
 		IPdfStyleManager<TModel> _styleManager = null;
-		public virtual  IPdfStyleManager<TModel> StyleManager
+		public virtual IPdfStyleManager<TModel> StyleManager
 		{
 			get
 			{
@@ -152,6 +151,7 @@ namespace PdfDocuments
 				// Draw the background if set.
 				//
 				XColor backgroundColor = style.BackgroundColor.Resolve(g, m);
+				
 				if (backgroundColor != XColor.Empty)
 				{
 					//

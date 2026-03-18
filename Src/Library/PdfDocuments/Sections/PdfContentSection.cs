@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,7 @@
  */
 namespace PdfDocuments
 {
-	public class PdfContentSection<TModel> : PdfSection<TModel>
+	public class PdfContentSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
 	}
