@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ namespace PdfDocuments
 	{
 		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0;
 		public virtual BindProperty<double[], TModel> RelativeWidths { get; set; } = new double[] { 0 };
-		public virtual BindProperty<XFont, TModel> Font { get; set; } = new XFont("Arial", 12);
+		public virtual BindProperty<XFont, TModel> Font { get; set; } = new XFont("Open Sans", 12);
 		public virtual BindProperty<PdfSpacing, TModel> Margin { get; set; } = new PdfSpacing(0, 0, 0, 0);
 		public virtual BindProperty<PdfSpacing, TModel> Padding { get; set; } = new PdfSpacing(0, 0, 0, 0);
 		public virtual BindProperty<XColor, TModel> ForegroundColor { get; set; } = XColors.Black;

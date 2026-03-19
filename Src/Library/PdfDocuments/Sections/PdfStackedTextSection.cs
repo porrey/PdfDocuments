@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,7 @@ using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
-	public class PdfStackedTextSection<TModel> : PdfSection<TModel>
+	public class PdfStackedTextSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
 		public IEnumerable<BindProperty<string, TModel>> StackedItems { get; set; }

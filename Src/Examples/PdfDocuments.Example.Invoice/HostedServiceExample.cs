@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,12 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using System.Text;
 using Diamond.Core.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Text;
-using System.Threading.Tasks;
+using PdfSharp.Fonts;
 
 namespace PdfDocuments.Example.Invoice
 {
@@ -66,15 +65,15 @@ namespace PdfDocuments.Example.Invoice
 					CityStateZip = "TOONTOWN, CA 98901",
 					Phone = "(888)333-1010"
 				},
-				Items = new InvoiceItem[]
-				{
+				Items =
+				[
 					new () { Id = 10112, Quantity = 2321, UnitPrice = 1.43M },
 					new () { Id = 10115, Quantity = 1211, UnitPrice = 5.411M },
 					new () { Id = 10711, Quantity = 54, UnitPrice = 2.21M },
 					new () { Id = 10112, Quantity = 6531, UnitPrice = 3.15M },
 					new () { Id = 10912, Quantity = 252, UnitPrice = 10.82M },
 					new () { Id = 10132, Quantity = 4321, UnitPrice = 11.45M }
-				}
+				]
 			};
 
 			await this.CreatePdfAsync(model);
@@ -90,6 +89,12 @@ namespace PdfDocuments.Example.Invoice
 			//
 			using (IServiceScope scope = this.ServiceScopeFactory.CreateScope())
 			{
+				//
+				// Set the font resolver. This is required to resolve the fonts used in the PDF document.
+				//
+				IFontResolver fontResolver = scope.ServiceProvider.GetService<IFontResolver>();
+				GlobalFontSettings.FontResolver = fontResolver;
+
 				//
 				// Register an encoding provider.
 				//
@@ -121,6 +126,8 @@ namespace PdfDocuments.Example.Invoice
 				// Save and open the PDF.
 				//
 				await generator.SaveAndOpenPdfAsync(model);
+
+				this.HostApplicationLifetime.StopApplication();
 			}
 
 			return returnValue;

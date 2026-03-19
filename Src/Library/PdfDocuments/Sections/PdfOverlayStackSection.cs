@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,9 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace PdfDocuments
 {
-	public class PdfOverlayStackSection<TModel> : PdfSection<TModel>
+	public class PdfOverlayStackSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
 		public PdfOverlayStackSection()

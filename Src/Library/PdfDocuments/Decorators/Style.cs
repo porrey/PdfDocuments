@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -71,7 +71,15 @@ namespace PdfDocuments
 		public static IStyleBuilder<TModel> UseFont<TModel>(this IStyleBuilder<TModel> styleBuilder, string familyName, double emSize, XFontStyleEx style)
 			where TModel : IPdfModel
 		{
-			((PdfStyle<TModel>)styleBuilder).Font = new BindProperty<XFont, TModel>((g, m) => new XFont(familyName, emSize, style));
+			try
+			{
+				((PdfStyle<TModel>)styleBuilder).Font = new BindProperty<XFont, TModel>((g, m) => new XFont(familyName, emSize, style));
+			}
+			catch (InvalidOperationException)
+			{
+				throw new Exception("$The font '{familyName}' with style '{style}' is not available on the system.");
+			}
+
 			return styleBuilder;
 		}
 

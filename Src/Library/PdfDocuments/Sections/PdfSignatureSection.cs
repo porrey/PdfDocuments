@@ -1,7 +1,7 @@
 ﻿/*
  *	MIT License
  *
- *	Copyright (c) 2021-2025 Daniel Porrey
+ *	Copyright (c) 2021-2026 Daniel Porrey
  *
  *	Permission is hereby granted, free of charge, to any person obtaining a copy
  *	of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,88 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Linq;
-using System.Threading.Tasks;
 using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
-	public class PdfSignatureSection<TModel> : PdfSection<TModel>
+	/// <summary>
+	/// Represents configurable options for customizing signature fields in a PDF model.
+	/// </summary>
+	/// <remarks>Use this class to specify text, image, and date-related properties for signature fields when
+	/// generating or editing PDF documents. Each property is bound to the specified PDF model type, allowing dynamic
+	/// customization based on model data.</remarks>
+	/// <typeparam name="TModel">The type of PDF model to which the signature options are bound. Must implement the IPdfModel interface.</typeparam>
+	public class SignatureOptions<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Gets or sets the signature text associated with the model.
+		/// </summary>
+		public virtual BindProperty<string, TModel> SignatureText { get; set; } = string.Empty;
+
+		/// <summary>
+		/// Gets or sets the image data representing the signature for the model.
+		/// </summary>
+		public virtual BindProperty<string, TModel> SignatureImage { get; set; } = string.Empty;
+
+		/// <summary>
+		/// Gets or sets the label text used to display the date field in the user interface.
+		/// </summary>
+		public virtual BindProperty<string, TModel> DateLabel { get; set; } = "Date";
+
+		/// <summary>
+		/// Gets or sets the date value to be bound to the model.
+		/// </summary>
+		public virtual BindProperty<DateTimeOffset?, TModel> Date { get; set; } = null;
+
+		/// <summary>
+		/// Gets or sets the offset of the signature image within the PDF document.
+		/// </summary>
+		/// <remarks>The offset is specified as a size in columns and rows, allowing precise placement of the
+		/// signature image relative to the document layout. Adjust this property to control the horizontal and vertical
+		/// positioning of the signature image.</remarks>
+		public virtual BindProperty<PdfSize, TModel> Offset { get; set; } = new PdfSize() { Columns = 10, Rows = -2 };
+	}
+
+	/// <summary>
+	/// Represents a PDF section template for rendering a signature area, including date, image, and customizable labels.
+	/// </summary>
+	/// <remarks>This class is intended for use in PDF document generation scenarios where a signature section is
+	/// required. It provides bindable properties for the date label, signature image, and date value, allowing
+	/// customization based on the provided model. The section layout and rendering are handled according to the resolved
+	/// style and model data.</remarks>
+	/// <typeparam name="TModel">The model type used for binding section properties. Must implement the IPdfModel interface.</typeparam>
+	public class PdfSignatureSection<TModel> : PdfSectionTemplate<TModel>
+		where TModel : IPdfModel
+	{
+		/// <summary>
+		/// Gets or sets the binding options for configuring the signature input and output for the model.
+		/// </summary>
+		/// <remarks>Use this property to customize how signature data is handled and presented for the associated
+		/// model. The options may affect validation, display, or processing of signature-related fields.</remarks>
+		public virtual BindProperty<SignatureOptions<TModel>, TModel> SignatureOptions { get; set; } = new SignatureOptions<TModel>();
+		
+		/// <summary>
+		/// Renders the signature section, including signature line, text, date label, and image, onto the specified PDF grid
+		/// page using the provided model and layout bounds.
+		/// </summary>
+		/// <remarks>The rendered signature section includes a signature line, signature text, date label, and
+		/// optionally a signature image if a valid image path is provided. The method uses resolved style and options from
+		/// the model and grid page. Rendering is performed asynchronously.</remarks>
+		/// <param name="g">The PDF grid page on which the signature section will be rendered.</param>
+		/// <param name="m">The data model containing values used to resolve signature options, style, and content for rendering.</param>
+		/// <param name="bounds">The layout bounds within the grid page that define the area for rendering the signature section.</param>
+		/// <returns>A task that represents the asynchronous rendering operation. The result is <see langword="true"/> if rendering was
+		/// successful; otherwise, <see langword="false"/>.</returns>
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
+
+			//
+			// Get the signature options.
+			//
+			SignatureOptions<TModel> options = this.SignatureOptions.Resolve(g, m);
+			PdfSize offset = options.Offset.Resolve(g, m);
 
 			//
 			// Get the style.
@@ -43,9 +113,9 @@ namespace PdfDocuments
 			//
 			// Use the standard small body font.
 			//
-			string label = $"{this.Text.Resolve(g, m)}:";
+			string signatureText = $"{options.SignatureText.Resolve(g, m)}:";
 			XFont bodyFont = style.Font.Resolve(g, m);
-			PdfSize bodyFontSize = g.MeasureText(bodyFont, label);
+			PdfSize bodyFontSize = g.MeasureText(bodyFont, signatureText);
 
 			//
 			// Draw the signature line.
@@ -64,7 +134,7 @@ namespace PdfDocuments
 			//
 			top -= bodyFontSize.Rows + padding.Bottom;
 
-			g.DrawText(label, bodyFont,
+			g.DrawText(signatureText, bodyFont,
 				bounds.LeftColumn + padding.Left,
 				top,
 				bounds.Columns - (padding.Left + padding.Right),
@@ -73,12 +143,48 @@ namespace PdfDocuments
 
 			int left = bounds.RightColumn - (int)(bounds.Columns * width);
 
-			g.DrawText("Date:", bodyFont,
+			//
+			// Draw the date label.
+			//
+			string dateLabel = $"{options.DateLabel.Resolve(g, m)}:";
+
+			g.DrawText(dateLabel, bodyFont,
 				left,
 				top,
 				bounds.Columns - (padding.Left + padding.Right),
 				bodyFontSize.Rows,
 				style.TextAlignment.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
+
+			//
+			// Get the date.
+			//
+			DateTimeOffset? date = options.Date.Resolve(g, m);
+
+			if (date.HasValue)
+			{
+				//
+				// Draw the date.
+				//
+				PdfSize dateSize = g.MeasureText(bodyFont, dateLabel);
+				
+				g.DrawText(date.Value.ToString("D"), bodyFont,
+					left + dateSize.Columns + offset.Columns,
+					top + offset.Rows,
+					bounds.Columns - (padding.Left + padding.Right),
+					bodyFontSize.Rows,
+					style.TextAlignment.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
+			}
+
+			//
+			// Draw the image .
+			//
+			string path = options.SignatureImage.Resolve(g, m);
+			PdfSize size = g.MeasureText(bodyFont, signatureText);
+
+			if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+			{
+				g.DrawImageWithFixedHeight(path, bounds.LeftColumn + padding.Left + size.Columns + offset.Columns, bounds.TopRow + padding.Top + offset.Rows, bounds.Rows - (padding.Top + padding.Bottom));
+			}
 
 			return Task.FromResult(returnValue);
 		}
