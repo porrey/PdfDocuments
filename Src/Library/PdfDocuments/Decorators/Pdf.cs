@@ -21,14 +21,36 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Provides static helper methods for constructing and configuring PDF section objects in a composable manner.
+	/// </summary>
+	/// <remarks>The Pdf class offers a fluent API for building complex PDF document structures by composing,
+	/// styling, and configuring sections. It includes methods for creating common section types, setting styles, managing
+	/// section hierarchies, and applying content or layout options. These extension methods are intended to simplify the
+	/// creation and customization of PDF documents using strongly-typed models. All methods are static and are designed to
+	/// be used with types implementing IPdfSection<TModel>.</remarks>
 	public static class Pdf
 	{
+		/// <summary>
+		/// Assigns the specified style manager to the PDF section and returns the updated section.
+		/// </summary>
+		/// <remarks>This method enables fluent configuration of a PDF section's style manager. The section's existing
+		/// style manager, if any, will be replaced.</remarks>
+		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="section">The PDF section to which the style manager will be assigned. Cannot be null.</param>
+		/// <param name="styleManager">The style manager to assign to the section. Cannot be null.</param>
+		/// <returns>The same PDF section instance with the specified style manager assigned.</returns>
+		public static IPdfSection<TModel> WithStyleManager<TModel>(this IPdfSection<TModel> section, IPdfStyleManager<TModel> styleManager)
+			where TModel : IPdfModel
+		{
+			section.StyleManager = styleManager;
+			return section;
+		}
+
 		public static void SetKey<TModel>(this IPdfSection<TModel> section)
 			where TModel : IPdfModel
 		{
@@ -129,6 +151,12 @@ namespace PdfDocuments
 			where TModel : IPdfModel
 		{
 			return new PdfPageFooterSection<TModel>();
+		}
+
+		public static IPdfSection<TModel> ImageSection<TModel>()
+			where TModel : IPdfModel
+		{
+			return new PdfImageSection<TModel>();
 		}
 
 		public static IPdfSection<TModel> WithStyles<TModel>(this IPdfSection<TModel> section, params string[] styleNames)
@@ -250,6 +278,28 @@ namespace PdfDocuments
 			if (section is PdfPageHeaderSection<TModel> headerSection)
 			{
 				headerSection.Logo = value;
+			}
+
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithImage<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfImageSection<TModel> imageSection)
+			{
+				imageSection.Image = value;
+			}
+
+			return section;
+		}
+
+		public static IPdfSection<TModel> WithOptions<TModel>(this IPdfSection<TModel> section, BindProperty<SignatureOptions<TModel>, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfSignatureSection<TModel> imageSection)
+			{
+				imageSection.SignatureOptions = value;
 			}
 
 			return section;
@@ -441,7 +491,7 @@ namespace PdfDocuments
 			{
 				IList<BindProperty<string, TModel>> items = new List<BindProperty<string, TModel>>();
 
-				foreach (var value in values)
+				foreach (BindPropertyAction<string, TModel> value in values)
 				{
 					items.Add(value);
 				}

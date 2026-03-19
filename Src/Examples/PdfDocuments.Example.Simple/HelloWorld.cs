@@ -22,7 +22,6 @@
  *	SOFTWARE.
  */
 using PdfSharp.Drawing;
-using System.Threading.Tasks;
 
 namespace PdfDocuments.Example.Simple
 {

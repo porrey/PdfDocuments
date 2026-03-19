@@ -6,27 +6,19 @@
 		<Version>10.1.0.0</Version>
 		<FileVersion>10.1.0.0</FileVersion>
 		<AssemblyVersion>10.1.0.0</AssemblyVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Copyright>Copyright © Daniel Porrey 2021-2026. All Rights Reserved.</Copyright>
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <Compile Remove="Pdf.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Remove="appsettings.json" />
-		<None Remove="Images\Logo.jpg" />
-		<None Remove="Images\paid.png" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<Content Include="appsettings.json">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Images\logo.jpg">
+		<Content Include="Images\*.*">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
-		<Content Include="Images\paid.png">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		<Content Include="Fonts\*.ttf">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 
@@ -40,6 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\Library\PdfDocuments.FontResolver.Folder\PdfDocuments.FontResolver.Folder.csproj" />
 	  <ProjectReference Include="..\PdfDocuments.Example.Shared\PdfDocuments.Example.Shared.csproj" />
 	</ItemGroup>
 

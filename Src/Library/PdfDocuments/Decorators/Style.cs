@@ -71,7 +71,15 @@ namespace PdfDocuments
 		public static IStyleBuilder<TModel> UseFont<TModel>(this IStyleBuilder<TModel> styleBuilder, string familyName, double emSize, XFontStyleEx style)
 			where TModel : IPdfModel
 		{
-			((PdfStyle<TModel>)styleBuilder).Font = new BindProperty<XFont, TModel>((g, m) => new XFont(familyName, emSize, style));
+			try
+			{
+				((PdfStyle<TModel>)styleBuilder).Font = new BindProperty<XFont, TModel>((g, m) => new XFont(familyName, emSize, style));
+			}
+			catch (InvalidOperationException)
+			{
+				throw new Exception("$The font '{familyName}' with style '{style}' is not available on the system.");
+			}
+
 			return styleBuilder;
 		}
 

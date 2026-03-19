@@ -38,7 +38,7 @@ namespace PdfDocuments
 			// Add default style.
 			//
 			this.Add(PdfStyleManager<TModel>.Default, new PdfStyle<TModel>());
-			this.Add(PdfStyleManager<TModel>.Debug, new PdfStyle<TModel>() { Font = new XFont("Arial", 8, XFontStyleEx.Regular) });
+			this.Add(PdfStyleManager<TModel>.Debug, new PdfStyle<TModel>() { Font = new XFont("Open Sans", 8, XFontStyleEx.Regular) });
 		}
 
 		public virtual PdfStyle<TModel> GetStyle(string name)

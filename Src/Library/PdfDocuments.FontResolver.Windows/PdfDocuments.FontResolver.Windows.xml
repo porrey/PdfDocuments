@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PdfDocuments.FontResolver.Windows</name>
+    </assembly>
+    <members>
+        <member name="T:PdfDocuments.FontResolver.Windows.ServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for configuring font resolution services in a Windows environment.
+            </summary>
+            <remarks>This class contains static methods that extend the functionality of the IServiceCollection
+            interface, enabling the registration of Windows-specific font resolver implementations. Use these methods to
+            integrate font resolution capabilities into dependency injection setups.</remarks>
+        </member>
+        <member name="M:PdfDocuments.FontResolver.Windows.ServiceCollectionExtensions.AddWindowsFontResolver(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Registers a Windows-specific font resolver implementation in the dependency injection container.
+            </summary>
+            <remarks>Use this method when running on Windows to enable font resolution using system fonts. The
+            registered font resolver will be used for font-related operations throughout the application.</remarks>
+            <param name="services">The service collection to which the font resolver will be added. Cannot be null.</param>
+            <returns>The updated service collection with the Windows font resolver registered.</returns>
+        </member>
+    </members>
+</doc>

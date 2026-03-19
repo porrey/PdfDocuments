@@ -23,7 +23,6 @@
  *	SOFTWARE.
  */
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PdfDocuments.Example.Simple
 {

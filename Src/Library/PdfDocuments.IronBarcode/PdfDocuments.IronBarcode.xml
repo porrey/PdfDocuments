@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PdfDocuments.IronBarcode</name>
+    </assembly>
+    <members>
+        <member name="T:PdfDocuments.IronBarcode.PdfBarcode">
+            <summary>
+            Provides static methods for creating PDF sections containing barcodes and for setting the license key required for
+            barcode generation.
+            </summary>
+            <remarks>Use the methods in this class to add barcode elements to PDF documents by binding model properties
+            and specifying barcode encoding options. The class supports customization of barcode size and allows integration
+            with callback functions for generated barcodes. All methods are static and thread-safe. Setting the license key is
+            required before generating barcodes if using a licensed version of IronBarCode.</remarks>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcode.SetLicense(System.String)">
+            <summary>
+            Sets the license key used to activate IronBarCode features.
+            </summary>
+            <remarks>Call this method before using any IronBarCode functionality that requires a valid license.
+            Setting an invalid or expired license key may restrict access to premium features.</remarks>
+            <param name="licenseKey">The license key string to apply. Cannot be null or empty.</param>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcode.BarcodeSection``1(PdfDocuments.BindPropertyAction{System.String,``0},IronBarCode.BarcodeEncoding)">
+            <summary>
+            Creates a PDF section that displays a barcode generated from the specified data using the given encoding.
+            </summary>
+            <typeparam name="TModel">The type of the PDF model associated with the section. Must implement IPdfModel.</typeparam>
+            <param name="data">A binding action that provides the string data to be encoded as a barcode in the PDF section.</param>
+            <param name="barcodeEncoding">The encoding format to use for generating the barcode.</param>
+            <returns>A PDF section that renders the barcode based on the provided data and encoding.</returns>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcode.BarcodeSection``1(PdfDocuments.BindProperty{System.String,``0},IronBarCode.BarcodeEncoding)">
+            <summary>
+            Creates a PDF section that displays a barcode generated from the specified data using the given encoding.
+            </summary>
+            <typeparam name="TModel">The model type that implements IPdfModel and provides context for the PDF section.</typeparam>
+            <param name="data">The bound property containing the string value to encode as a barcode in the PDF section.</param>
+            <param name="barcodeEncoding">The encoding format to use when generating the barcode from the provided data.</param>
+            <returns>A PDF section instance that renders the barcode based on the specified data and encoding.</returns>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcode.BarcodeSection``1(PdfDocuments.BindPropertyAction{System.String,``0},IronBarCode.BarcodeEncoding,PdfDocuments.BindPropertyAction{System.Double,``0},IronBarCode.GeneratedBarcode)">
+            <summary>
+            Creates a PDF section that renders a barcode using the specified data and encoding.
+            </summary>
+            <remarks>The barcode section supports dynamic data binding and customization through the callback. The
+            height multiplier allows for flexible sizing of the barcode within the PDF layout.</remarks>
+            <typeparam name="TModel">The type of the PDF model used for data binding within the section.</typeparam>
+            <param name="data">A binding action that provides the string data to encode in the barcode.</param>
+            <param name="barcodeEncoding">The encoding format to use for generating the barcode.</param>
+            <param name="heightMultiplier">A binding action that specifies the height multiplier for the barcode, affecting its vertical scaling.</param>
+            <param name="callback">An optional callback invoked with the generated barcode, allowing for additional customization or processing.</param>
+            <returns>A PDF section configured to display a barcode based on the provided data and encoding.</returns>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcode.BarcodeSection``1(PdfDocuments.BindProperty{System.String,``0},IronBarCode.BarcodeEncoding,PdfDocuments.BindProperty{System.Double,``0},IronBarCode.GeneratedBarcode)">
+            <summary>
+            Creates a PDF section that renders a barcode using the specified data, encoding, and height multiplier.
+            </summary>
+            <typeparam name="TModel">The type of the PDF model to which the barcode section is bound.</typeparam>
+            <param name="data">The property containing the string value to encode in the barcode. Cannot be null.</param>
+            <param name="barcodeEncoding">The barcode encoding format to use for rendering the barcode.</param>
+            <param name="heightMultiplier">The property specifying the height multiplier for the barcode. Must be a positive value.</param>
+            <param name="callback">An optional callback that receives the generated barcode object for further customization or processing. If null,
+            no callback is invoked.</param>
+            <returns>A PDF section instance that displays the barcode with the specified configuration.</returns>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcode.BarcodeSection``1(PdfDocuments.BindPropertyAction{System.String,``0},IronBarCode.BarcodeEncoding,PdfDocuments.BindPropertyAction{System.Double,``0},PdfDocuments.BindPropertyAction{System.Double,``0},IronBarCode.GeneratedBarcode)">
+            <summary>
+            Creates a PDF section that renders a barcode based on the specified model data and encoding.
+            </summary>
+            <remarks>Use this method to add barcode elements to a PDF document, with support for dynamic data binding
+            and customization. The section can be integrated into larger PDF generation workflows.</remarks>
+            <typeparam name="TModel">The type of the PDF model used to bind barcode data and properties.</typeparam>
+            <param name="data">A binding action that provides the string value to encode in the barcode from the model.</param>
+            <param name="barcodeEncoding">The barcode encoding format to use for rendering the barcode.</param>
+            <param name="heightMultiplier">A binding action that determines the height multiplier for the barcode, allowing dynamic sizing based on the
+            model.</param>
+            <param name="widthMultiplier">A binding action that determines the width multiplier for the barcode, allowing dynamic sizing based on the model.</param>
+            <param name="callback">An optional callback that receives the generated barcode for further customization or processing.</param>
+            <returns>A PDF section that displays the barcode with the specified encoding and sizing, bound to the provided model data.</returns>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcode.BarcodeSection``1(PdfDocuments.BindProperty{System.String,``0},IronBarCode.BarcodeEncoding,PdfDocuments.BindProperty{System.Double,``0},PdfDocuments.BindProperty{System.Double,``0},IronBarCode.GeneratedBarcode)">
+            <summary>
+            Creates a PDF section that renders a barcode using the specified data and encoding.
+            </summary>
+            <remarks>The barcode section supports customization of barcode size and encoding. The callback can be used
+            to access the generated barcode for further processing or inspection.</remarks>
+            <typeparam name="TModel">The type of the PDF model to which the barcode section is bound.</typeparam>
+            <param name="data">The property containing the string value to encode in the barcode. Cannot be null.</param>
+            <param name="barcodeEncoding">The barcode encoding format to use for rendering the barcode.</param>
+            <param name="heightMultiplier">The property specifying the multiplier for the barcode's height. Must be positive.</param>
+            <param name="widthMultiplier">The property specifying the multiplier for the barcode's width. Must be positive.</param>
+            <param name="callback">An optional callback invoked with the generated barcode object after rendering. If null, no callback is executed.</param>
+            <returns>A PDF section that displays the barcode with the specified data, encoding, and size multipliers.</returns>
+        </member>
+        <member name="T:PdfDocuments.IronBarcode.ServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for configuring IronBarcode licensing within an ASP.NET Core dependency injection
+            container.
+            </summary>
+            <remarks>This class enables the registration and configuration of IronBarcode license keys using the
+            standard .NET dependency injection pattern. Use these methods to ensure IronBarcode is properly licensed before use
+            in your application.</remarks>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.ServiceCollectionExtensions.AddIronBarcode(Microsoft.Extensions.DependencyInjection.IServiceCollection,System.String)">
+            <summary>
+            Configures the IronBarcode library with the specified license key for use within the application's dependency
+            injection container.
+            </summary>
+            <remarks>This method sets the global license key for IronBarcode. It should be called during application
+            startup before using IronBarcode services.</remarks>
+            <param name="services">The service collection to which IronBarcode configuration will be applied.</param>
+            <param name="licenseKey">The license key used to activate IronBarcode features. Cannot be null or empty.</param>
+            <returns>The same service collection instance, allowing for method chaining.</returns>
+        </member>
+        <member name="T:PdfDocuments.IronBarcode.BarcodeCreationCallback">
+            <summary>
+            Represents a callback method that processes a generated barcode and returns a modified or new barcode instance.
+            </summary>
+            <param name="bc">The generated barcode to be processed by the callback. Cannot be null.</param>
+            <returns>A barcode instance resulting from the callback's processing. May be the original or a new barcode.</returns>
+        </member>
+        <member name="T:PdfDocuments.IronBarcode.PdfBarcodeSection`1">
+            <summary>
+            Represents a PDF section that renders a barcode based on a bound property from the model.
+            </summary>
+            <remarks>Use PdfBarcodeSection to add a barcode to a PDF document, with customizable encoding and size. The
+            barcode value is dynamically resolved from the model at render time. Height and width multipliers allow scaling of
+            the barcode image. Optionally, a callback can be provided to access the generated barcode for further customization
+            or processing.</remarks>
+            <typeparam name="TModel">The type of the model used for binding barcode data and rendering properties. Must implement IPdfModel.</typeparam>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcodeSection`1.#ctor(PdfDocuments.BindPropertyAction{System.String,`0},IronBarCode.BarcodeEncoding)">
+            <summary>
+            Initializes a new instance of the PdfBarcodeSection class with the specified data binding and barcode encoding.
+            </summary>
+            <param name="data">The data binding action used to retrieve or set the barcode value from the model.</param>
+            <param name="barcodeEncoding">The encoding format to use for generating the barcode.</param>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcodeSection`1.#ctor(PdfDocuments.BindPropertyAction{System.String,`0},IronBarCode.BarcodeEncoding,IronBarCode.GeneratedBarcode)">
+            <summary>
+            Initializes a new instance of the PdfBarcodeSection class with the specified data binding, barcode encoding, and
+            callback for generated barcodes.
+            </summary>
+            <param name="data">The data binding action used to associate a string value with the model. Cannot be null.</param>
+            <param name="barcodeEncoding">The encoding format to use for generating the barcode. Determines how the barcode data is represented.</param>
+            <param name="callback">The callback to invoke when a barcode is generated. Used to handle the generated barcode result.</param>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcodeSection`1.#ctor(PdfDocuments.BindPropertyAction{System.String,`0},IronBarCode.BarcodeEncoding,PdfDocuments.BindProperty{System.Double,`0})">
+            <summary>
+            Initializes a new instance of the PdfBarcodeSection class with the specified data binding, barcode encoding, and
+            height multiplier.
+            </summary>
+            <param name="data">A binding action that provides the barcode data to be encoded. Cannot be null.</param>
+            <param name="barcodeEncoding">The encoding format to use for generating the barcode.</param>
+            <param name="heightMultiplier">A binding that determines the vertical scaling factor for the barcode. Must be greater than zero.</param>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcodeSection`1.#ctor(PdfDocuments.BindPropertyAction{System.String,`0},IronBarCode.BarcodeEncoding,PdfDocuments.BindProperty{System.Double,`0},IronBarCode.GeneratedBarcode)">
+            <summary>
+            Initializes a new instance of the PdfBarcodeSection class with the specified data binding, barcode encoding,
+            height multiplier, and barcode generation callback.
+            </summary>
+            <param name="data">A binding action that provides the data to be encoded in the barcode. Cannot be null.</param>
+            <param name="barcodeEncoding">The encoding format to use for generating the barcode.</param>
+            <param name="heightMultiplier">A binding that determines the vertical scaling factor for the barcode. Must be a positive value.</param>
+            <param name="callback">A callback function that handles the generated barcode output. Cannot be null.</param>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcodeSection`1.#ctor(PdfDocuments.BindPropertyAction{System.String,`0},IronBarCode.BarcodeEncoding,PdfDocuments.BindProperty{System.Double,`0},PdfDocuments.BindProperty{System.Double,`0})">
+            <summary>
+            Initializes a new instance of the PdfBarcodeSection class with the specified data binding, barcode encoding,
+            height multiplier, and width multiplier.	
+            </summary>
+            <param name="data">A binding that provides the barcode data to be rendered. Cannot be null.</param>
+            <param name="barcodeEncoding">The encoding format to use for generating the barcode.</param>
+            <param name="heightMultiplier">A binding that determines the vertical scaling factor for the barcode. Must be greater than zero.</param>
+            <param name="widthMultiplier">A binding that determines the horizontal scaling factor for the barcode. Must be greater than zero.</param>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcodeSection`1.#ctor(PdfDocuments.BindPropertyAction{System.String,`0},IronBarCode.BarcodeEncoding,PdfDocuments.BindProperty{System.Double,`0},PdfDocuments.BindProperty{System.Double,`0},IronBarCode.GeneratedBarcode)">
+            <summary>
+            Initializes a new instance of the PdfBarcodeSection class with the specified data binding, barcode encoding,
+            height multiplier, width multiplier, and barcode generation callback.
+            </summary>
+            <param name="data">A binding action that provides the barcode data to be encoded. Cannot be null.</param>
+            <param name="barcodeEncoding">The encoding format to use for generating the barcode.</param>
+            <param name="heightMultiplier">A binding that determines the vertical scaling factor for the barcode. Must be a positive value.</param>
+            <param name="widthMultiplier">A binding that determines the horizontal scaling factor for the barcode. Must be a positive value.</param>
+            <param name="callback">A callback invoked when the barcode is generated. Used to handle the generated barcode result.</param>
+        </member>
+        <member name="P:PdfDocuments.IronBarcode.PdfBarcodeSection`1.Data">
+            <summary>
+            Gets or sets the bound data value for the model.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.IronBarcode.PdfBarcodeSection`1.HeightMultiplier">
+            <summary>
+            Gets or sets the multiplier applied to the height value for the model.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.IronBarcode.PdfBarcodeSection`1.WidthMultiplier">
+            <summary>
+            Gets or sets the multiplier applied to the width calculation for the model.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.IronBarcode.PdfBarcodeSection`1.BarcodeEncoding">
+            <summary>
+            Gets or sets the encoding scheme used for barcode generation and interpretation.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.IronBarcode.PdfBarcodeSection`1.Callback">
+            <summary>
+            Gets or sets the generated barcode associated with the callback operation.
+            </summary>
+        </member>
+        <member name="M:PdfDocuments.IronBarcode.PdfBarcodeSection`1.OnRenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Renders a barcode image onto the specified PDF grid page using the provided model and bounds.
+            </summary>
+            <remarks>The barcode is generated and styled based on the resolved model and style parameters. The image
+            is centered within the specified bounds. This method does not throw exceptions for rendering failures; instead, it
+            returns <see langword="false"/> if rendering is unsuccessful.</remarks>
+            <param name="g">The PDF grid page on which the barcode image will be rendered.</param>
+            <param name="m">The data model used to resolve barcode content and rendering parameters.</param>
+            <param name="bounds">The bounds within the grid that define the area for rendering the barcode image.</param>
+            <returns>A task that represents the asynchronous rendering operation. The result is <see langword="true"/> if rendering
+            succeeds; otherwise, <see langword="false"/>.</returns>
+        </member>
+    </members>
+</doc>

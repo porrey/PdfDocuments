@@ -28,7 +28,20 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<DocumentationFile>PdfDocuments.IronBarcode.xml</DocumentationFile>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="PdfDocuments.IronBarcode.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="PdfDocuments.IronBarcode.xml">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="BarCode" Version="2026.3.6" />

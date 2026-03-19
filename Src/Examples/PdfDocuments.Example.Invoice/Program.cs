@@ -21,7 +21,6 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Threading.Tasks;
 using Diamond.Core.Extensions.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
