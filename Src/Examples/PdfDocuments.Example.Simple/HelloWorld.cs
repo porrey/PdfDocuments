@@ -56,7 +56,8 @@ namespace PdfDocuments.Example.Simple
 			//
 			return Task.FromResult(Pdf.TextBlockSection<Message>()
 									  .WithText((g, m) => m.Text)
-									  .WithStyles("HelloWorld.Text"));
+									  .WithStyles("HelloWorld.Text")
+									  .WithStyleManager(this.StyleManager));
 		}
 	}
 }

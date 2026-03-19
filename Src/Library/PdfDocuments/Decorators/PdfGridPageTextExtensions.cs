@@ -64,9 +64,9 @@ namespace PdfDocuments
 			//
 			if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.RevealFontDetails))
 			{
-				XFont debugFont = new XFont("Arial", 8, XFontStyleEx.Regular);
+				XFont debugFont = new("Arial", 8, XFontStyleEx.Regular);
 				PdfSize textSize = source.MeasureText(debugFont, font.FontFamily.Name);
-				PdfBounds labelBounds = new PdfBounds(bounds.LeftColumn + (int)((bounds.Columns - textSize.Columns) / 2.0), bounds.TopRow + (int)((bounds.Rows - textSize.Rows) / 2.0), textSize.Columns + 2, textSize.Rows + 2);
+				PdfBounds labelBounds = new(bounds.LeftColumn + (int)((bounds.Columns - textSize.Columns) / 2.0), bounds.TopRow + (int)((bounds.Rows - textSize.Rows) / 2.0), textSize.Columns + 2, textSize.Rows + 2);
 				source.DrawFilledRectangle(labelBounds, XColors.Black);
 				XRect labelLayout = source.GetRect(labelBounds);
 				XBrush labelBrush = new XSolidBrush(XColors.Wheat);

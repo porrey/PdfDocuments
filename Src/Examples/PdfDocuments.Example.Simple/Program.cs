@@ -23,6 +23,7 @@
  *	SOFTWARE.
  */
 using System.Text;
+using PdfSharp.Fonts;
 
 namespace PdfDocuments.Example.Simple
 {
@@ -30,6 +31,11 @@ namespace PdfDocuments.Example.Simple
 	{
 		static async Task<int> Main(string[] args)
 		{
+			//
+			// User windows fonts.
+			//
+			GlobalFontSettings.FontResolver = new PdfDocuments.FontResolver.Windows.FontResolver();
+
 			//
 			// Register an encoding provider.
 			//

@@ -11,6 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Library\PdfDocuments.FontResolver.Windows\PdfDocuments.FontResolver.Windows.csproj" />
 		<ProjectReference Include="..\PdfDocuments.Example.Shared\PdfDocuments.Example.Shared.csproj" />
 	</ItemGroup>
 
