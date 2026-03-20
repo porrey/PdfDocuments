@@ -49,7 +49,7 @@ namespace PdfDocuments
 		/// <summary>
 		/// Adds a scoped PDF style manager service for the specified model type to the service collection.
 		/// </summary>
-		/// <remarks>Registers IPdfStyleManager<TModel> with its default implementation PdfStyleManager<TModel> using
+		/// <remarks>Registers IPdfStyleManager<![CDATA[<TModel>]]>; with its default implementation PdfStyleManager<![CDATA[<TModel>]]>; using
 		/// scoped lifetime. Call this method during application startup to enable PDF style management for the specified
 		/// model type.</remarks>
 		/// <typeparam name="TModel">The type of PDF model for which the style manager is registered. Must implement the IPdfModel interface.</typeparam>

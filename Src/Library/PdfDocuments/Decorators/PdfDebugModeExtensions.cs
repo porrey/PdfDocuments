@@ -24,19 +24,43 @@
 
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Provides extension methods for working with the DebugMode enumeration, enabling convenient flag manipulation and
+	/// checking.
+	/// </summary>
+	/// <remarks>These extension methods simplify common operations when using DebugMode as a bit field, such as
+	/// determining whether a specific flag is set or updating flags. The methods are intended for use with DebugMode
+	/// values that represent combinations of flags.</remarks>
 	public static class PdfDebugModeExtensions
 	{
+		/// <summary>
+		/// Determines whether the specified debug mode value includes the given flag.
+		/// </summary>
+		/// <remarks>Use this method to test whether one or more flags are present in a composite DebugMode value.
+		/// This is useful when DebugMode is defined as a bit field enumeration.</remarks>
+		/// <param name="debugMode">The debug mode value to evaluate for the presence of the specified flag.</param>
+		/// <param name="checkFlag">The flag to check for within the debug mode value.</param>
+		/// <returns>true if all bits in checkFlag are set in debugMode; otherwise, false.</returns>
 		public static bool HasFlag(this DebugMode debugMode, DebugMode checkFlag)
 		{
 			return ((debugMode & checkFlag) == checkFlag);
 		}
 
+		/// <summary>
+		/// Sets or clears the specified debug flag in the given debug mode value.
+		/// </summary>
+		/// <param name="debugMode">The current debug mode value to modify.</param>
+		/// <param name="flag">The debug flag to set or clear within the debug mode value.</param>
+		/// <param name="set">A value indicating whether to set (<see langword="true"/>) or clear (<see langword="false"/>) the specified flag.
+		/// Defaults to <see langword="true"/>.</param>
+		/// <returns>A new <see cref="DebugMode"/> value with the specified flag set or cleared as indicated.</returns>
 		public static DebugMode SetFlag(this DebugMode debugMode, DebugMode flag, bool set = true)
 		{
 			if (set)
 			{
 				debugMode |= flag;
 			}
+
 			return debugMode;
 		}
 	}

@@ -21,14 +21,32 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Collections.Generic;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Defines a contract for managing named PDF styles associated with a model type. Provides methods to retrieve and
+	/// replace styles by name.
+	/// </summary>
+	/// <remarks>Implementations of this interface allow for organized storage and retrieval of PDF styles by name.
+	/// The interface extends IDictionary, enabling standard collection operations alongside specialized style management
+	/// methods.</remarks>
+	/// <typeparam name="TModel">The model type associated with each PDF style. Must implement the IPdfModel interface.</typeparam>
 	public interface IPdfStyleManager<TModel> : IDictionary<string, PdfStyle<TModel>>
 			where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Retrieves the style associated with the specified name.
+		/// </summary>
+		/// <param name="name">The name of the style to retrieve. Cannot be null or empty.</param>
+		/// <returns>A <see cref="PdfStyle{TModel}"/> instance representing the style with the specified name, or null if no matching
+		/// style is found.</returns>
 		PdfStyle<TModel> GetStyle(string name);
+
+		/// <summary>
+		/// Replaces the style associated with the specified name with the provided style.
+		/// </summary>
+		/// <param name="name">The name of the style to replace. Cannot be null or empty.</param>
+		/// <param name="style">The new style to associate with the specified name. Cannot be null.</param>
 		void Replace(string name, PdfStyle<TModel> style);
 	}
 }

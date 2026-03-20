@@ -21,13 +21,27 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Specifies the vertical alignment options for content within a PDF element.
+	/// </summary>
+	/// <remarks>Use this enumeration to control how content is positioned vertically, such as aligning text or
+	/// images to the top, center, or bottom of a container. The alignment affects layout and appearance when rendering PDF
+	/// documents.</remarks>
 	public enum PdfVerticalAlignment
 	{
+		/// <summary>
+		/// Represents the top-level element or object in the hierarchy.
+		/// </summary>
 		Top,
+		/// <summary>
+		/// Gets or sets the center point of the object.
+		/// </summary>
 		Center,
+		/// <summary>
+		/// Represents the bottom position or value in the enumeration.
+		/// </summary>
 		Bottom
 	}
 }

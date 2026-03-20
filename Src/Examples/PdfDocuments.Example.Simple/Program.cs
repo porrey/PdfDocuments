@@ -34,7 +34,12 @@ namespace PdfDocuments.Example.Simple
 			//
 			// User windows fonts.
 			//
-			GlobalFontSettings.FontResolver = new PdfDocuments.FontResolver.Windows.FontResolver();
+			GlobalFontSettings.FontResolver = new FontResolver.Windows.FontResolver();
+
+			//
+			// Set the default font.
+			//
+			GlobalPdfDocumentsSettings.DefaultFontName = "Arial";
 
 			//
 			// Register an encoding provider.

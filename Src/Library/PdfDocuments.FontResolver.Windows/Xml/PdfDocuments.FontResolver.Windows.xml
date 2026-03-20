@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PdfDocuments.FontResolver.Windows</name>
+    </assembly>
+    <members>
+        <member name="T:PdfDocuments.FontResolver.Windows.ServiceCollectionExtensions">
+            <summary>
+            Provides extension methods for configuring font resolution services in a Windows environment.
+            </summary>
+            <remarks>This class contains static methods that extend the functionality of the IServiceCollection
+            interface, enabling the registration of Windows-specific font resolver implementations. Use these methods to
+            integrate font resolution capabilities into dependency injection setups.</remarks>
+        </member>
+        <member name="M:PdfDocuments.FontResolver.Windows.ServiceCollectionExtensions.AddWindowsFontResolver(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Registers a Windows-specific font resolver implementation in the dependency injection container.
+            </summary>
+            <remarks>Use this method when running on Windows to enable font resolution using system fonts. The
+            registered font resolver will be used for font-related operations throughout the application.</remarks>
+            <param name="services">The service collection to which the font resolver will be added. Cannot be null.</param>
+            <returns>The updated service collection with the Windows font resolver registered.</returns>
+        </member>
+        <member name="T:PdfDocuments.FontResolver.Windows.FontResolver">
+            <summary>
+            Provides font resolution services for mapping font family names and styles to font file paths and retrieving font
+            data. Implements the IFontResolver interface to support custom font selection and loading.
+            </summary>
+            <remarks>FontResolver enables applications to locate and load font files based on family name and style
+            attributes such as bold and italic. It searches the system's font directory and supports simulation of bold or
+            italic styles if the exact variant is unavailable. This class is thread-safe and caches font family mappings for
+            performance. Use FontResolver when you need to resolve font resources dynamically or support custom font loading
+            scenarios.</remarks>
+        </member>
+        <member name="F:PdfDocuments.FontResolver.Windows.FontResolver.FontFamilies">
+            <summary>
+            Provides a lazily initialized mapping of font family names to their corresponding font family entries.
+            </summary>
+            <remarks>The dictionary is created on first access using the BuildFontFamilyMap method. Accessing this
+            member is thread-safe due to the use of Lazy&lt;T&gt;.</remarks>
+        </member>
+        <member name="M:PdfDocuments.FontResolver.Windows.FontResolver.ResolveTypeface(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Resolves the typeface information for a specified font family and style attributes.
+            </summary>
+            <remarks>If the requested style is not available in the specified font family, the method may simulate
+            bold or italic styles as needed. The returned FontResolverInfo indicates whether simulation is required.</remarks>
+            <param name="familyName">The name of the font family to resolve. Cannot be null, empty, or whitespace.</param>
+            <param name="bold">A value indicating whether the bold style is requested.</param>
+            <param name="italic">A value indicating whether the italic style is requested.</param>
+            <returns>A FontResolverInfo instance containing the resolved font path and simulation flags, or null if the family or style
+            cannot be resolved.</returns>
+        </member>
+        <member name="M:PdfDocuments.FontResolver.Windows.FontResolver.GetFont(System.String)">
+            <summary>
+            Retrieves the font file as a byte array for the specified font face name.
+            </summary>
+            <param name="faceName">The path to the font file to retrieve. Cannot be null, empty, or whitespace.</param>
+            <returns>A byte array containing the contents of the font file, or null if the file does not exist or the path is invalid.</returns>
+        </member>
+        <member name="M:PdfDocuments.FontResolver.Windows.FontResolver.BuildFontFamilyMap">
+            <summary>
+            Builds a mapping of installed font family names to their corresponding font file entries for regular, bold,
+            italic, and bold italic styles.
+            </summary>
+            <remarks>The mapping includes only font families for which at least one style variant is available. The
+            search is limited to fonts installed in the Windows Fonts folder and supports TrueType, OpenType, and TrueType
+            Collection formats. The dictionary uses a case-insensitive string comparer for font family names.</remarks>
+            <returns>A dictionary containing font family names as keys and their associated font file entries as values. The dictionary
+            is empty if no fonts are found.</returns>
+        </member>
+        <member name="M:PdfDocuments.FontResolver.Windows.FontResolver.FindBestMatch(System.String[],System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Finds the font file that best matches the specified font family and style attributes from a list of available font
+            files.
+            </summary>
+            <remarks>The method performs a case-insensitive search for font files whose names contain the specified
+            family name and ranks candidates based on their similarity to the requested style attributes.</remarks>
+            <param name="fontFiles">An array of file paths representing available font files to search.</param>
+            <param name="familyName">The name of the font family to match against the available font files.</param>
+            <param name="bold">A value indicating whether the desired font style is bold. Set to <see langword="true"/> for bold; otherwise, <see
+            langword="false"/>.</param>
+            <param name="italic">A value indicating whether the desired font style is italic. Set to <see langword="true"/> for italic; otherwise,
+            <see langword="false"/>.</param>
+            <returns>The file path of the font file that best matches the specified family and style attributes, or <see
+            langword="null"/> if no suitable match is found.</returns>
+        </member>
+        <member name="M:PdfDocuments.FontResolver.Windows.FontResolver.Score(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Calculates a score indicating how well a font file matches the specified bold and italic attributes.
+            </summary>
+            <remarks>This method analyzes the font file name to determine if it contains keywords related to bold,
+            italic, or regular styles. The score is adjusted based on how closely the file name matches the requested
+            attributes.</remarks>
+            <param name="path">The file path of the font to evaluate. Must refer to a valid font file.</param>
+            <param name="bold">A value indicating whether the font should be bold.</param>
+            <param name="italic">A value indicating whether the font should be italic.</param>
+            <returns>An integer score representing the degree of match between the font's name and the requested bold and italic
+            attributes. Lower scores indicate a better match.</returns>
+        </member>
+        <member name="M:PdfDocuments.FontResolver.Windows.FontResolver.Normalize(System.String)">
+            <summary>
+            Returns a normalized version of the specified string containing only lowercase letters and digits.
+            </summary>
+            <remarks>Normalization removes all non-letter and non-digit characters and converts all letters to
+            lowercase using the invariant culture.</remarks>
+            <param name="value">The string to normalize. Can be null or empty; in such cases, the result will be an empty string.</param>
+            <returns>A string consisting of the lowercase letters and digits from the input. If the input contains no letters or
+            digits, returns an empty string.</returns>
+        </member>
+        <member name="T:PdfDocuments.FontResolver.Windows.FontResolver.FontFamilyEntry">
+            <summary>
+            Represents a set of font family style names, including regular, bold, italic, and bold italic variants.
+            </summary>
+        </member>
+    </members>
+</doc>

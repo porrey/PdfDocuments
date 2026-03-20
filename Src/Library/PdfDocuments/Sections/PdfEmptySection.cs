@@ -23,6 +23,11 @@
  */
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a PDF section that contains no content. This class can be used to insert an empty section into a PDF
+	/// document template.
+	/// </summary>
+	/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement the IPdfModel interface.</typeparam>
 	public class PdfEmptySection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{

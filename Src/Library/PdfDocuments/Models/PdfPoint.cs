@@ -21,12 +21,21 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a position within a PDF document using row and column coordinates.
+	/// </summary>
 	public class PdfPoint
 	{
+		/// <summary>
+		/// Gets or sets the zero-based column index associated with the current item.
+		/// </summary>
 		public virtual int Column { get; set; }
+
+		/// <summary>
+		/// Gets or sets the row index of the element.
+		/// </summary>
 		public virtual int Row { get; set; }
 	}
 }

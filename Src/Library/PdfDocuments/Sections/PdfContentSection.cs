@@ -23,6 +23,11 @@
  */
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a section of PDF content that is rendered using a model of type <typeparamref name="TModel"/>.
+	/// </summary>
+	/// <typeparam name="TModel">The type of model used to provide data for rendering the PDF content section. Must implement <see
+	/// cref="IPdfModel"/>.</typeparam>
 	public class PdfContentSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{

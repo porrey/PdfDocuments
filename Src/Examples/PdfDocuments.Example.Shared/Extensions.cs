@@ -25,8 +25,26 @@ using System.Diagnostics;
 
 namespace PdfDocuments.Example
 {
+	/// <summary>
+	/// Provides extension methods for PDF generation and handling operations.
+	/// </summary>
+	/// <remarks>This class contains static extension methods that enhance the functionality of types implementing
+	/// the IPdfGenerator<TModel> interface. Methods in this class are intended to simplify common PDF-related workflows,
+	/// such as saving and opening generated documents. All methods are thread-safe and designed for asynchronous
+	/// usage.</remarks>
 	public static class Extensions
 	{
+		/// <summary>
+		/// Generates a PDF from the specified model, saves it to the user's desktop, and opens it using the default PDF
+		/// viewer.
+		/// </summary>
+		/// <remarks>The PDF file is saved to the user's desktop with a filename based on the model type and
+		/// identifier. The method launches the system's default PDF viewer after saving the file. If PDF generation fails, no
+		/// file is saved or opened.</remarks>
+		/// <typeparam name="TModel">The type of the model used to generate the PDF. Must implement the IPdfModel interface.</typeparam>
+		/// <param name="generator">The PDF generator instance used to build the PDF document.</param>
+		/// <param name="model">The model containing the data to be rendered in the PDF. Must not be null.</param>
+		/// <returns>true if the PDF was successfully generated, saved, and opened; otherwise, false.</returns>
 		public static async Task<bool> SaveAndOpenPdfAsync<TModel>(this IPdfGenerator<TModel> generator, TModel model)
 			where TModel : IPdfModel
 		{

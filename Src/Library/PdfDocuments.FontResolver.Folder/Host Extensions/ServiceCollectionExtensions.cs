@@ -26,8 +26,23 @@ using PdfSharp.Fonts;
 
 namespace PdfDocuments.FontResolver.Folder
 {
+	/// <summary>
+	/// Provides extension methods for configuring font resolvers in an IServiceCollection.
+	/// </summary>
+	/// <remarks>These extension methods enable registration of custom font resolvers for dependency injection
+	/// scenarios. Use these methods to add font resolution capabilities to services in your application's DI
+	/// container.</remarks>
 	public static class ServiceCollectionExtensions
 	{
+		/// <summary>
+		/// Registers a font resolver that loads fonts from the specified folder into the service collection.
+		/// </summary>
+		/// <remarks>Use this method to enable font resolution from a custom folder when rendering documents or
+		/// graphics. The registered font resolver will provide fonts from the specified directory for dependent
+		/// services.</remarks>
+		/// <param name="services">The service collection to which the font resolver will be added.</param>
+		/// <param name="path">The file system path to the folder containing font files. Cannot be null or empty.</param>
+		/// <returns>The updated service collection with the folder font resolver registered.</returns>
 		public static IServiceCollection AddFolderFontResolver(this IServiceCollection services, string path)
 		{
 			services.AddSingleton<IFontResolver>(new FontResolver(path));

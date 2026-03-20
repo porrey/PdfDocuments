@@ -202,6 +202,8 @@ namespace PdfDocuments
 		/// <exception cref="ArgumentException">Thrown if hexColor is not in a valid RRGGBB or AARRGGBB hexadecimal format.</exception>
 		public static XColor ToXColor(this string hexColor)
 		{
+			XColor returnValue = new();
+
 			if (string.IsNullOrWhiteSpace(hexColor))
 			{
 				throw new ArgumentNullException(nameof(hexColor));
@@ -215,20 +217,23 @@ namespace PdfDocuments
 				byte g = Convert.ToByte(value.Substring(2, 2), 16);
 				byte b = Convert.ToByte(value.Substring(4, 2), 16);
 
-				return XColor.FromArgb(r, g, b);
+				returnValue = XColor.FromArgb(r, g, b);
 			}
-
-			if (value.Length == 8)
+			else if (value.Length == 8)
 			{
 				byte a = Convert.ToByte(value.Substring(0, 2), 16);
 				byte r = Convert.ToByte(value.Substring(2, 2), 16);
 				byte g = Convert.ToByte(value.Substring(4, 2), 16);
 				byte b = Convert.ToByte(value.Substring(6, 2), 16);
 
-				return XColor.FromArgb(a, r, g, b);
+				returnValue = XColor.FromArgb(a, r, g, b);
+			}
+			else
+			{
+				throw new ArgumentException("Color must be in #RRGGBB or #AARRGGBB format.", nameof(hexColor));
 			}
 
-			throw new ArgumentException("Color must be in #RRGGBB or #AARRGGBB format.", nameof(hexColor));
+			return returnValue;
 		}
 	}
 }

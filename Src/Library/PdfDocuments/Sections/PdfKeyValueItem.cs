@@ -21,38 +21,67 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a key-value pair for PDF data binding, where the value can be a static string or a bindable property
+	/// associated with a model.
+	/// </summary>
+	/// <remarks>Use this class to define key-value pairs for PDF generation scenarios, supporting both static and
+	/// dynamic values. The value can be bound to a property or action on the model, enabling flexible data extraction for
+	/// PDF fields.</remarks>
+	/// <typeparam name="TModel">The type of model associated with the value binding. Must implement the IPdfModel interface.</typeparam>
 	public class PdfKeyValueItem<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Initializes a new instance of the PdfKeyValueItem class.
+		/// </summary>
 		public PdfKeyValueItem()
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the PdfKeyValueItem class with the specified key and value.
+		/// </summary>
+		/// <param name="key">The key associated with the item. Cannot be null.</param>
+		/// <param name="value">The value associated with the item. Cannot be null.</param>
 		public PdfKeyValueItem(string key, string value)
 		{
 			this.Key = key;
 			this.Value = value;
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the PdfKeyValueItem class with the specified key and value binding.
+		/// </summary>
+		/// <param name="key">The key associated with the value. Cannot be null.</param>
+		/// <param name="value">A binding that provides the value associated with the key. Cannot be null.</param>
 		public PdfKeyValueItem(string key, BindProperty<string, TModel> value)
 		{
 			this.Key = key;
 			this.Value = value;
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the PdfKeyValueItem class with the specified key and value binding action.
+		/// </summary>
+		/// <param name="key">The key associated with the item. Cannot be null.</param>
+		/// <param name="value">The action that binds a string value to the model. Cannot be null.</param>
 		public PdfKeyValueItem(string key, BindPropertyAction<string, TModel> value)
 		{
 			this.Key = key;
 			this.Value = value;
 		}
 
+		/// <summary>
+		/// Gets or sets the unique identifier associated with this instance.
+		/// </summary>
 		public string Key { get; set; }
+
+		/// <summary>
+		/// Gets or sets the bound value associated with the model.
+		/// </summary>
 		public BindProperty<string, TModel> Value { get; set; }
 	}
 }

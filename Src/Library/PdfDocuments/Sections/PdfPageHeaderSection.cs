@@ -21,17 +21,41 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.IO;
-using System.Threading.Tasks;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a header section for a PDF page, supporting customizable logo and title rendering using a model-driven
+	/// template.
+	/// </summary>
+	/// <remarks>Use this class to define and render a page header in a PDF document, with support for binding logo
+	/// and title values from the provided model. The header section can be styled and positioned according to template
+	/// settings. This class is typically used as part of a larger PDF generation workflow.</remarks>
+	/// <typeparam name="TModel">The type of model used to bind data for the header section. Must implement the IPdfModel interface.</typeparam>
 	public class PdfPageHeaderSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Gets or sets the logo text associated with the model.
+		/// </summary>
 		public virtual BindProperty<string, TModel> Logo { get; set; } = string.Empty;
+
+		/// <summary>
+		/// Gets or sets the title associated with the model.
+		/// </summary>
 		public virtual BindProperty<string, TModel> Title { get; set; } = string.Empty;
 
+		/// <summary>
+		/// Renders the header section of the PDF grid page asynchronously, including the logo image and title text if
+		/// available.
+		/// </summary>
+		/// <remarks>The logo image is rendered left-aligned and vertically centered with a margin, if a valid image
+		/// path is provided. The title text is rendered using the resolved style and alignment. The method does not throw
+		/// exceptions for missing or invalid logo paths.</remarks>
+		/// <param name="g">The PDF grid page on which the header will be rendered.</param>
+		/// <param name="m">The data model used to resolve header content and styles.</param>
+		/// <param name="bounds">The bounds within which the header content should be rendered.</param>
+		/// <returns>A task that represents the asynchronous render operation. The result is <see langword="true"/> if rendering was
+		/// successful; otherwise, <see langword="false"/>.</returns>
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;

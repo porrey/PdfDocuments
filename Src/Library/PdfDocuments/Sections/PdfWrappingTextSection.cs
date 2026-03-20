@@ -22,13 +22,27 @@
  *	SOFTWARE.
  */
 using PdfSharp.Drawing;
-using System.Threading.Tasks;
 
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a PDF section that renders text with automatic word wrapping within the specified bounds.
+	/// </summary>
+	/// <remarks>This section uses the resolved style and padding to determine how text is wrapped and positioned.
+	/// It is useful for displaying paragraphs or blocks of text that need to fit within a constrained area of a PDF
+	/// page.</remarks>
+	/// <typeparam name="TModel">The type of model used to provide data for rendering the PDF section. Must implement the IPdfModel interface.</typeparam>
 	public class PdfWrappingTextSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Renders text content asynchronously within the specified bounds on a PDF grid page using the provided model.
+		/// </summary>
+		/// <param name="g">The PDF grid page on which the text will be rendered.</param>
+		/// <param name="m">The model containing data used to resolve text and style information for rendering.</param>
+		/// <param name="bounds">The bounds defining the area within the grid page where the text will be drawn.</param>
+		/// <returns>A task that represents the asynchronous render operation. The result is <see langword="true"/> if rendering was
+		/// successful; otherwise, <see langword="false"/>.</returns>
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;

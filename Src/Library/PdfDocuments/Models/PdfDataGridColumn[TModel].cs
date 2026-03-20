@@ -25,14 +25,52 @@ using System.Linq.Expressions;
 
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a column definition for a data grid rendered in a PDF document, supporting binding to model properties
+	/// and customizable formatting and styles.
+	/// </summary>
+	/// <remarks>Use this class to configure the appearance and behavior of individual columns in a PDF data grid,
+	/// including header text, cell formatting, and style names. Each property supports binding to values from the model,
+	/// enabling dynamic customization based on model data.</remarks>
+	/// <typeparam name="TModel">The type of the model associated with the column. Must implement <see cref="IPdfModel"/>.</typeparam>
 	public class PdfDataGridColumn<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Gets or sets the name of the style applied to the header element.
+		/// </summary>
 		public virtual BindProperty<string, TModel> HeaderStyleName { get; set; }
+
+		/// <summary>
+		/// Gets or sets the name of the style applied to the data element for the model.
+		/// </summary>
 		public virtual BindProperty<string, TModel> DataStyleName { get; set; }
+
+		/// <summary>
+		/// Gets or sets the column header text for the bound model property.
+		/// </summary>
 		public virtual BindProperty<string, TModel> ColumnHeader { get; set; }
+
+		/// <summary>
+		/// Gets or sets the relative width of the element as a proportion of its container.
+		/// </summary>
+		/// <remarks>The value typically ranges from 0.0 to 1.0, where 1.0 represents full width. Setting this
+		/// property allows dynamic sizing based on container dimensions.</remarks>
 		public virtual BindProperty<double, TModel> RelativeWidth { get; set; }
+
+		/// <summary>
+		/// Gets or sets the format string used to display the bound value as text.
+		/// </summary>
+		/// <remarks>Specify a format string to control how the value is rendered. Common .NET format specifiers can
+		/// be used. If not set, the value is displayed using its default string representation.</remarks>
 		public virtual BindProperty<string, TModel> StringFormat { get; set; }
+
+		/// <summary>
+		/// Gets or sets the expression that represents access to a member, such as a property or field, within an expression
+		/// tree.
+		/// </summary>
+		/// <remarks>Use this property to inspect or modify the member access represented in the expression tree.
+		/// Changing this property affects how the expression tree references the underlying member.</remarks>
 		public virtual MemberExpression MemberExpression { get; set; }
 	}
 }

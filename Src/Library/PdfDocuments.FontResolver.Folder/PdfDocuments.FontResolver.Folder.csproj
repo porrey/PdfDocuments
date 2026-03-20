@@ -10,9 +10,9 @@
 		<Product></Product>
 		<Copyright>Copyright © Daniel Porrey 2021-2026. All Rights Reserved.</Copyright>
 		<Description>C# library providing a path based font resolver for PdfSharp.</Description>
-		<Version>10.1.0.0</Version>
-		<FileVersion>10.1.0.0</FileVersion>
-		<AssemblyVersion>10.1.0.0</AssemblyVersion>
+		<Version>10.1.1.0</Version>
+		<FileVersion>10.1.1.0</FileVersion>
+		<AssemblyVersion>10.1.1.0</AssemblyVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/porrey/PdfDocuments</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/porrey/PdfDocuments</RepositoryUrl>
@@ -31,23 +31,18 @@
 		<PackageTags>pdf;document;barcode</PackageTags>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<DocumentationFile>PdfDocuments.FontResolver.Folder.xml</DocumentationFile>
+		<DocumentationFile>Xml\PdfDocuments.FontResolver.Folder.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="PdfDocuments.FontResolver.Folder.xml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Include="PdfDocuments.FontResolver.Folder.xml">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
+		<Content Include="Xml\PdfDocuments.FontResolver.Folder.xml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
 		<PackageReference Include="PDFsharp" Version="6.2.4" />
-
 	</ItemGroup>
 
 	<ItemGroup>

@@ -21,13 +21,23 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Threading.Tasks;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Defines a contract for generating PDF documents from a specified model type.
+	/// </summary>
+	/// <remarks>This interface extends IPdfGenerator to support strongly-typed models, enabling type-safe PDF
+	/// generation. Implementations should ensure that the PDF output accurately reflects the provided model.</remarks>
+	/// <typeparam name="TModel">The type of model used to generate the PDF. Must implement the IPdfModel interface.</typeparam>
 	public interface IPdfGenerator<TModel> : IPdfGenerator
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Asynchronously builds the specified model and returns the result along with the generated binary data.
+		/// </summary>
+		/// <param name="model">The model to be built. Cannot be null. Represents the input data used for the build operation.</param>
+		/// <returns>A tuple containing a boolean indicating whether the build was successful, and a byte array with the generated
+		/// binary data. If the build fails, the byte array may be empty.</returns>
 		Task<(bool, byte[])> BuildAsync(TModel model);
 	}
 }

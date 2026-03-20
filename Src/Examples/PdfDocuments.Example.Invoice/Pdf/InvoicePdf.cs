@@ -249,7 +249,7 @@ namespace PdfDocuments.Example.Invoice
 			// Tag line
 			//
 			this.StyleManager.Add("ThankYou.Section", Style.Create<Invoice>()
-						.UseFont("Open Sans", 12, XFontStyleEx.Italic)
+						.UseFont("Tinos", 14, XFontStyleEx.Italic)
 						.UsePadding(0, 2, 1, 2)
 						.UseMargin(0, 3, 0, 0)
 						.UseForegroundColor(ColorPalette.Red)

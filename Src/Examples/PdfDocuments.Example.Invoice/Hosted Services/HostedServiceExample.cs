@@ -96,6 +96,11 @@ namespace PdfDocuments.Example.Invoice
 				GlobalFontSettings.FontResolver = fontResolver;
 
 				//
+				// Set the default font.
+				//
+				GlobalPdfDocumentsSettings.DefaultFontName = "Open Sans";
+
+				//
 				// Register an encoding provider.
 				//
 				Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

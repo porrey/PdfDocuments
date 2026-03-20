@@ -21,13 +21,26 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Defines the contract for generating PDF documents from a specific document model.
+	/// </summary>
+	/// <remarks>Implementations of this interface are responsible for converting a document model into a PDF
+	/// format. The type of document model supported is indicated by the DocumentModelType property. The DebugMode property
+	/// can be used to control diagnostic output or behavior during PDF generation.</remarks>
 	public interface IPdfGenerator
 	{
+		/// <summary>
+		/// Gets the type of the document model represented by this instance.
+		/// </summary>
 		Type DocumentModelType { get; }
+
+		/// <summary>
+		/// Gets or sets the debug mode configuration for the application.
+		/// </summary>
+		/// <remarks>Use this property to control debugging behavior, such as enabling verbose logging or diagnostic
+		/// features. Changing the debug mode may affect performance and logging output.</remarks>
 		DebugMode DebugMode { get; set; }
 	}
 }

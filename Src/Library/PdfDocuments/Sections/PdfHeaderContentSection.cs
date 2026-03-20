@@ -21,14 +21,31 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a template section for rendering header content within a PDF document, using a specified model type.
+	/// </summary>
+	/// <remarks>This class is intended for use in PDF generation scenarios where a header section needs to be
+	/// rendered with customizable content and layout. It manages the layout and rendering of header text and background,
+	/// and positions child sections directly below the header. The header appearance is determined by resolved styles and
+	/// model data. Thread safety is not guaranteed; instances should not be shared across threads without external
+	/// synchronization.</remarks>
+	/// <typeparam name="TModel">The type of model used to provide data for the header content. Must implement the IPdfModel interface.</typeparam>
 	public class PdfHeaderContentSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Arranges the child elements of the grid section asynchronously, positioning them relative to the header within the
+		/// specified bounds.
+		/// </summary>
+		/// <remarks>This method positions child elements directly below the header section, adjusting their bounds
+		/// based on the header's size. Only the first child is affected if multiple children exist.</remarks>
+		/// <param name="g">The PDF grid page on which the layout operation is performed.</param>
+		/// <param name="m">The model containing data used for layout calculations.</param>
+		/// <param name="bounds">The bounds within which the child elements should be arranged.</param>
+		/// <returns>A task that represents the asynchronous layout operation. The result is <see langword="true"/> if the layout was
+		/// applied; otherwise, <see langword="false"/>.</returns>
 		protected override Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
@@ -58,11 +75,24 @@ namespace PdfDocuments
 			return Task.FromResult(returnValue);
 		}
 
+		/// <summary>
+		/// Determines whether the background should be drawn for the current control.
+		/// </summary>
+		/// <remarks>Override this method to customize background rendering behavior for derived controls.</remarks>
+		/// <returns>Always returns <see langword="false"/>, indicating that the background will not be drawn.</returns>
 		protected override bool OnShouldDrawBackground()
 		{
 			return false;
 		}
 
+		/// <summary>
+		/// Renders the header content asynchronously onto the specified PDF grid page using the provided model and bounds.
+		/// </summary>
+		/// <param name="g">The PDF grid page on which the header will be rendered.</param>
+		/// <param name="m">The model containing data used for rendering the header content.</param>
+		/// <param name="bounds">The bounds within which the header should be rendered on the page.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if the header was
+		/// rendered successfully.</returns>
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
@@ -99,6 +129,14 @@ namespace PdfDocuments
 			return Task.FromResult(returnValue);
 		}
 
+		/// <summary>
+		/// Calculates the size required to render the header text, including padding, for the specified page and model.
+		/// </summary>
+		/// <remarks>Override this method to customize header sizing logic for different grid layouts or model
+		/// types.</remarks>
+		/// <param name="g">The page context used to measure the header text and resolve styles.</param>
+		/// <param name="m">The model instance used to resolve the header text and style information.</param>
+		/// <returns>A PdfSize structure representing the total size needed to display the header, including text and padding.</returns>
 		protected virtual PdfSize GetHeaderSize(PdfGridPage g, TModel m)
 		{
 			//
@@ -122,6 +160,14 @@ namespace PdfDocuments
 			return size;
 		}
 
+		/// <summary>
+		/// Calculates the bounding rectangle for the header area of a grid page based on the specified model and layout
+		/// bounds.
+		/// </summary>
+		/// <param name="g">The grid page for which the header rectangle is being calculated.</param>
+		/// <param name="m">The data model used to determine header layout and content.</param>
+		/// <param name="bounds">The layout bounds representing the area available for the grid on the page.</param>
+		/// <returns>A PdfBounds object representing the position and size of the header area within the specified bounds.</returns>
 		protected virtual PdfBounds GetHeaderRect(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			PdfSize size = this.GetHeaderSize(g, m);

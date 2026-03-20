@@ -24,15 +24,20 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Represents a placeholder PDF model that indicates the absence of a valid model.
+	/// Specifies the edge of a column, such as the left or right side, for layout or positioning operations.
 	/// </summary>
-	/// <remarks>Use this type when a PDF model is required but no actual model is available. This can be useful for
-	/// scenarios where a default or 'null object' pattern is needed to avoid null references.</remarks>
-	public class NullModel : IPdfModel
+	/// <remarks>Use this enumeration to indicate which side of a column is being referenced when performing layout
+	/// calculations or alignment. This can be useful in scenarios where columns are manipulated or rendered based on their
+	/// edges.</remarks>
+	public enum ColumnEdge
 	{
 		/// <summary>
-		/// Gets the identifier for the current instance.
+		/// Gets or sets the left coordinate of the element.
 		/// </summary>
-		public string Id => "Null";
+		Left,
+		/// <summary>
+		/// Gets the value indicating the right direction or position.
+		/// </summary>
+		Right
 	}
 }

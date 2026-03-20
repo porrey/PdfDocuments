@@ -21,18 +21,40 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a PDF section that renders a collection of text items stacked vertically, using customizable styles and
+	/// bindings to a model.
+	/// </summary>
+	/// <remarks>This section allows each text item to be bound to a property of the model and rendered with
+	/// distinct styles. The first item and subsequent items can use different font and alignment settings. Items with null
+	/// or whitespace values are not rendered. Use this class to display multiple lines of text in a stacked layout within
+	/// a PDF grid page.</remarks>
+	/// <typeparam name="TModel">The type of the model used for binding text items. Must implement the IPdfModel interface.</typeparam>
 	public class PdfStackedTextSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Gets or sets the collection of stacked items bound to the model.
+		/// </summary>
+		/// <remarks>Each item in the collection represents a binding between a string identifier and a model
+		/// instance. The order of items in the collection may affect how they are processed or displayed.</remarks>
 		public IEnumerable<BindProperty<string, TModel>> StackedItems { get; set; }
 
+		/// <summary>
+		/// Renders stacked text items onto the specified PDF grid page using the provided model and layout bounds.
+		/// </summary>
+		/// <remarks>The rendering process applies different styles to the first and subsequent items in the stack.
+		/// Items with null or whitespace text are not rendered. Padding and alignment are determined by the resolved styles
+		/// for each item.</remarks>
+		/// <param name="g">The PDF grid page on which the items will be rendered.</param>
+		/// <param name="m">The data model used to resolve item values and styles during rendering.</param>
+		/// <param name="bounds">The layout bounds that define the area and positioning for rendering the items.</param>
+		/// <returns>A task that represents the asynchronous rendering operation. The result is <see langword="true"/> if rendering was
+		/// successful; otherwise, <see langword="false"/>.</returns>
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;

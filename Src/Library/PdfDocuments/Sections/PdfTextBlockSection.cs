@@ -21,14 +21,26 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a PDF section that renders a block of text using a specified model.
+	/// </summary>
+	/// <remarks>Use PdfTextBlockSection<![CDATA[<TModel>]]> to display formatted text within a PDF document section. This class
+	/// is intended for scenarios where text content is dynamically resolved from the provided model and rendered with
+	/// customizable styles. Background and border drawing are not supported for this section.</remarks>
+	/// <typeparam name="TModel">The type of model used to provide data for the text block. Must implement the IPdfModel interface.</typeparam>
 	public class PdfTextBlockSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Asynchronously renders the text element onto the specified PDF grid page using the provided model and bounds.
+		/// </summary>
+		/// <param name="g">The PDF grid page on which the text element will be rendered.</param>
+		/// <param name="m">The model containing data used to resolve and render the text element.</param>
+		/// <param name="bounds">The bounds within the page that define the area for rendering the text element.</param>
+		/// <returns>A task that represents the asynchronous render operation. The result is <see langword="true"/> if rendering was
+		/// successful; otherwise, <see langword="false"/>.</returns>
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
@@ -40,11 +52,20 @@ namespace PdfDocuments
 			return Task.FromResult(returnValue);
 		}
 
+		/// <summary>
+		/// Determines whether the background should be drawn for the current element.
+		/// </summary>
+		/// <returns>Always returns <see langword="false"/>, indicating that the background will not be drawn.</returns>
 		protected override bool OnShouldDrawBackground()
 		{
 			return false;
 		}
 
+		/// <summary>
+		/// Determines whether a border should be drawn for the control.
+		/// </summary>
+		/// <remarks>Override this method in a derived class to enable border drawing if required.</remarks>
+		/// <returns>Always returns <see langword="false"/>, indicating that no border will be drawn.</returns>
 		protected override bool OnShouldDrawBorder()
 		{
 			return false;

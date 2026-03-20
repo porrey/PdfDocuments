@@ -21,23 +21,50 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a PDF section template that arranges child sections vertically within a grid page layout.
+	/// </summary>
+	/// <remarks>Child sections are stacked from top to bottom, with their heights determined by relative height
+	/// settings or evenly distributed if unspecified. This class is useful for creating composite PDF layouts where
+	/// multiple sections need to be rendered in a vertical sequence.</remarks>
+	/// <typeparam name="TModel">The type of model used for rendering the PDF section. Must implement the IPdfModel interface.</typeparam>
 	public class PdfVerticalStackSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Initializes a new instance of the PdfVerticalStackSection class.
+		/// </summary>
 		public PdfVerticalStackSection()
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the PdfVerticalStackSection class with the specified child sections arranged
+		/// vertically.
+		/// </summary>
+		/// <remarks>Each child section is rendered in order, from top to bottom. Use this constructor to compose
+		/// complex layouts by combining multiple sections.</remarks>
+		/// <param name="children">An array of child sections to be stacked vertically within this section. Cannot be null; may be empty to create an
+		/// empty stack.</param>
 		public PdfVerticalStackSection(params IPdfSection<TModel>[] children)
 			: base(children)
 		{
 		}
 
+		/// <summary>
+		/// Arranges and lays out child sections within the specified grid page according to their relative heights and
+		/// available bounds.
+		/// </summary>
+		/// <remarks>Sections with a specified relative height are allocated space proportionally, while remaining
+		/// sections share the leftover space evenly. The layout operation is performed asynchronously for each
+		/// section.</remarks>
+		/// <param name="gridPage">The PDF grid page on which the child sections will be laid out.</param>
+		/// <param name="model">The data model used to determine rendering and layout properties for each section.</param>
+		/// <param name="bounds">The bounds defining the available rows and columns for layout within the grid page.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all sections were
+		/// successfully laid out; otherwise, <see langword="false"/>.</returns>
 		protected override async Task<bool> OnLayoutChildrenAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
 		{
 			bool returnValue = true;

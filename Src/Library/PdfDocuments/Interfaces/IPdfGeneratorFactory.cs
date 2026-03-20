@@ -21,12 +21,22 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Threading.Tasks;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Defines a factory for creating PDF generator instances for a specified model type.
+	/// </summary>
+	/// <remarks>Use this interface to obtain PDF generators that support custom model types implementing the
+	/// IPdfModel interface. The factory abstracts the creation logic, allowing for flexible generator instantiation and
+	/// dependency management.</remarks>
 	public interface IPdfGeneratorFactory
 	{
+		/// <summary>
+		/// Asynchronously retrieves a PDF generator instance for the specified model type.
+		/// </summary>
+		/// <typeparam name="TModel">The type of model for which the PDF generator is created. Must implement the IPdfModel interface.</typeparam>
+		/// <returns>A task that represents the asynchronous operation. The task result contains an IPdfGenerator instance for the
+		/// specified model type.</returns>
 		Task<IPdfGenerator<TModel>> GetAsync<TModel>() where TModel : IPdfModel;
 	}
 }

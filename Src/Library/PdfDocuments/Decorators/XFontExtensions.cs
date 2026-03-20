@@ -25,11 +25,20 @@ using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Provides extension methods for creating modified instances of the XFont class.
+	/// </summary>
 	public class XFontExtensions
 	{
+		/// <summary>
+		/// Creates a new font instance with the specified size, preserving the font family and style of the original font.
+		/// </summary>
+		/// <param name="font">The original font whose font family and style will be used for the new font instance.</param>
+		/// <param name="emSize">The size, in em units, to apply to the new font. Must be a positive value.</param>
+		/// <returns>A new XFont instance with the same font family and style as the original font, but with the specified size.</returns>
 		public static XFont WithSize(XFont font, double emSize)
 		{
-			XFont newFont = new XFont(font.FontFamily.Name, emSize, font.Style);
+			XFont newFont = new(font.FontFamily.Name, emSize, font.Style);
 			return newFont;
 		}
 	}

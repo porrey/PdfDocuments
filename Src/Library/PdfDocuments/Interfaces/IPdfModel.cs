@@ -21,12 +21,16 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a PDF model with a unique identifier.
+	/// </summary>
 	public interface IPdfModel
 	{
+		/// <summary>
+		/// Gets the unique identifier for the PDF model.
+		/// </summary>
 		string Id { get; }
 	}
 }

@@ -25,25 +25,40 @@ using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
-	public enum ColumnEdge
-	{
-		Left,
-		Right
-	}
-
-	public enum RowEdge
-	{
-		Top,
-		Bottom
-	}
-
+	/// <summary>
+	/// Provides extension methods for drawing rectangles, lines, and grids on a PDF grid page using specified bounds,
+	/// colors, and pens.
+	/// </summary>
+	/// <remarks>These extension methods simplify rendering shapes and lines on a PDF grid page by abstracting
+	/// coordinate calculations and drawing logic. Methods support both filled and outlined rectangles, horizontal and
+	/// vertical lines, and full grid rendering. All drawing operations are performed relative to the grid's cell
+	/// structure, allowing for precise placement within the page layout. Thread safety is not guaranteed; ensure that
+	/// drawing operations are performed in a single-threaded context.</remarks>
 	public static class PdfGridPageLineExtensions
 	{
+		/// <summary>
+		/// Draws a filled rectangle on the specified PDF grid page using the given bounds and color.
+		/// </summary>
+		/// <param name="source">The PDF grid page on which the filled rectangle will be drawn.</param>
+		/// <param name="bounds">The bounds defining the rectangle's position and size within the grid page.</param>
+		/// <param name="color">The color used to fill the rectangle.</param>
 		public static void DrawFilledRectangle(this PdfGridPage source, PdfBounds bounds, XColor color)
 		{
 			source.DrawFilledRectangle(bounds.LeftColumn, bounds.TopRow, bounds.RightColumn, bounds.BottomRow, color);
 		}
 
+		/// <summary>
+		/// Draws a filled rectangle on the specified PDF grid page using the given grid coordinates and color.
+		/// </summary>
+		/// <remarks>The rectangle is drawn based on the grid's column and row indices, allowing alignment with grid
+		/// cells. The rectangle will cover all cells from the specified left and top indices to the right and bottom indices,
+		/// inclusive.</remarks>
+		/// <param name="source">The PDF grid page on which the rectangle will be drawn.</param>
+		/// <param name="leftColumn">The index of the leftmost column of the rectangle within the grid.</param>
+		/// <param name="topRow">The index of the topmost row of the rectangle within the grid.</param>
+		/// <param name="rightColumn">The index of the rightmost column of the rectangle within the grid.</param>
+		/// <param name="bottomRow">The index of the bottommost row of the rectangle within the grid.</param>
+		/// <param name="color">The color used to fill the rectangle.</param>
 		public static void DrawFilledRectangle(this PdfGridPage source, int leftColumn, int topRow, int rightColumn, int bottomRow, XColor color)
 		{
 			//
@@ -58,17 +73,41 @@ namespace PdfDocuments
 			source.Graphics.DrawRectangle(new XSolidBrush(color), rect);
 		}
 
+		/// <summary>
+		/// Draws a rectangle on the specified PDF grid page using the provided bounds and pen.
+		/// </summary>
+		/// <param name="source">The PDF grid page on which the rectangle will be drawn.</param>
+		/// <param name="bounds">The bounds that define the position and size of the rectangle within the grid page.</param>
+		/// <param name="pen">The pen used to outline the rectangle. Cannot be null.</param>
 		public static void DrawRectangle(this PdfGridPage source, PdfBounds bounds, XPen pen)
 		{
 			source.DrawRectangle(bounds.LeftColumn, bounds.TopRow, bounds.RightColumn, bounds.BottomRow, pen);
 		}
 
+		/// <summary>
+		/// Draws a rectangle on the specified PDF grid page using the given bounds, line weight, and color.
+		/// </summary>
+		/// <param name="source">The PDF grid page on which the rectangle will be drawn.</param>
+		/// <param name="bounds">The bounds defining the position and size of the rectangle within the grid page.</param>
+		/// <param name="weight">The thickness of the rectangle's outline, in points. Must be greater than zero.</param>
+		/// <param name="color">The color used for the rectangle's outline.</param>
 		public static void DrawRectangle(this PdfGridPage source, PdfBounds bounds, double weight, XColor color)
 		{
 			XPen pen = new XPen(color, weight);
 			source.DrawRectangle(bounds.LeftColumn, bounds.TopRow, bounds.RightColumn, bounds.BottomRow, pen);
 		}
 
+		/// <summary>
+		/// Draws a rectangle on the specified PDF grid page using the given pen and grid coordinates.
+		/// </summary>
+		/// <remarks>The rectangle is only drawn if the specified grid coordinates define a non-empty area. The method
+		/// does not modify the contents of the grid cells.</remarks>
+		/// <param name="source">The PDF grid page on which the rectangle will be drawn.</param>
+		/// <param name="leftColumn">The index of the leftmost column of the rectangle within the grid.</param>
+		/// <param name="topRow">The index of the topmost row of the rectangle within the grid.</param>
+		/// <param name="rightColumn">The index of the rightmost column of the rectangle within the grid.</param>
+		/// <param name="bottomRow">The index of the bottommost row of the rectangle within the grid.</param>
+		/// <param name="pen">The pen used to outline the rectangle.</param>
 		public static void DrawRectangle(this PdfGridPage source, int leftColumn, int topRow, int rightColumn, int bottomRow, XPen pen)
 		{
 			//
@@ -85,6 +124,16 @@ namespace PdfDocuments
 			}
 		}
 
+		/// <summary>
+		/// Draws a vertical line on the specified grid page between two rows at the given column edge.
+		/// </summary>
+		/// <param name="source">The grid page on which the vertical line will be drawn.</param>
+		/// <param name="column">The column index where the vertical line will be placed.</param>
+		/// <param name="startRow">The index of the row where the vertical line starts.</param>
+		/// <param name="endRow">The index of the row where the vertical line ends.</param>
+		/// <param name="columnEdge">Specifies whether the line is drawn at the left or right edge of the column.</param>
+		/// <param name="weight">The thickness of the line, in points. Must be greater than zero.</param>
+		/// <param name="color">The color of the line.</param>
 		public static void DrawVerticalLine(this PdfGridPage source, int column, int startRow, int endRow, ColumnEdge columnEdge, double weight, XColor color)
 		{
 			XPen linePen = new XPen(color, weight);
@@ -93,6 +142,18 @@ namespace PdfDocuments
 			source.Graphics.DrawLine(linePen, p1, p2);
 		}
 
+		/// <summary>
+		/// Draws a horizontal line across the specified row of the grid on the PDF page.
+		/// </summary>
+		/// <remarks>The line is drawn from the left edge of the start column to the right edge of the end column. Use
+		/// this method to visually separate rows or highlight specific sections within the grid.</remarks>
+		/// <param name="source">The PDF grid page on which the horizontal line will be drawn.</param>
+		/// <param name="row">The index of the row where the line will be placed.</param>
+		/// <param name="startColumn">The index of the starting column for the line segment.</param>
+		/// <param name="endColumn">The index of the ending column for the line segment.</param>
+		/// <param name="rowEdge">Specifies whether the line is drawn at the top or bottom edge of the row.</param>
+		/// <param name="weight">The thickness of the line, in points.</param>
+		/// <param name="color">The color of the line.</param>
 		public static void DrawHorizontalLine(this PdfGridPage source, int row, int startColumn, int endColumn, RowEdge rowEdge, double weight, XColor color)
 		{
 			XPen linePen = new XPen(color, weight);
@@ -101,6 +162,15 @@ namespace PdfDocuments
 			source.Graphics.DrawLine(linePen, p1, p2);
 		}
 
+		/// <summary>
+		/// Draws a complete grid on the specified PDF page using the given color and line weight.
+		/// </summary>
+		/// <remarks>This method draws both horizontal and vertical lines to outline all rows and columns of the grid.
+		/// Use this method to visually separate grid cells on the page. The operation does not modify the grid's data or
+		/// structure.</remarks>
+		/// <param name="source">The PDF grid page on which the grid lines will be drawn. Must not be null.</param>
+		/// <param name="color">The color used for the grid lines.</param>
+		/// <param name="weight">The thickness of the grid lines, in points. Must be greater than zero.</param>
 		public static void DrawGrid(this PdfGridPage source, XColor color, double weight)
 		{
 			for (int row = 1; row <= source.Grid.Rows; row++)
@@ -118,6 +188,16 @@ namespace PdfDocuments
 			source.DrawVerticalLine(source.Grid.Columns, 1, source.Grid.Rows, ColumnEdge.Right, weight, color);
 		}
 
+		/// <summary>
+		/// Calculates the rectangle that corresponds to the specified grid bounds on the given PDF page.
+		/// </summary>
+		/// <remarks>The returned rectangle reflects the position and size of the specified grid region within the PDF
+		/// page. If the bounds specify columns or rows with zero or negative width or height, the rectangle will default to a
+		/// size of 1 in the corresponding dimension.</remarks>
+		/// <param name="source">The PDF grid page from which to determine the rectangle. Must not be null.</param>
+		/// <param name="bounds">The grid bounds specifying the columns and rows for which to calculate the rectangle. Must not be null.</param>
+		/// <returns>An XRect representing the area covered by the specified bounds on the grid. The rectangle will have a minimum
+		/// width and height of 1 if the calculated size is zero or negative.</returns>
 		public static XRect GetRect(this PdfGridPage source, PdfBounds bounds)
 		{
 			//
@@ -131,6 +211,21 @@ namespace PdfDocuments
 			return new XRect(x, y, w, h);
 		}
 
+		/// <summary>
+		/// Calculates the rectangle that spans the specified grid columns and rows on the given PDF grid page.
+		/// </summary>
+		/// <remarks>Use this method to obtain the exact rectangle for a cell or range of cells in a PDF grid, which
+		/// can be useful for drawing or layout operations. The rectangle coordinates are based on the grid's current
+		/// layout.</remarks>
+		/// <param name="source">The PDF grid page from which to obtain the grid coordinates.</param>
+		/// <param name="leftColumn">The index of the leftmost column of the rectangle. Must be within the valid column range of the grid.</param>
+		/// <param name="topRow">The index of the topmost row of the rectangle. Must be within the valid row range of the grid.</param>
+		/// <param name="rightColumn">The index of the rightmost column of the rectangle. Must be greater than or equal to leftColumn and within the
+		/// valid column range.</param>
+		/// <param name="bottomRow">The index of the bottommost row of the rectangle. Must be greater than or equal to topRow and within the valid row
+		/// range.</param>
+		/// <returns>An XRect representing the area defined by the specified columns and rows. The rectangle will have a minimum width
+		/// and height of 1 if the calculated size is less than or equal to zero.</returns>
 		public static XRect GetRect(this PdfGridPage source, int leftColumn, int topRow, int rightColumn, int bottomRow)
 		{
 			//

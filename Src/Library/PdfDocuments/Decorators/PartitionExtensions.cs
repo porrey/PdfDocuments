@@ -41,10 +41,7 @@
 		/// <exception cref="ArgumentOutOfRangeException">Thrown if firstPartitionSize, partitionSize, or lastPartitionSize is less than or equal to 0.</exception>
 		public static IEnumerable<List<T>> PartitionForReport<T>(this IEnumerable<T> source, int firstPartitionSize, int partitionSize, int lastPartitionSize)
 		{
-			if (source == null)
-			{
-				throw new ArgumentNullException(nameof(source));
-			}
+			ArgumentNullException.ThrowIfNull(source);
 
 			if (firstPartitionSize <= 0)
 			{

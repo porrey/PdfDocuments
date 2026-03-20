@@ -21,12 +21,21 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents the dimensions of a PDF grid, including the number of columns and rows.
+	/// </summary>
 	public class PdfSize
 	{
+		/// <summary>
+		/// Gets or sets the number of columns in the current context.
+		/// </summary>
 		public virtual int Columns { get; set; }
+
+		/// <summary>
+		/// Gets or sets the number of rows.
+		/// </summary>
 		public virtual int Rows { get; set; }
 	}
 }

@@ -21,13 +21,27 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Specifies the horizontal alignment options for content within a PDF element.
+	/// </summary>
+	/// <remarks>Use this enumeration to control how content is positioned horizontally, such as aligning text or
+	/// images to the left, center, or right within a PDF layout. The alignment affects the visual placement of content
+	/// relative to its container.</remarks>
 	public enum PdfHorizontalAlignment
 	{
+		/// <summary>
+		/// Gets or sets the left coordinate of the element.
+		/// </summary>
 		Left,
+		/// <summary>
+		/// Gets or sets the center point of the object.
+		/// </summary>
 		Center,
+		/// <summary>
+		/// Gets the value indicating the right position or direction.
+		/// </summary>
 		Right
 	}
 }

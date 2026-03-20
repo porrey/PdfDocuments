@@ -23,6 +23,10 @@
  */
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Defines a contract for building style information for a PDF model.
+	/// </summary>
+	/// <typeparam name="TModel">The type of PDF model for which style information is constructed. Must implement the IPdfModel interface.</typeparam>
 	public interface IStyleBuilder<TModel>
 			where TModel : IPdfModel
 	{

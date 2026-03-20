@@ -21,23 +21,53 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a section in a PDF document that arranges its child sections horizontally, distributing available space
+	/// according to relative widths or evenly when unspecified.
+	/// </summary>
+	/// <remarks>Child sections are laid out side by side within the section's bounds. Sections with specified
+	/// relative widths receive proportional space, while others share remaining space equally. Padding and layout are
+	/// applied to each child section. This class is typically used to compose complex PDF layouts by stacking multiple
+	/// sections horizontally.</remarks>
+	/// <typeparam name="TModel">The model type used for rendering and layout operations. Must implement the IPdfModel interface.</typeparam>
 	public class PdfHorizontalStackSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Initializes a new instance of the PdfHorizontalStackSection class, which represents a section that arranges PDF
+		/// elements horizontally.
+		/// </summary>
+		/// <remarks>Use this constructor to create a horizontal stack section for organizing PDF content side by
+		/// side. This section can be added to a PDF document to group elements in a horizontal layout.</remarks>
 		public PdfHorizontalStackSection()
 		{
 		}
 
+		/// <summary>
+		/// Initializes a new instance of the PdfHorizontalStackSection class with the specified child sections.
+		/// </summary>
+		/// <remarks>Each child section will be rendered side by side in the order provided. Use this constructor to
+		/// compose complex layouts from multiple sections.</remarks>
+		/// <param name="children">An array of child sections to be arranged horizontally within this section. Cannot be null or contain null
+		/// elements.</param>
 		public PdfHorizontalStackSection(params IPdfSection<TModel>[] children)
 			: base(children)
 		{
 		}
 
+		/// <summary>
+		/// Arranges and lays out child sections within the specified grid page using the provided model and bounds.
+		/// </summary>
+		/// <remarks>Child sections are arranged left to right, with column widths determined by relative or absolute
+		/// specifications. Padding is applied to each section before layout. If any section fails to layout, the operation
+		/// returns <see langword="false"/>.</remarks>
+		/// <param name="g">The PDF grid page on which the child sections are to be laid out.</param>
+		/// <param name="m">The model instance containing data used for layout calculations and rendering.</param>
+		/// <param name="bounds">The bounds defining the area and column/row constraints for layout within the grid page.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all child sections
+		/// were successfully laid out; otherwise, <see langword="false"/>.</returns>
 		protected override async Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;

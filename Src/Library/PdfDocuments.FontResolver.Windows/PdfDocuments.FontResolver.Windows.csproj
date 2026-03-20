@@ -10,9 +10,9 @@
 		<Product></Product>
 		<Copyright>Copyright © Daniel Porrey 2021-2026. All Rights Reserved.</Copyright>
 		<Description>C# library providing a Windows font resolver for PdfSharp.</Description>
-		<Version>10.1.0.0</Version>
-		<FileVersion>10.1.0.0</FileVersion>
-		<AssemblyVersion>10.1.0.0</AssemblyVersion>
+		<Version>10.1.1.0</Version>
+		<FileVersion>10.1.1.0</FileVersion>
+		<AssemblyVersion>10.1.1.0</AssemblyVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/porrey/PdfDocuments</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/porrey/PdfDocuments</RepositoryUrl>
@@ -31,15 +31,11 @@
 		<PackageTags>pdf;document;barcode</PackageTags>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<DocumentationFile>PdfDocuments.FontResolver.Windows.xml</DocumentationFile>
+		<DocumentationFile>Xml\PdfDocuments.FontResolver.Windows.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="PdfDocuments.FontResolver.Windows.xml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Include="PdfDocuments.FontResolver.Windows.xml">
+	  <Content Include="Xml\PdfDocuments.FontResolver.Windows.xml">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>

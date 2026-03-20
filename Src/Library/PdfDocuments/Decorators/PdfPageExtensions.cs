@@ -26,8 +26,22 @@ using PdfSharp.Pdf;
 
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Provides extension methods for the PdfPage type to enhance functionality and convenience.
+	/// </summary>
+	/// <remarks>This class contains static methods that extend the PdfPage type, allowing for additional operations
+	/// such as retrieving page resolution. All methods are intended to be used as extension methods and require a valid
+	/// PdfPage instance.</remarks>
 	public static class PdfPageExtensions
 	{
+		/// <summary>
+		/// Calculates the resolution of the specified PDF page in user units per point.
+		/// </summary>
+		/// <remarks>The resolution is calculated based on the ratio of the page's user unit value to its point value
+		/// for both width and height. This can be useful for rendering or scaling operations where precise page measurements
+		/// are required.</remarks>
+		/// <param name="page">The PDF page for which to determine the resolution. Cannot be null.</param>
+		/// <returns>An XSize structure representing the width and height resolution of the page, measured in user units per point.</returns>
 		public static XSize GetPageResolution(this PdfPage page)
 		{
 			return new XSize()

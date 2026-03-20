@@ -24,15 +24,17 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Represents a placeholder PDF model that indicates the absence of a valid model.
+	/// Specifies the vertical edge of a row, such as the top or bottom position, in a layout or hierarchical structure.
 	/// </summary>
-	/// <remarks>Use this type when a PDF model is required but no actual model is available. This can be useful for
-	/// scenarios where a default or 'null object' pattern is needed to avoid null references.</remarks>
-	public class NullModel : IPdfModel
+	public enum RowEdge
 	{
 		/// <summary>
-		/// Gets the identifier for the current instance.
+		/// Represents the top-level element or object in the hierarchy.
 		/// </summary>
-		public string Id => "Null";
+		Top,
+		/// <summary>
+		/// Represents the bottom alignment or position in a layout or enumeration.
+		/// </summary>
+		Bottom
 	}
 }

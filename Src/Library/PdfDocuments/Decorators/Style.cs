@@ -26,14 +26,36 @@ using PdfSharp.Drawing.Layout;
 
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Provides static methods for creating and configuring PDF style builders for document elements. Enables fluent
+	/// customization of visual properties such as font, color, spacing, alignment, and borders for models implementing the
+	/// IPdfModel interface.
+	/// </summary>
+	/// <remarks>Use the methods in this class to construct and modify style definitions for PDF elements in a
+	/// type-safe and composable manner. Styles can be built incrementally by chaining configuration methods, allowing for
+	/// flexible reuse and adaptation. All methods are thread-safe when used with separate style builder instances. The
+	/// class supports both property binding and direct value assignment for style attributes.</remarks>
 	public static class Style
 	{
+		/// <summary>
+		/// Creates a new style builder instance for the specified PDF model type.
+		/// </summary>
+		/// <typeparam name="TModel">The type of PDF model for which the style builder is created. Must implement the IPdfModel interface.</typeparam>
+		/// <returns>A style builder instance for the specified PDF model type.</returns>
 		public static IStyleBuilder<TModel> Create<TModel>()
 				where TModel : IPdfModel
 		{
 			return new PdfStyle<TModel>();
 		}
 
+		/// <summary>
+		/// Creates a new style builder instance by copying all style properties from the specified style.
+		/// </summary>
+		/// <remarks>Use this method to duplicate an existing style configuration for further customization without
+		/// modifying the original style.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="style">The style to copy. Cannot be null.</param>
+		/// <returns>A new <see cref="IStyleBuilder{TModel}"/> instance with properties copied from the specified style.</returns>
 		public static IStyleBuilder<TModel> Copy<TModel>(this PdfStyle<TModel> style)
 				where TModel : IPdfModel
 		{
@@ -54,6 +76,15 @@ namespace PdfDocuments
 			};
 		}
 
+		/// <summary>
+		/// Sets the font style for the PDF model using the specified font binding.
+		/// </summary>
+		/// <remarks>Use this method to specify the font for PDF rendering when building styles for a model. The font
+		/// is set for subsequent style operations on the builder.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance used to configure styles for the PDF model.</param>
+		/// <param name="value">The font binding to apply to the PDF model. Cannot be null.</param>
+		/// <returns>The style builder instance with the font style applied, enabling further style configuration.</returns>
 		public static IStyleBuilder<TModel> UseFont<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<XFont, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -61,6 +92,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the font style for the PDF model using the specified binding action.
+		/// </summary>
+		/// <remarks>Use this method to define the font for PDF rendering when building styles for a model. This
+		/// method supports fluent chaining of style configuration.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance used to configure styles for the PDF model.</param>
+		/// <param name="value">A binding action that specifies the font to use for the PDF model. Cannot be null.</param>
+		/// <returns>The style builder instance with the font style applied, enabling further style configuration.</returns>
 		public static IStyleBuilder<TModel> UseFont<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<XFont, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -68,6 +108,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the font family, size, and style for the PDF style builder.
+		/// </summary>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure the font for.</param>
+		/// <param name="familyName">The name of the font family to use. Must be available on the system.</param>
+		/// <param name="emSize">The font size, in em units, to apply.</param>
+		/// <param name="style">The font style to apply, such as bold or italic.</param>
+		/// <returns>The style builder instance with the specified font settings applied.</returns>
+		/// <exception cref="Exception">Thrown if the specified font family or style is not available on the system.</exception>
 		public static IStyleBuilder<TModel> UseFont<TModel>(this IStyleBuilder<TModel> styleBuilder, string familyName, double emSize, XFontStyleEx style)
 			where TModel : IPdfModel
 		{
@@ -83,6 +133,17 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the font family and size for the style builder, allowing text rendering with the specified font in PDF
+		/// documents.
+		/// </summary>
+		/// <remarks>This method updates the font settings for subsequent text rendering operations. If the specified
+		/// font family is not available, PDF rendering may fall back to a default font.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure the font for.</param>
+		/// <param name="familyName">The name of the font family to use for text rendering. Cannot be null or empty.</param>
+		/// <param name="emSize">The font size, in em units, to apply. Must be greater than zero.</param>
+		/// <returns>The style builder instance with the font configuration applied, enabling fluent chaining of style settings.</returns>
 		public static IStyleBuilder<TModel> UseFont<TModel>(this IStyleBuilder<TModel> styleBuilder, string familyName, double emSize)
 			where TModel : IPdfModel
 		{
@@ -90,6 +151,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the border width for the style builder using the specified binding value.
+		/// </summary>
+		/// <remarks>Use this method to specify the border width for PDF elements when building styles. The border
+		/// width is applied to subsequent style configurations for the associated model.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure the border width for.</param>
+		/// <param name="value">A binding property representing the border width to apply. The value must be a non-negative double.</param>
+		/// <returns>The style builder instance with the updated border width setting.</returns>
 		public static IStyleBuilder<TModel> UseBorderWidth<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<double, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -97,6 +167,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the border width for the style builder using the specified binding action.
+		/// </summary>
+		/// <remarks>Use this method to specify the border width dynamically based on the model's properties. The
+		/// border width is applied when rendering the PDF element.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure the border width for.</param>
+		/// <param name="value">A binding action that determines the border width value for the model. Cannot be null.</param>
+		/// <returns>The style builder instance with the updated border width configuration.</returns>
 		public static IStyleBuilder<TModel> UseBorderWidth<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<double, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -104,6 +183,13 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the border color for the style builder using the specified binding property.
+		/// </summary>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure the border color for.</param>
+		/// <param name="value">A binding property that specifies the border color to apply. Cannot be null.</param>
+		/// <returns>The style builder instance with the updated border color, enabling fluent configuration.</returns>
 		public static IStyleBuilder<TModel> UseBorderColor<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -111,6 +197,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the border color for the style builder using the specified binding action.
+		/// </summary>
+		/// <remarks>Use this method to bind the border color dynamically based on the model's properties. This
+		/// enables flexible styling for PDF elements.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure the border color for.</param>
+		/// <param name="value">A binding action that determines the border color based on the model. Cannot be null.</param>
+		/// <returns>The style builder instance with the updated border color configuration.</returns>
 		public static IStyleBuilder<TModel> UseBorderColor<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -118,6 +213,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the foreground color for the style builder using the specified binding property.
+		/// </summary>
+		/// <remarks>Use this method to bind a foreground color to the style builder, allowing dynamic color
+		/// assignment based on the model's state.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure the foreground color for.</param>
+		/// <param name="value">A binding property representing the foreground color to apply to the style builder.</param>
+		/// <returns>The style builder instance with the foreground color configured. Enables fluent chaining of style configuration
+		/// methods.</returns>
 		public static IStyleBuilder<TModel> UseForegroundColor<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -125,6 +230,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the foreground color for the style builder using the specified binding action.
+		/// </summary>
+		/// <remarks>Use this method to bind the foreground color dynamically based on the model's properties. This
+		/// enables flexible styling for PDF elements.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A binding action that determines the foreground color based on the model.</param>
+		/// <returns>The style builder instance with the foreground color configured.</returns>
 		public static IStyleBuilder<TModel> UseForegroundColor<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -132,6 +246,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the background color for the style builder using the specified binding property.
+		/// </summary>
+		/// <remarks>Use this method to bind a background color to a PDF style, allowing dynamic color assignment
+		/// based on model properties.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure the background color for.</param>
+		/// <param name="value">A binding property that specifies the background color to apply. Cannot be null.</param>
+		/// <returns>The style builder instance with the updated background color setting.</returns>
 		public static IStyleBuilder<TModel> UseBackgroundColor<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -139,6 +262,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the background color for the style builder using the specified binding action.
+		/// </summary>
+		/// <remarks>Use this method to bind the background color dynamically based on the model's properties. The
+		/// background color will be applied when rendering the PDF element.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure the background color for.</param>
+		/// <param name="value">A binding action that determines the background color based on the model.</param>
+		/// <returns>The style builder instance with the background color configured.</returns>
 		public static IStyleBuilder<TModel> UseBackgroundColor<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<XColor, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -146,6 +278,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the cell padding for table cells in the PDF style builder.
+		/// </summary>
+		/// <remarks>Use this method to specify custom spacing around cell content in PDF tables. Cell padding affects
+		/// the visual layout and spacing within each table cell.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
+		/// <param name="styleBuilder">The style builder instance used to configure PDF table styles.</param>
+		/// <param name="value">A bindable property representing the cell padding to apply. Cannot be null.</param>
+		/// <returns>The style builder instance with updated cell padding settings.</returns>
 		public static IStyleBuilder<TModel> UseCellPadding<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<PdfSpacing, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -153,6 +294,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Configures the cell padding for table cells in the PDF style builder.
+		/// </summary>
+		/// <remarks>Use this method to customize the spacing inside table cells when generating PDF documents. Cell
+		/// padding affects the layout and readability of table content.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
+		/// <param name="styleBuilder">The style builder instance used to configure PDF table styles.</param>
+		/// <param name="value">A delegate that binds the cell padding value to the model. Specifies the spacing to apply as padding within each
+		/// cell.</param>
+		/// <returns>The style builder instance with the updated cell padding configuration.</returns>
 		public static IStyleBuilder<TModel> UseCellPadding<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<PdfSpacing, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -160,6 +311,18 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the cell padding for the PDF style builder using the specified left, top, right, and bottom values.
+		/// </summary>
+		/// <remarks>Cell padding values must be non-negative. This method enables customization of cell spacing for
+		/// PDF table layouts.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure cell padding for.</param>
+		/// <param name="left">The amount of padding to apply to the left side of the cell, in points.</param>
+		/// <param name="top">The amount of padding to apply to the top side of the cell, in points.</param>
+		/// <param name="right">The amount of padding to apply to the right side of the cell, in points.</param>
+		/// <param name="bottom">The amount of padding to apply to the bottom side of the cell, in points.</param>
+		/// <returns>The style builder instance with updated cell padding settings.</returns>
 		public static IStyleBuilder<TModel> UseCellPadding<TModel>(this IStyleBuilder<TModel> styleBuilder, int left, int top, int right, int bottom)
 			where TModel : IPdfModel
 		{
@@ -167,6 +330,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the relative height for the style using the specified binding value.
+		/// </summary>
+		/// <remarks>Use this method to define the height of an element relative to its container or context within a
+		/// PDF model. The relative height is determined by the provided binding property and can be used for responsive
+		/// layout scenarios.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A binding property that specifies the relative height value to use for the style.</param>
+		/// <returns>The style builder instance with the relative height configured.</returns>
 		public static IStyleBuilder<TModel> UseRelativeHeight<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<double, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -174,6 +347,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Configures the style builder to use a relative height value for the PDF element.
+		/// </summary>
+		/// <remarks>Use this method to specify the height of a PDF element as a proportion relative to its container
+		/// or context. This is useful for responsive layouts where absolute sizing is not appropriate.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A delegate that provides the relative height value based on the model. Cannot be null.</param>
+		/// <returns>The style builder instance with the relative height configuration applied.</returns>
 		public static IStyleBuilder<TModel> UseRelativeHeight<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<double, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -181,6 +363,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the margin spacing for the PDF style builder using the specified binding value.
+		/// </summary>
+		/// <remarks>Use this method to configure margin spacing for PDF elements in a fluent style-building workflow.
+		/// The margin value is applied to the style builder and can be further customized with additional style
+		/// settings.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure the margin for.</param>
+		/// <param name="value">A binding property that specifies the margin spacing to apply to the PDF style builder.</param>
+		/// <returns>The style builder instance with the updated margin configuration.</returns>
 		public static IStyleBuilder<TModel> UseMargin<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<PdfSpacing, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -188,6 +380,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the margin style for the PDF model using the specified binding action.
+		/// </summary>
+		/// <remarks>Use this method to specify custom margin settings for PDF elements. The margin is set based on
+		/// the provided binding action, allowing dynamic or model-driven spacing.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance used to configure styles for the PDF model.</param>
+		/// <param name="value">A binding action that defines how the margin spacing is applied to the PDF model.</param>
+		/// <returns>The style builder instance with the margin style configured. Enables fluent chaining of style configuration
+		/// methods.</returns>
 		public static IStyleBuilder<TModel> UseMargin<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<PdfSpacing, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -195,6 +397,18 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the margin values for the style builder using the specified left, top, right, and bottom spacing.
+		/// </summary>
+		/// <remarks>Use this method to specify individual margin values for each side of a PDF element. Margin values
+		/// are applied in points and should be non-negative to ensure correct layout.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure margin values for.</param>
+		/// <param name="left">The margin value, in points, to apply to the left side. Must be non-negative.</param>
+		/// <param name="top">The margin value, in points, to apply to the top side. Must be non-negative.</param>
+		/// <param name="right">The margin value, in points, to apply to the right side. Must be non-negative.</param>
+		/// <param name="bottom">The margin value, in points, to apply to the bottom side. Must be non-negative.</param>
+		/// <returns>The style builder instance with updated margin settings.</returns>
 		public static IStyleBuilder<TModel> UseMargin<TModel>(this IStyleBuilder<TModel> styleBuilder, int left, int top, int right, int bottom)
 			where TModel : IPdfModel
 		{
@@ -202,6 +416,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the padding style for the PDF model using the specified binding property.
+		/// </summary>
+		/// <remarks>Use this method to define padding for PDF elements in a fluent style-building workflow. The
+		/// padding is set based on the provided binding property, allowing dynamic or model-driven spacing.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance used to configure styles for the PDF model.</param>
+		/// <param name="value">The binding property that specifies the padding values to apply to the PDF model.</param>
+		/// <returns>The style builder instance with the updated padding configuration.</returns>
 		public static IStyleBuilder<TModel> UsePadding<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<PdfSpacing, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -209,6 +432,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Configures the padding for the style builder using the specified binding action.
+		/// </summary>
+		/// <remarks>Use this method to set custom padding values for PDF elements when building styles. The padding
+		/// is applied according to the provided binding action, which allows dynamic configuration based on the
+		/// model.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure padding for.</param>
+		/// <param name="value">A binding action that defines the padding settings to apply to the style builder.</param>
+		/// <returns>The style builder instance with the updated padding configuration.</returns>
 		public static IStyleBuilder<TModel> UsePadding<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<PdfSpacing, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -216,6 +449,18 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the padding values for the left, top, right, and bottom edges of the style builder.
+		/// </summary>
+		/// <remarks>Padding values are applied in points and affect the layout of content within the PDF model.
+		/// Negative values may result in unexpected layout behavior.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure padding for.</param>
+		/// <param name="left">The padding value, in points, to apply to the left edge. Must be non-negative.</param>
+		/// <param name="top">The padding value, in points, to apply to the top edge. Must be non-negative.</param>
+		/// <param name="right">The padding value, in points, to apply to the right edge. Must be non-negative.</param>
+		/// <param name="bottom">The padding value, in points, to apply to the bottom edge. Must be non-negative.</param>
+		/// <returns>The style builder instance with updated padding settings.</returns>
 		public static IStyleBuilder<TModel> UsePadding<TModel>(this IStyleBuilder<TModel> styleBuilder, int left, int top, int right, int bottom)
 			where TModel : IPdfModel
 		{
@@ -223,13 +468,29 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the text alignment style for the PDF model using the specified binding value.
+		/// </summary>
+		/// <remarks>Use this method to configure text alignment for PDF elements when building styles. The alignment
+		/// is determined by the provided binding value, which allows dynamic formatting based on the model's state.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance used to configure styles for the PDF model.</param>
+		/// <param name="value">A binding property that specifies the text alignment format to apply. Cannot be null.</param>
+		/// <returns>The style builder instance with the updated text alignment style applied.</returns>
 		public static IStyleBuilder<TModel> UseTextAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<XStringFormat, TModel> value)
 			where TModel : IPdfModel
 		{
 			((PdfStyle<TModel>)styleBuilder).TextAlignment = value;
 			return styleBuilder;
 		}
-
+			
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <typeparam name="TModel"></typeparam>
+		/// <param name="styleBuilder"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public static IStyleBuilder<TModel> UseTextAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<XStringFormat, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -237,6 +498,15 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the paragraph alignment style for the PDF model using the specified binding value.
+		/// </summary>
+		/// <remarks>Use this method to configure paragraph alignment for PDF content. The alignment is applied to
+		/// paragraphs rendered by the model. This method supports fluent chaining of style configuration.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance used to configure styles for the PDF model.</param>
+		/// <param name="value">The binding property that specifies the paragraph alignment to apply. Cannot be null.</param>
+		/// <returns>The style builder instance with the updated paragraph alignment setting.</returns>
 		public static IStyleBuilder<TModel> UseParagraphAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<XParagraphAlignment, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -244,6 +514,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the paragraph alignment style for the PDF model using the specified binding action.
+		/// </summary>
+		/// <remarks>Use this method to control the horizontal alignment of paragraphs within the PDF document. This
+		/// setting affects how text is positioned in each paragraph and can be combined with other style
+		/// configurations.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance used to configure styles for the PDF model.</param>
+		/// <param name="value">A binding action that specifies the paragraph alignment to apply to the model.</param>
+		/// <returns>The style builder instance with the paragraph alignment style applied, enabling further style configuration.</returns>
 		public static IStyleBuilder<TModel> UseParagraphAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<XParagraphAlignment, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -251,6 +531,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Configures the style builder to use relative column widths for table layout.
+		/// </summary>
+		/// <remarks>Relative widths allow columns to be sized proportionally based on the values provided. This
+		/// method is typically used when creating tables with flexible column sizing in PDF documents.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A bindable property representing the array of relative column widths to apply. The array values determine the
+		/// proportional widths of each column.</param>
+		/// <returns>The style builder instance with relative widths configuration applied.</returns>
 		public static IStyleBuilder<TModel> UseRelativeWidths<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<double[], TModel> value)
 			where TModel : IPdfModel
 		{
@@ -258,6 +548,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Configures the style builder to use relative column widths for table layouts.
+		/// </summary>
+		/// <remarks>Use this method to specify column widths as proportions rather than absolute values. This is
+		/// useful for creating tables that adapt to varying content or page sizes.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A delegate that binds an array of relative column widths to the model. Each value represents the proportional
+		/// width of a column.</param>
+		/// <returns>The style builder instance with relative widths configuration applied.</returns>
 		public static IStyleBuilder<TModel> UseRelativeWidths<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<double[], TModel> value)
 			where TModel : IPdfModel
 		{
@@ -265,6 +565,16 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Configures the style builder to use relative column widths for layout purposes.
+		/// </summary>
+		/// <remarks>Relative widths are used to proportionally distribute available space among columns. The sum of
+		/// the values does not need to equal 1; each value is interpreted relative to the others.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="values">An array of relative width values to apply to columns. Each value determines the proportional width of a column
+		/// relative to others.</param>
+		/// <returns>The style builder instance with relative widths applied, enabling method chaining.</returns>
 		public static IStyleBuilder<TModel> UseRelativeWidths<TModel>(this IStyleBuilder<TModel> styleBuilder, params double[] values)
 			where TModel : IPdfModel
 		{
@@ -272,6 +582,14 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Creates a strongly-typed PDF style from the specified style builder.
+		/// </summary>
+		/// <remarks>Use this method to convert an <see cref="IStyleBuilder{TModel}"/> into a reusable PDF style for
+		/// rendering or formatting operations.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model for which the style is built. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance used to construct the PDF style. Cannot be null.</param>
+		/// <returns>A <see cref="PdfStyle{TModel}"/> representing the style configuration for the specified model type.</returns>
 		public static PdfStyle<TModel> Build<TModel>(this IStyleBuilder<TModel> styleBuilder)
 			where TModel : IPdfModel
 		{

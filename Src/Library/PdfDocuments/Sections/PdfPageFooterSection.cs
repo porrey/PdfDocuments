@@ -21,20 +21,53 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Linq;
-using System.Threading.Tasks;
 using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a footer section template for a PDF page, allowing customizable text content in each corner of the
+	/// footer.
+	/// </summary>
+	/// <remarks>Use this class to define footer content for PDF pages, with support for binding text to the
+	/// top-left, top-right, bottom-left, and bottom-right corners. Footer content and styles can be dynamically resolved
+	/// based on the provided model. This section is typically rendered at the bottom of each PDF page and can be
+	/// customized for different document layouts.</remarks>
+	/// <typeparam name="TModel">The model type used to bind footer content and styles. Must implement the IPdfModel interface.</typeparam>
 	public class PdfPageFooterSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Gets or sets the text displayed in the top-left area of the control.
+		/// </summary>
 		public virtual BindProperty<string, TModel> TopLeftText { get; set; } = string.Empty;
+
+		/// <summary>
+		/// Gets or sets the text displayed in the top-right corner of the control.
+		/// </summary>
 		public virtual BindProperty<string, TModel> TopRightText { get; set; } = string.Empty;
+
+		/// <summary>
+		/// Gets or sets the text displayed in the bottom-left area of the control.
+		/// </summary>
 		public virtual BindProperty<string, TModel> BottomLeftText { get; set; } = string.Empty;
+
+		/// <summary>
+		/// Gets or sets the text displayed in the bottom-right corner of the control.
+		/// </summary>
 		public virtual BindProperty<string, TModel> BottomRightText { get; set; } = string.Empty;
 
+		/// <summary>
+		/// Renders text content in each corner of the specified PDF grid page using the provided model and bounds.
+		/// </summary>
+		/// <remarks>Text is rendered in the top-left, top-right, bottom-left, and bottom-right corners of the
+		/// specified bounds. The style and padding are resolved from the model and applied to the rendering
+		/// operation.</remarks>
+		/// <param name="g">The PDF grid page on which the text will be rendered.</param>
+		/// <param name="m">The model containing data used to resolve text and style information for rendering.</param>
+		/// <param name="bounds">The bounds within which the text will be rendered on the page.</param>
+		/// <returns>A task that represents the asynchronous render operation. The task result is <see langword="true"/> if rendering
+		/// was successful; otherwise, <see langword="false"/>.</returns>
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;

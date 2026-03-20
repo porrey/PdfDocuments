@@ -21,15 +21,23 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a PDF section that displays a collection of key-value pairs using a specified model type.
+	/// </summary>
+	/// <remarks>Use this class to render structured key-value data within a PDF document. Each item in the section
+	/// is displayed with its key and corresponding value, formatted according to the resolved styles. The section is
+	/// suitable for scenarios where labeled values need to be presented, such as metadata, summaries, or property
+	/// lists.</remarks>
+	/// <typeparam name="TModel">The type of model used to provide data for the key-value items. Must implement the IPdfModel interface.</typeparam>
 	public class PdfKeyValueSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Initializes a new instance of the PdfKeyValueSection class with the specified key-value items.
+		/// </summary>
+		/// <param name="values">An array of PdfKeyValueItem<![CDATA[<TModel>]]>; objects to include in the section. Can be empty to create an empty section.</param>
 		public PdfKeyValueSection(params PdfKeyValueItem<TModel>[] values)
 		{
 			foreach (PdfKeyValueItem<TModel> value in values)
@@ -38,8 +46,25 @@ namespace PdfDocuments
 			}
 		}
 
-		public virtual IList<PdfKeyValueItem<TModel>> Items { get; } = new List<PdfKeyValueItem<TModel>>();
+		/// <summary>
+		/// Gets the collection of key-value items associated with the current model.
+		/// </summary>
+		/// <remarks>The collection is read-only and contains all key-value pairs relevant to the instance.
+		/// Modifications to the collection itself are not supported; however, individual items within the collection may be
+		/// modified if their types allow it.</remarks>
+		public virtual IList<PdfKeyValueItem<TModel>> Items { get; } = [];
 
+		/// <summary>
+		/// Renders key-value items onto the specified PDF grid page asynchronously.
+		/// </summary>
+		/// <remarks>This method arranges and renders each key-value pair within the provided bounds, applying styles
+		/// and layout based on the relative widths. The rendering is performed asynchronously, but the operation completes
+		/// immediately.</remarks>
+		/// <param name="g">The PDF grid page on which the key-value items will be rendered.</param>
+		/// <param name="m">The model providing data and context for rendering the items.</param>
+		/// <param name="bounds">The bounds within the grid page that define the area for rendering the items.</param>
+		/// <returns>A task that represents the asynchronous rendering operation. The task result is <see langword="true"/> if
+		/// rendering completes successfully.</returns>
 		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;

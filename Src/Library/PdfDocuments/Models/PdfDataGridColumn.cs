@@ -23,6 +23,12 @@
  */
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Represents a column in a PDF data grid with no associated data model. Provides functionality for defining column
+	/// properties and layout in a PDF table.
+	/// </summary>
+	/// <remarks>Use this type when you need to create a PDF data grid column without binding it to a specific data
+	/// model. This is useful for scenarios where columns are defined independently of data source types.</remarks>
 	public class PdfDataGridColumn : PdfDataGridColumn<NullModel>
 	{
 	}

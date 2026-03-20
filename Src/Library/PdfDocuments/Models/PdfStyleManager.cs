@@ -25,19 +25,36 @@ using PdfSharp.Drawing;
 
 namespace PdfDocuments
 {
+	/// <summary>
+	/// Manages a collection of named PDF styles for a specific model type, providing access and customization of font and
+	/// formatting options used in PDF generation.
+	/// </summary>
+	/// <remarks>Use PdfStyleManager to define, retrieve, and replace styles by name for consistent PDF formatting.
+	/// The manager includes predefined styles such as "Default" and "Debug" to facilitate common scenarios. Styles can be
+	/// customized for different model types, enabling flexible document appearance. Thread safety is not guaranteed;
+	/// synchronize access if used concurrently.</remarks>
+	/// <typeparam name="TModel">The model type for which PDF styles are managed. Must implement the IPdfModel interface.</typeparam>
 	public class PdfStyleManager<TModel> : Dictionary<string, PdfStyle<TModel>>, IPdfStyleManager<TModel>
 			where TModel : IPdfModel
 	{
+		/// <summary>
+		/// Represents the default string value used for configuration or identification purposes.
+		/// </summary>
 		public const string Default = "Default";
+
+		/// <summary>
+		/// Represents the string value used to indicate debug-level logging.
+		/// </summary>
 		public const string Debug = "Debug";
 
 		/// <summary>
-		/// Initializes a new instance of the PdfStyleManager class using the default font style.
+		/// Initializes a new instance of the PdfStyleManager class using the default font name specified in global PDF
+		/// document settings.
 		/// </summary>
-		/// <remarks>This constructor sets the font to "Arial" by default. Use this overload when no specific font is
-		/// required for PDF styling.</remarks>
+		/// <remarks>This constructor provides a convenient way to create a PdfStyleManager with standard font
+		/// settings. Use this overload when custom font configuration is not required.</remarks>
 		public PdfStyleManager()
-			: this("Arial")
+			: this(GlobalPdfDocumentsSettings.DefaultFontName)
 		{
 		}
 
