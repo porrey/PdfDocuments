@@ -4,7 +4,7 @@
         <name>PdfDocuments</name>
     </assembly>
     <members>
-        <member name="T:Enru.Yantra.Commands.CreateContainerReport.PartitionExtensions">
+        <member name="T:PdfDocuments.PartitionExtensions">
             <summary>
             Provides extension methods for partitioning sequences into lists of specified sizes.
             </summary>
@@ -13,7 +13,7 @@
             lists, and the original sequence is enumerated only once. All methods are implemented as extension methods for any
             enumerable type.</remarks>
         </member>
-        <member name="M:Enru.Yantra.Commands.CreateContainerReport.PartitionExtensions.PartitionEvenly``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+        <member name="M:PdfDocuments.PartitionExtensions.PartitionEvenly``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
             <summary>
             Partitions the elements of a sequence into lists of up to a specified maximum number of items per partition.
             </summary>
@@ -23,7 +23,7 @@
             <returns>An enumerable collection of lists, where each list contains up to the specified maximum number of items from the
             source sequence. The last list may contain fewer items if the total number of elements is not evenly divisible.</returns>
         </member>
-        <member name="M:Enru.Yantra.Commands.CreateContainerReport.PartitionExtensions.PartitionForReport``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32,System.Int32)">
+        <member name="M:PdfDocuments.PartitionExtensions.PartitionForReport``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32,System.Int32)">
             <summary>
             Partitions the source sequence into a series of lists for reporting, using specified sizes for the first, middle,
             and last partitions.
@@ -42,7 +42,7 @@
             <exception cref="T:System.ArgumentNullException">Thrown if source is null.</exception>
             <exception cref="T:System.ArgumentOutOfRangeException">Thrown if firstPartitionSize, partitionSize, or lastPartitionSize is less than or equal to 0.</exception>
         </member>
-        <member name="M:Enru.Yantra.Commands.CreateContainerReport.PartitionExtensions.PartitionForReport``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32)">
+        <member name="M:PdfDocuments.PartitionExtensions.PartitionForReport``1(System.Collections.Generic.IEnumerable{``0},System.Int32,System.Int32)">
             <summary>
             Partitions the source sequence into a first partition of a specified size, followed by subsequent partitions of
             another specified size.
