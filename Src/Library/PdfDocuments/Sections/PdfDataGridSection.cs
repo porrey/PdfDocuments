@@ -147,7 +147,7 @@ namespace PdfDocuments
 			//
 			// Keep track of the current row height.
 			//
-			int rowHeight = 0;
+			int currentRowHeight = 0;
 
 			//
 			// Determine the column widths.
@@ -185,14 +185,14 @@ namespace PdfDocuments
 				PdfBounds headerBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], headerSize.Rows).SubtractBounds(g, m, headerStyle.Margin.Resolve(g, m));
 				this.OnRenderHeaderColumn(g, m, headerBounds, headerStyle, headerElement);
 				leftColumn += columnWidth[i];
-				rowHeight = headerSize.Rows;
+				currentRowHeight = headerSize.Rows;
 				i++;
 			}
 
 			//
 			// Go to the next row.
 			//
-			topRow += rowHeight;
+			topRow += currentRowHeight;
 
 			//
 			// Get the items.
@@ -202,26 +202,53 @@ namespace PdfDocuments
 			if (items.Any())
 			{
 				//
-				// Render the data.
+				// Get the maximum row height so that all rows can be displayed at the same
+				// height no matter what data they contain.
 				//
+				int rowHeight = 0;
+
 				foreach (TItem item in items)
 				{
 					leftColumn = bounds.LeftColumn;
-					i = 0;
+					int j = 0;
 
 					foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
 					{
 						PdfTextElement<TModel> dataElement = new(this.FormattedValue(g, m, column, item));
 						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
 						PdfSize dataSize = dataElement.Measure(g, m, dataStyle);
-						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
+						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[j], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
+
+						if (dataBounds.Rows > rowHeight)
+						{
+							rowHeight = dataBounds.Rows;
+						}
+
+						j++;
+					}
+				}
+
+				//
+				// Render the data.
+				//
+				foreach (TItem item in items)
+				{
+					leftColumn = bounds.LeftColumn;
+					int k = 0;
+
+					foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
+					{
+						PdfTextElement<TModel> dataElement = new(this.FormattedValue(g, m, column, item));
+						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
+						PdfSize dataSize = dataElement.Measure(g, m, dataStyle);
+						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[k], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
 						this.OnRenderDataColumn(g, m, dataBounds, dataStyle, dataElement, item);
-						leftColumn += columnWidth[i];
-						rowHeight = dataSize.Rows;
-						i++;
+						leftColumn += columnWidth[k];
+						currentRowHeight = dataSize.Rows;
+						k++;
 					}
 
-					topRow += rowHeight;
+					topRow += currentRowHeight;
 				}
 			}
 

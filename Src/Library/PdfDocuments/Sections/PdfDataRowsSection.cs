@@ -147,7 +147,7 @@ namespace PdfDocuments
 			//
 			// Keep track of the current row height.
 			//
-			int rowHeight = 0;
+			int currentRowHeight = 0;
 
 			//
 			// Determine the column widths.
@@ -175,7 +175,7 @@ namespace PdfDocuments
 			//
 			// Go to the next row.
 			//
-			topRow += rowHeight;
+			topRow += currentRowHeight;
 
 			//
 			// Get the items.
@@ -185,8 +185,11 @@ namespace PdfDocuments
 			if (items.Any())
 			{
 				//
-				// Render the data.
+				// Get the maximum row height so that all rows can be displayed at the same
+				// height no matter what data they contain.
 				//
+				int rowHeight = 0;
+
 				foreach (TItem item in items)
 				{
 					leftColumn = bounds.LeftColumn;
@@ -198,13 +201,38 @@ namespace PdfDocuments
 						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
 						PdfSize dataSize = dataElement.Measure(g, m, dataStyle);
 						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
-						this.OnRenderDataColumn(g, m, dataBounds, dataStyle, dataElement, item);
-						leftColumn += columnWidth[i];
-						rowHeight = dataSize.Rows;
+
+						if (dataBounds.Rows > rowHeight)
+						{
+							rowHeight = dataBounds.Rows;
+						}
+
 						i++;
 					}
+				}
 
-					topRow += rowHeight;
+				//
+				// Render the data.
+				//
+				foreach (TItem item in items)
+				{
+					leftColumn = bounds.LeftColumn;
+					int j = 0;
+
+					foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
+					{
+						PdfTextElement<TModel> dataElement = new(this.FormattedValue(g, m, column, item));
+						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
+						PdfSize dataSize = dataElement.Measure(g, m, dataStyle);
+						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[j], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
+						dataBounds.Rows = rowHeight;
+						this.OnRenderDataColumn(g, m, dataBounds, dataStyle, dataElement, item);
+						leftColumn += columnWidth[j];
+						currentRowHeight = dataSize.Rows;
+						j++;
+					}
+
+					topRow += currentRowHeight;
 				}
 			}
 
@@ -223,12 +251,23 @@ namespace PdfDocuments
 		/// <returns>A string containing the formatted value of the property for the specified grid cell.</returns>
 		protected virtual string FormattedValue(PdfGridPage g, TModel m, PdfDataGridColumn<TModel> column, TItem item)
 		{
-			//
-			// For the property value.
-			//
-			PropertyInfo property = column.MemberExpression.Member as PropertyInfo;
-			object value = property.GetValue(item);
-			return column.StringFormat != null ? string.Format(column.StringFormat.Resolve(g, m), value) : Convert.ToString(value);
+			string returnValue = string.Empty;
+
+			if (column.MemberExpression != null)
+			{
+				//
+				// For the property value.
+				//
+				PropertyInfo property = column.MemberExpression.Member as PropertyInfo;
+
+				if (property != null)
+				{
+					object value = property.GetValue(item);
+					returnValue = column.StringFormat != null ? string.Format(column.StringFormat.Resolve(g, m), value) : Convert.ToString(value);
+				}
+			}
+
+			return returnValue;
 		}
 
 		/// <summary>
