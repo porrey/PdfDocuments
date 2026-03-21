@@ -10,9 +10,9 @@
 		<Product></Product>
 		<Copyright>Copyright © Daniel Porrey 2021-2026. All Rights Reserved.</Copyright>
 		<Description>High level C# library for the easy creation of barcodes in PDF documents using PdfSharp.</Description>
-		<Version>10.1.1.0</Version>
-		<FileVersion>10.1.1.0</FileVersion>
-		<AssemblyVersion>10.1.1.0</AssemblyVersion>
+		<Version>10.2.1.0</Version>
+		<FileVersion>10.2.1.0</FileVersion>
+		<AssemblyVersion>10.2.1.0</AssemblyVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/porrey/PdfDocuments</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/porrey/PdfDocuments</RepositoryUrl>

@@ -62,9 +62,9 @@ namespace PdfDocuments
 				// below the header section.
 				//
 				this.Children.Single().ActualBounds.LeftColumn = headerRect.LeftColumn;
-				this.Children.Single().SetActualColumns(headerRect.Columns);
+				this.Children.Single().SetActualColumnsAsync(headerRect.Columns);
 				this.Children.Single().ActualBounds.TopRow = headerRect.BottomRow + 1;
-				this.Children.Single().SetActualRows(bounds.Rows - headerRect.Rows);
+				this.Children.Single().SetActualRowsAsync(bounds.Rows - headerRect.Rows);
 
 				//
 				// Apply the layout.

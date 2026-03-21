@@ -121,7 +121,7 @@ namespace PdfDocuments.Example.Invoice
 				//
 				generator.DebugMode = generator.DebugMode
 									.SetFlag(DebugMode.RevealGrid, false)
-									.SetFlag(DebugMode.RevealLayout, false)
+									.SetFlag(DebugMode.RevealLayout, true)
 									.SetFlag(DebugMode.HideDetails, false)
 									.SetFlag(DebugMode.RevealFontDetails, false)
 									.SetFlag(DebugMode.OutlineText, false);

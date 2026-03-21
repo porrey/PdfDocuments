@@ -172,6 +172,21 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
+		public static PdfBounds AddBounds<TModel>(this PdfBounds outerBounds, PdfGridPage g, TModel m, PdfSpacing innerBounds)
+			where TModel : IPdfModel
+		{
+			PdfBounds returnValue = outerBounds;
+
+			int left = outerBounds.LeftColumn - innerBounds.Left;
+			int top = outerBounds.TopRow - innerBounds.Top;
+			int columns = outerBounds.Columns + (innerBounds.Left + innerBounds.Right);
+			int rows = outerBounds.Rows + (innerBounds.Top + innerBounds.Bottom);
+
+			returnValue = (new PdfBounds(left, top, columns, rows)).Normalize();
+
+			return returnValue;
+		}
+
 		//public static PdfBounds SubtractBounds<TModel>(this PdfBounds bounds, PdfGridPage g, TModel m, PdfSpacing padding)
 		//{
 		//	PdfBounds returnValue = bounds;

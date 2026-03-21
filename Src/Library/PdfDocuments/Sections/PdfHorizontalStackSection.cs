@@ -91,8 +91,8 @@ namespace PdfDocuments
 			//
 			foreach (IPdfSection<TModel> section in sections.Where(t => t.RelativeWidths.Resolve(g, m)[0] != 0))
 			{
-				await section.SetActualColumns((int)(section.RelativeWidths.Resolve(g, m)[0] * bounds.Columns));
-				await section.SetActualRows(bounds.Rows);
+				await section.SetActualColumnsAsync((int)(section.RelativeWidths.Resolve(g, m)[0] * bounds.Columns));
+				await section.SetActualRowsAsync(bounds.Rows);
 			}
 
 			//
@@ -130,8 +130,8 @@ namespace PdfDocuments
 						// Assign the columns calculated dividing the remaining
 						// columns by the number of sections.
 						//
-						await section.SetActualColumns(columnsPerSection);
-						await section.SetActualRows(bounds.Rows);
+						await section.SetActualColumnsAsync(columnsPerSection);
+						await section.SetActualRowsAsync(bounds.Rows);
 						remainingColumns -= columnsPerSection;
 					}
 					else
@@ -141,8 +141,8 @@ namespace PdfDocuments
 						// number of sections, this will assign all remaining columns
 						// to the last section.
 						//
-						await section.SetActualColumns(remainingColumns);
-						await section.SetActualRows(bounds.Rows);
+						await section.SetActualColumnsAsync(remainingColumns);
+						await section.SetActualRowsAsync(bounds.Rows);
 					}
 				}
 			}
