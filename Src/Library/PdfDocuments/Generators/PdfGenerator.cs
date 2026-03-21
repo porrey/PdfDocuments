@@ -78,7 +78,7 @@ namespace PdfDocuments
 		/// <param name="page">The PDF page for which to determine the usable width. Cannot be null.</param>
 		/// <returns>The width of the page, in units, excluding the left and right trim margins.</returns>
 		protected virtual XUnit PageWidth(PdfPage page) => page.Width - page.TrimMargins.Left - page.TrimMargins.Right;
-		
+
 		/// <summary>
 		/// Calculates the usable height of a PDF page after accounting for the top and bottom trim margins.
 		/// </summary>
@@ -108,6 +108,11 @@ namespace PdfDocuments
 			//
 			using (PdfDocument document = new())
 			{
+				//
+				// Get the document title.
+				//
+				this.DocumentTitle = await this.OnGetDocumentTitleAsync(model);
+
 				//
 				// Create the pages.
 				//
@@ -303,11 +308,6 @@ namespace PdfDocuments
 				{
 					using (XGraphics graphics = XGraphics.FromForm(form))
 					{
-						//
-						// Get the document title.
-						//
-						this.DocumentTitle = await this.OnGetDocumentTitleAsync(model);
-
 						//
 						// Create the page grid instance.
 						//
