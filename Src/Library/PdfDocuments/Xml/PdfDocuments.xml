@@ -720,6 +720,17 @@
             <param name="innerBounds">The spacing to subtract from the outer bounds. Specifies the amount to remove from each side.</param>
             <returns>A PdfBounds instance representing the adjusted bounds after subtracting the specified inner spacing.</returns>
         </member>
+        <member name="M:PdfDocuments.PdfBoundsExtensions.AddBounds``1(PdfDocuments.PdfBounds,PdfDocuments.PdfGridPage,``0,PdfDocuments.PdfSpacing)">
+            <summary>
+            Creates a new set of bounds by expanding the specified outer bounds using the provided inner spacing values.
+            </summary>
+            <typeparam name="TModel">The type of the model associated with the PDF grid page. Must implement the IPdfModel interface.</typeparam>
+            <param name="outerBounds">The original bounds to be expanded.</param>
+            <param name="g">The PDF grid page to which the bounds and model are related.</param>
+            <param name="m">The model instance associated with the PDF grid page.</param>
+            <param name="innerBounds">The spacing values to apply to each side of the outer bounds when expanding.</param>
+            <returns>A new PdfBounds instance representing the expanded bounds after applying the specified inner spacing.</returns>
+        </member>
         <member name="T:PdfDocuments.PdfDebugModeExtensions">
             <summary>
             Provides extension methods for working with the DebugMode enumeration, enabling convenient flag manipulation and

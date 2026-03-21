@@ -48,9 +48,9 @@ namespace PdfDocuments
 		/// <returns>A PdfSize structure representing the width and height of the measured text in PDF units.</returns>
 		public static PdfSize MeasureText(this PdfGridPage source, string familyName, double emSize, XFontStyleEx style, string text = "Test")
 		{
-			PdfSize returnValue = new PdfSize();
+			PdfSize returnValue = new();
 
-			XFont font = new XFont(familyName, emSize, style);
+			XFont font = new(familyName, emSize, style);
 			returnValue = source.MeasureText(font, text);
 
 			return returnValue;
@@ -123,8 +123,11 @@ namespace PdfDocuments
 			//
 			if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.OutlineText))
 			{
-				XPen pen = new XPen(XColors.HotPink, .5);
-				pen.DashStyle = XDashStyle.Dot;
+				XPen pen = new(XColors.HotPink, .5)
+				{
+					DashStyle = XDashStyle.Dot
+				};
+
 				source.DrawRectangle(bounds, pen);
 			}
 
@@ -146,7 +149,7 @@ namespace PdfDocuments
 		/// <returns>A PdfSize structure representing the size of the rendered text within the specified bounds.</returns>
 		public static PdfSize DrawText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyleEx style, PdfBounds bounds, XStringFormat formats, XColor color)
 		{
-			XFont font = new XFont(familyName, emSize, style);
+			XFont font = new(familyName, emSize, style);
 			return source.DrawText(text, font, bounds, formats, color);
 		}
 
@@ -168,7 +171,7 @@ namespace PdfDocuments
 		/// <returns>A PdfSize object representing the size of the rendered text within the specified grid area.</returns>
 		public static PdfSize DrawText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyleEx style, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color)
 		{
-			PdfBounds bounds = new PdfBounds(leftColumn, topRow, columns, rows);
+			PdfBounds bounds = new(leftColumn, topRow, columns, rows);
 			return source.DrawText(text, familyName, emSize, style, bounds, formats, color);
 		}
 
@@ -187,7 +190,7 @@ namespace PdfDocuments
 		/// <returns>A PdfSize object representing the size of the drawn text within the specified grid area.</returns>
 		public static PdfSize DrawText(this PdfGridPage source, string text, XFont font, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color)
 		{
-			PdfBounds bounds = new PdfBounds(leftColumn, topRow, columns, rows);
+			PdfBounds bounds = new(leftColumn, topRow, columns, rows);
 			return source.DrawText(text, font, bounds, formats, color);
 		}
 
@@ -207,9 +210,9 @@ namespace PdfDocuments
 		/// specified.</param>
 		public static void DrawWrappingText(this PdfGridPage source, string text, XFont font, PdfBounds bounds, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
 		{
-			XRect layout = new XRect(source.Grid.Left(bounds.LeftColumn), source.Grid.Top(bounds.TopRow), source.Grid.ColumnsWidth(bounds.Columns), source.Grid.RowsHeight(bounds.Rows));
+			XRect layout = new(source.Grid.Left(bounds.LeftColumn), source.Grid.Top(bounds.TopRow), source.Grid.ColumnsWidth(bounds.Columns), source.Grid.RowsHeight(bounds.Rows));
 
-			XTextFormatter formatter = new XTextFormatter(source.Graphics)
+			XTextFormatter formatter = new(source.Graphics)
 			{
 				Alignment = paragraphAlignment
 			};
@@ -240,8 +243,8 @@ namespace PdfDocuments
 		/// specified.</param>
 		public static void DrawWrappingText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyleEx style, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
 		{
-			PdfBounds bounds = new PdfBounds(leftColumn, topRow, columns, rows);
-			XFont font = new XFont(familyName, emSize, style);
+			PdfBounds bounds = new(leftColumn, topRow, columns, rows);
+			XFont font = new(familyName, emSize, style);
 			source.DrawWrappingText(text, font, bounds, formats, color, paragraphAlignment);
 		}
 
@@ -262,7 +265,7 @@ namespace PdfDocuments
 		/// specified.</param>
 		public static void DrawWrappingText(this PdfGridPage source, string text, XFont font, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
 		{
-			PdfBounds bounds = new PdfBounds(leftColumn, topRow, columns, rows);
+			PdfBounds bounds = new(leftColumn, topRow, columns, rows);
 			source.DrawWrappingText(text, font, bounds, formats, color, paragraphAlignment);
 		}
 	}

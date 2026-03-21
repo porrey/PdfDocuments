@@ -64,7 +64,7 @@ namespace PdfDocuments
 			//
 			// Create the rectangle.
 			//
-			XRect rect = new XRect(source.Grid.Left(leftColumn), source.Grid.Top(topRow), source.Grid.Right(rightColumn) - source.Grid.Left(leftColumn), source.Grid.Bottom(bottomRow) - source.Grid.Top(topRow));
+			XRect rect = new(source.Grid.Left(leftColumn), source.Grid.Top(topRow), source.Grid.Right(rightColumn) - source.Grid.Left(leftColumn), source.Grid.Bottom(bottomRow) - source.Grid.Top(topRow));
 
 			//
 			// Draw the rectangle.
@@ -93,7 +93,7 @@ namespace PdfDocuments
 		/// <param name="color">The color used for the rectangle's outline.</param>
 		public static void DrawRectangle(this PdfGridPage source, PdfBounds bounds, double weight, XColor color)
 		{
-			XPen pen = new XPen(color, weight);
+			XPen pen = new(color, weight);
 			source.DrawRectangle(bounds.LeftColumn, bounds.TopRow, bounds.RightColumn, bounds.BottomRow, pen);
 		}
 
@@ -136,9 +136,9 @@ namespace PdfDocuments
 		/// <param name="color">The color of the line.</param>
 		public static void DrawVerticalLine(this PdfGridPage source, int column, int startRow, int endRow, ColumnEdge columnEdge, double weight, XColor color)
 		{
-			XPen linePen = new XPen(color, weight);
-			XPoint p1 = new XPoint(columnEdge == ColumnEdge.Right ? source.Grid.Right(column) : source.Grid.Left(column), source.Grid.Top(startRow));
-			XPoint p2 = new XPoint(columnEdge == ColumnEdge.Right ? source.Grid.Right(column) : source.Grid.Left(column), source.Grid.Bottom(endRow));
+			XPen linePen = new(color, weight);
+			XPoint p1 = new(columnEdge == ColumnEdge.Right ? source.Grid.Right(column) : source.Grid.Left(column), source.Grid.Top(startRow));
+			XPoint p2 = new(columnEdge == ColumnEdge.Right ? source.Grid.Right(column) : source.Grid.Left(column), source.Grid.Bottom(endRow));
 			source.Graphics.DrawLine(linePen, p1, p2);
 		}
 
@@ -156,9 +156,9 @@ namespace PdfDocuments
 		/// <param name="color">The color of the line.</param>
 		public static void DrawHorizontalLine(this PdfGridPage source, int row, int startColumn, int endColumn, RowEdge rowEdge, double weight, XColor color)
 		{
-			XPen linePen = new XPen(color, weight);
-			XPoint p1 = new XPoint(source.Grid.Left(startColumn), rowEdge == RowEdge.Top ? source.Grid.Top(row) : source.Grid.Bottom(row));
-			XPoint p2 = new XPoint(source.Grid.Right(endColumn), rowEdge == RowEdge.Top ? source.Grid.Top(row) : source.Grid.Bottom(row));
+			XPen linePen = new(color, weight);
+			XPoint p1 = new(source.Grid.Left(startColumn), rowEdge == RowEdge.Top ? source.Grid.Top(row) : source.Grid.Bottom(row));
+			XPoint p2 = new(source.Grid.Right(endColumn), rowEdge == RowEdge.Top ? source.Grid.Top(row) : source.Grid.Bottom(row));
 			source.Graphics.DrawLine(linePen, p1, p2);
 		}
 

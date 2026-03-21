@@ -115,7 +115,7 @@ namespace PdfDocuments
 			//
 			IEnumerable<IPdfSection<TModel>> nonRelativeSections = sections.Where(t => t.RelativeHeight.Resolve(gridPage, model) == 0 && !t.MustCalculateHeight);
 
-			if (nonRelativeSections.Count() > 0)
+			if (nonRelativeSections.Any())
 			{
 				//
 				// Divide the remaining rows evenly among these sections.

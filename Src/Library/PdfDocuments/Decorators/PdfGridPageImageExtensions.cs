@@ -163,7 +163,7 @@ namespace PdfDocuments
 		/// <param name="verticalAlignment">Specifies how the image is aligned vertically within the provided bounds.</param>
 		public static void DrawImage(this PdfGridPage source, XImage image, PdfBounds bounds, PdfHorizontalAlignment horizontalAlignment, PdfVerticalAlignment verticalAlignment)
 		{
-			PdfBounds imageBounds = new PdfBounds(0, 0, (int)(image.PointWidth / source.Grid.ColumnWidth), (int)(image.PointHeight / source.Grid.RowHeight));
+			PdfBounds imageBounds = new(0, 0, (int)(image.PointWidth / source.Grid.ColumnWidth), (int)(image.PointHeight / source.Grid.RowHeight));
 			PdfPoint hPoint = bounds.AlignHorizontally(imageBounds, horizontalAlignment);
 			PdfPoint vPoint = bounds.AlignVertically(imageBounds, verticalAlignment);
 
@@ -172,7 +172,7 @@ namespace PdfDocuments
 
 			double x = source.Grid.Left(hPoint.Column);
 			double y = source.Grid.Top(vPoint.Row);
-			XPoint xp = new XPoint() { X = x, Y = y };
+			XPoint xp = new() { X = x, Y = y };
 
 			source.Graphics.DrawImage(image, xp);
 		}

@@ -62,7 +62,7 @@ namespace PdfDocuments
 		{
 			PdfStyle<TModel> returnValue = null;
 
-			if (section.StyleNames.Count() > 0)
+			if (section.StyleNames.Any())
 			{
 				if (index < section.StyleNames.Count())
 				{
