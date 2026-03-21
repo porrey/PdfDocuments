@@ -313,6 +313,18 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
+		/// Creates a new PDF section for rendering a data row based on the specified model and item types.
+		/// </summary>
+		/// <typeparam name="TModel">The type of the PDF model. Must implement the IPdfModel interface.</typeparam>
+		/// <typeparam name="TItem">The type of the data item represented in the row.</typeparam>
+		/// <returns>An IPdfSection<![CDATA[<TModel>]]> instance configured to render a data row for the specified item type.</returns>
+		public static IPdfSection<TModel> DataRowsSection<TModel, TItem>()
+			where TModel : IPdfModel
+		{
+			return new PdfDataRowsSection<TModel, TItem>();
+		}
+
+		/// <summary>
 		/// Adds a data column to the PDF section with the specified header, binding expression, relative width, format, and
 		/// style names.
 		/// </summary>
@@ -333,10 +345,15 @@ namespace PdfDocuments
 		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, BindProperty<string, TModel> columnHeader, Expression<Func<TItem, TProperty>> expression, BindProperty<double, TModel> relativeWidth, BindProperty<string, TModel> format, BindProperty<string, TModel> headerStyleName, BindProperty<string, TModel> cellStyleName)
 			where TModel : IPdfModel
 		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
+			if (section is PdfDataGridSection<TModel, TItem> s1)
 			{
-				s.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
+				s1.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
 			}
+			else if (section is PdfDataRowsSection<TModel, TItem> s2)
+			{
+				s2.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
+			}
+
 			return section;
 		}
 
@@ -360,10 +377,15 @@ namespace PdfDocuments
 		public static IPdfSection<TModel> AddColumn<TModel, TItem, TProperty>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> columnHeader, Expression<Func<TItem, TProperty>> expression, BindPropertyAction<double, TModel> relativeWidth, BindPropertyAction<string, TModel> format, BindPropertyAction<string, TModel> headerStyleName, BindPropertyAction<string, TModel> cellStyleName)
 			where TModel : IPdfModel
 		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
+			if (section is PdfDataGridSection<TModel, TItem> s1)
 			{
-				s.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
+				s1.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
 			}
+			else if (section is PdfDataRowsSection<TModel, TItem> s2)
+			{
+				s2.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
+			}
+
 			return section;
 		}
 
@@ -380,9 +402,13 @@ namespace PdfDocuments
 		public static IPdfSection<TModel> UseItems<TModel, TItem>(this IPdfSection<TModel> section, BindPropertyAction<IEnumerable<TItem>, TModel> items)
 			where TModel : IPdfModel
 		{
-			if (section is PdfDataGridSection<TModel, TItem> s)
+			if (section is PdfDataGridSection<TModel, TItem> s1)
 			{
-				s.Items = items;
+				s1.Items = items;
+			}
+			else if (section is PdfDataRowsSection<TModel, TItem> s2)
+			{
+				s2.Items = items;
 			}
 
 			return section;

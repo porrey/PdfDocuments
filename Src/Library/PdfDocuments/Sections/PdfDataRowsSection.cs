@@ -35,7 +35,7 @@ namespace PdfDocuments
 	/// binding scenarios for headers, cell values, and styles.</remarks>
 	/// <typeparam name="TModel">The type of the PDF model used for binding and rendering section content.</typeparam>
 	/// <typeparam name="TItem">The type of the items displayed in the data grid rows.</typeparam>
-	public class PdfDataGridSection<TModel, TItem> : PdfSectionTemplate<TModel>
+	public class PdfDataRowsSection<TModel, TItem> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
 		/// <summary>
@@ -173,23 +173,6 @@ namespace PdfDocuments
 			}
 
 			//
-			// Render the headers.
-			//
-			int i = 0;
-
-			foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
-			{
-				PdfTextElement<TModel> headerElement = new(column.ColumnHeader.Resolve(g, m));
-				PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(column.HeaderStyleName.Resolve(g, m));
-				PdfSize headerSize = headerElement.Measure(g, m, headerStyle);
-				PdfBounds headerBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], headerSize.Rows).SubtractBounds(g, m, headerStyle.Margin.Resolve(g, m));
-				this.OnRenderHeaderColumn(g, m, headerBounds, headerStyle, headerElement);
-				leftColumn += columnWidth[i];
-				rowHeight = headerSize.Rows;
-				i++;
-			}
-
-			//
 			// Go to the next row.
 			//
 			topRow += rowHeight;
@@ -207,7 +190,7 @@ namespace PdfDocuments
 				foreach (TItem item in items)
 				{
 					leftColumn = bounds.LeftColumn;
-					i = 0;
+					int i = 0;
 
 					foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
 					{
@@ -249,19 +232,6 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
-		/// Renders a header column in the PDF grid using the specified model, bounds, style, and text element.
-		/// </summary>
-		/// <param name="g">The PDF grid page on which the header column will be rendered.</param>
-		/// <param name="m">The data model instance used to provide content for the header column.</param>
-		/// <param name="dataBounds">The bounds within which the header column will be rendered.</param>
-		/// <param name="dataStyle">The style to apply when rendering the header column.</param>
-		/// <param name="dataElement">The text element responsible for rendering the header column content.</param>
-		protected virtual void OnRenderHeaderColumn(PdfGridPage g, TModel m, PdfBounds dataBounds, PdfStyle<TModel> dataStyle, PdfTextElement<TModel> dataElement)
-		{
-			dataElement.Render(g, m, dataBounds, dataStyle);
-		}
-
-		/// <summary>
 		/// Renders a data column within the grid using the specified text element, style, and bounds.
 		/// </summary>
 		/// <param name="g">The grid page on which the data column will be rendered.</param>
@@ -297,25 +267,6 @@ namespace PdfDocuments
 			IEnumerable<TItem> items = this.Items.Resolve(g, m);
 
 			//
-			// Get the header height.
-			//
-			int headerHeight = 0;
-
-			foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
-			{
-				PdfTextElement<TModel> headerElement = new(column.ColumnHeader.Resolve(g, m));
-				PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(column.HeaderStyleName.Resolve(g, m));
-				PdfSize headerSize = headerElement.Measure(g, m, headerStyle);
-				PdfBounds headerBounds = new PdfBounds(0, 0, 100, headerSize.Rows).SubtractBounds(g, m, headerStyle.Margin.Resolve(g, m));
-				headerBounds = headerBounds.AddBounds(g, m, headerStyle.Margin.Resolve(g, m));
-
-				if (headerBounds.Rows > headerHeight)
-				{
-					headerHeight = headerBounds.Rows;
-				}
-			}
-
-			//
 			// Get the data row height.
 			//
 			int rowHeight = 0;
@@ -341,7 +292,7 @@ namespace PdfDocuments
 			//
 			// Calculate the total height based on the header and data row heights.
 			//
-			returnValue = headerHeight + (rowHeight * items.Count());
+			returnValue = rowHeight;
 
 			return Task.FromResult(returnValue);
 		}
