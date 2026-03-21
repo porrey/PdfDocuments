@@ -272,7 +272,7 @@ namespace PdfDocuments
 		{
 			return new PdfPageFooterSection<TModel>();
 		}
-		
+
 		/// <summary>
 		/// Creates a new PDF section that displays an image based on the specified model type.
 		/// </summary>
@@ -948,6 +948,21 @@ namespace PdfDocuments
 				stackedSection.StackedItems = items;
 			}
 
+			return section;
+		}
+
+		/// <summary>
+		/// Sets whether the section must calculate its height before rendering and returns the updated section.
+		/// </summary>
+		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="section">The PDF section to configure. Cannot be null.</param>
+		/// <param name="mustCalculateHeight">A value indicating whether the section must calculate its height before rendering. Set to <see langword="true"/>
+		/// to require height calculation; otherwise, <see langword="false"/>.</param>
+		/// <returns>The same <see cref="IPdfSection{TModel}"/> instance with the updated height calculation setting.</returns>
+		public static IPdfSection<TModel> WithMustCalculateHeight<TModel>(this IPdfSection<TModel> section, bool mustCalculateHeight)
+			where TModel : IPdfModel
+		{
+			section.MustCalculateHeight = mustCalculateHeight;
 			return section;
 		}
 	}

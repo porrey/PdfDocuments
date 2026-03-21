@@ -99,17 +99,17 @@ namespace PdfDocuments
 				//
 				// Draw the Key
 				//
-				PdfTextElement<TModel> keyElement = new PdfTextElement<TModel>(item.Key);
+				PdfTextElement<TModel> keyElement = new(item.Key);
 				PdfSize keySize = keyElement.Measure(g, m, keyStyle);
-				PdfBounds keyBounds = new PdfBounds(bounds.LeftColumn, top, keyWidth, keySize.Rows);
+				PdfBounds keyBounds = new(bounds.LeftColumn, top, keyWidth, keySize.Rows);
 				keyElement.Render(g, m, keyBounds, keyStyle);
 
 				//
 				// Draw the Value
 				//
-				PdfTextElement<TModel> valueElement = new PdfTextElement<TModel>(item.Value.Resolve(g, m));
+				PdfTextElement<TModel> valueElement = new(item.Value.Resolve(g, m));
 				PdfSize valueSize = valueElement.Measure(g, m, valueStyle);
-				PdfBounds valueBounds = new PdfBounds(bounds.LeftColumn + keyWidth, top, bounds.Columns - keyWidth, valueSize.Rows);
+				PdfBounds valueBounds = new(bounds.LeftColumn + keyWidth, top, bounds.Columns - keyWidth, valueSize.Rows);
 				valueElement.Render(g, m, valueBounds, valueStyle);
 
 				top += (new int[] { keySize.Rows, valueSize.Rows }).Max();

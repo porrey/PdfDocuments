@@ -80,16 +80,30 @@ namespace PdfDocuments
 			// without. Those sections without get the remaining space
 			// evenly divided.
 			//
-			foreach (IPdfSection<TModel> section in sections.Where(t => t.RelativeHeight.Resolve(gridPage, model) != 0))
+			IEnumerable<IPdfSection<TModel>> relativeHeightSections = sections.Where(t => t.RelativeHeight.Resolve(gridPage, model) != 0 || t.MustCalculateHeight);
+
+			foreach (IPdfSection<TModel> section in relativeHeightSections)
 			{
-				await section.SetActualRows((int)(section.RelativeHeight.Resolve(gridPage, model) * bounds.Rows));
-				await section.SetActualColumns(bounds.Columns);
+				if (section.MustCalculateHeight)
+				{
+					//
+					// If the section must calculate its height, we need call CalculateHeightAsync() determine the height.
+					//
+					int calculatedHeight = await section.CalculateHeightAsync(gridPage, model, bounds);
+					await section.SetActualRowsAsync(calculatedHeight);
+				}
+				else
+				{
+					await section.SetActualRowsAsync((int)(section.RelativeHeight.Resolve(gridPage, model) * bounds.Rows));
+				}
+
+				await section.SetActualColumnsAsync(bounds.Columns);
 			}
 
 			//
 			// Get the sum of the height of the previous sections.
 			//
-			int usedRows = sections.Where(t => t.RelativeHeight.Resolve(gridPage, model) != 0).Sum(t => t.ActualBounds.Rows);
+			int usedRows = sections.Where(t => t.RelativeHeight.Resolve(gridPage, model) != 0 || t.MustCalculateHeight).Sum(t => t.ActualBounds.Rows);
 
 			//
 			// Get the remaining rows.
@@ -99,41 +113,39 @@ namespace PdfDocuments
 			//
 			// Get a count of sections where the relative height is not specified.
 			//
-			int nonRelativeSectionCount = sections.Where(t => t.RelativeHeight.Resolve(gridPage, model) == 0).Count();
+			IEnumerable<IPdfSection<TModel>> nonRelativeSections = sections.Where(t => t.RelativeHeight.Resolve(gridPage, model) == 0 && !t.MustCalculateHeight);
 
-			if (nonRelativeSectionCount > 0)
+			if (nonRelativeSections.Any())
 			{
 				//
 				// Divide the remaining rows evenly among these sections.
 				//
-				int rowsPerSection = (int)(remainingRows / nonRelativeSectionCount);
+				int rowsPerSection = (int)(remainingRows / nonRelativeSections.Count());
 
 				//
 				// Assign the rows to the remaining sections.
 				//
-				IPdfSection<TModel>[] sectionList = sections.Where(t => t.RelativeHeight.Resolve(gridPage, model) == 0).ToArray();
-
-				foreach (IPdfSection<TModel> section in sectionList)
+				foreach (IPdfSection<TModel> section in nonRelativeSections)
 				{
-					if (section != sectionList.Last())
+					if (section != nonRelativeSections.Last())
 					{
 						//
 						// Assign the rows calculated dividing the remaining
 						// rows by the number of sections.
 						//
-						await section.SetActualRows(rowsPerSection);
-						await section.SetActualColumns(bounds.Columns);
+						await section.SetActualRowsAsync(rowsPerSection);
+						await section.SetActualColumnsAsync(bounds.Columns);
 						remainingRows -= rowsPerSection;
 					}
 					else
 					{
 						//
 						// If the remaining rows was not evenly divisible by the
-						// number of sections, this will assign ll remaining rows
+						// number of sections, this will assign all remaining rows
 						// to the last section.
 						//
-						await section.SetActualRows(remainingRows);
-						await section.SetActualColumns(bounds.Columns);
+						await section.SetActualRowsAsync(remainingRows);
+						await section.SetActualColumnsAsync(bounds.Columns);
 					}
 				}
 			}

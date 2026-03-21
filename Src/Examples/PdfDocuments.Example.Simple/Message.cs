@@ -23,9 +23,19 @@
  */
 namespace PdfDocuments.Example.Simple
 {
+	/// <summary>
+	/// Represents a message with an identifier and associated text content.
+	/// </summary>
 	public class Message : IPdfModel
 	{
+		/// <summary>
+		/// Gets or sets the unique identifier for the entity.
+		/// </summary>
 		public string Id { get; set; }
+
+		/// <summary>
+		/// Gets or sets the text content.
+		/// </summary>
 		public string Text { get; set; }
 	}
 }

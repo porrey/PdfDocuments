@@ -633,6 +633,16 @@
             <param name="values">An array of binding actions representing the stacked text items to assign to the section.</param>
             <returns>The original PDF section instance with stacked items assigned if applicable.</returns>
         </member>
+        <member name="M:PdfDocuments.Pdf.WithMustCalculateHeight``1(PdfDocuments.IPdfSection{``0},System.Boolean)">
+            <summary>
+            Sets whether the section must calculate its height before rendering and returns the updated section.
+            </summary>
+            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
+            <param name="section">The PDF section to configure. Cannot be null.</param>
+            <param name="mustCalculateHeight">A value indicating whether the section must calculate its height before rendering. Set to <see langword="true"/>
+            to require height calculation; otherwise, <see langword="false"/>.</param>
+            <returns>The same <see cref="T:PdfDocuments.IPdfSection`1"/> instance with the updated height calculation setting.</returns>
+        </member>
         <member name="T:PdfDocuments.PdfBoundsExtensions">
             <summary>
             Provides extension methods for manipulating and aligning PDF bounds and coordinates.
@@ -709,6 +719,17 @@
             <param name="m">The PDF model instance used for grid calculations.</param>
             <param name="innerBounds">The spacing to subtract from the outer bounds. Specifies the amount to remove from each side.</param>
             <returns>A PdfBounds instance representing the adjusted bounds after subtracting the specified inner spacing.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfBoundsExtensions.AddBounds``1(PdfDocuments.PdfBounds,PdfDocuments.PdfGridPage,``0,PdfDocuments.PdfSpacing)">
+            <summary>
+            Creates a new set of bounds by expanding the specified outer bounds using the provided inner spacing values.
+            </summary>
+            <typeparam name="TModel">The type of the model associated with the PDF grid page. Must implement the IPdfModel interface.</typeparam>
+            <param name="outerBounds">The original bounds to be expanded.</param>
+            <param name="g">The PDF grid page to which the bounds and model are related.</param>
+            <param name="m">The model instance associated with the PDF grid page.</param>
+            <param name="innerBounds">The spacing values to apply to each side of the outer bounds when expanding.</param>
+            <returns>A new PdfBounds instance representing the expanded bounds after applying the specified inner spacing.</returns>
         </member>
         <member name="T:PdfDocuments.PdfDebugModeExtensions">
             <summary>
@@ -2100,6 +2121,22 @@
             differ from initial settings due to layout adjustments. Use this property to determine the rendered area for tasks
             such as hit testing or custom drawing.</remarks>
         </member>
+        <member name="P:PdfDocuments.IPdfSection`1.MustCalculateHeight">
+            <summary>
+            Gets or sets a value indicating whether the height should be calculated.
+            </summary>
+        </member>
+        <member name="M:PdfDocuments.IPdfSection`1.CalculateHeightAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Asynchronously calculates the required height, in rows, to render the specified model within the given PDF
+            grid page and bounds.
+            </summary>
+            <param name="g">The PDF grid page on which the model will be rendered. Cannot be null.</param>
+            <param name="m">The data model to be rendered. Cannot be null.</param>
+            <param name="bounds">The bounds within which the model should be rendered, specified in rows.</param>
+            <returns>A task that represents the asynchronous operation. The task result contains the calculated height, in rows,
+            required to render the model within the specified bounds.</returns>
+        </member>
         <member name="P:PdfDocuments.IPdfSection`1.ParentSection">
             <summary>
             Gets or sets the parent section of the current PDF section.
@@ -2149,14 +2186,14 @@
             <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if debug information
             was successfully rendered; otherwise, <see langword="false"/>.</returns>
         </member>
-        <member name="M:PdfDocuments.IPdfSection`1.SetActualRows(System.Int32)">
+        <member name="M:PdfDocuments.IPdfSection`1.SetActualRowsAsync(System.Int32)">
             <summary>
             Sets the actual number of rows processed or affected by the operation asynchronously.
             </summary>
             <param name="rows">The number of rows to set. Must be a non-negative integer.</param>
             <returns>A task that represents the asynchronous operation.</returns>
         </member>
-        <member name="M:PdfDocuments.IPdfSection`1.SetActualColumns(System.Int32)">
+        <member name="M:PdfDocuments.IPdfSection`1.SetActualColumnsAsync(System.Int32)">
             <summary>
             Sets the actual number of columns to be used for subsequent operations.
             </summary>
@@ -3223,6 +3260,20 @@
             <param name="dataElement">The text element responsible for rendering the content of the data column.</param>
             <param name="item">The item representing the data to be rendered in the column.</param>
         </member>
+        <member name="M:PdfDocuments.PdfDataGridSection`2.OnCalculateHeightAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Asynchronously calculates the total height, in rows, required to render the grid page with its headers and data
+            rows.
+            </summary>
+            <remarks>The calculated height accounts for the tallest header and data row in each column, multiplied by
+            the number of data items. The result may be used to determine page layout or pagination when rendering the
+            grid.</remarks>
+            <param name="g">The PDF grid page context used for layout calculations.</param>
+            <param name="m">The data model instance providing values for the grid.</param>
+            <param name="bounds">The bounds within which the grid content should be measured.</param>
+            <returns>A task that represents the asynchronous operation. The task result contains the total height, in rows, needed to
+            render the grid including headers and data rows.</returns>
+        </member>
         <member name="T:PdfDocuments.PdfEmptySection`1">
             <summary>
             Represents a PDF section that contains no content. This class can be used to insert an empty section into a PDF
@@ -3568,6 +3619,11 @@
             components.</remarks>
             <typeparam name="TModel">The model type used for data binding within the section. Must implement the IPdfModel interface.</typeparam>
         </member>
+        <member name="F:PdfDocuments.PdfSectionTemplate`1._styleManager">
+            <summary>
+            Backing field for the StyleManager property. This field is used to store the style manager instance that controls
+            </summary>
+        </member>
         <member name="M:PdfDocuments.PdfSectionTemplate`1.#ctor">
             <summary>
             Initializes a new instance of the PdfSectionTemplate class.
@@ -3610,6 +3666,22 @@
             <summary>
             Gets or sets the actual bounding rectangle of the element in PDF coordinates.
             </summary>
+        </member>
+        <member name="P:PdfDocuments.PdfSectionTemplate`1.MustCalculateHeight">
+            <summary>
+            Gets or sets a value indicating whether the height should be calculated.
+            </summary>
+        </member>
+        <member name="M:PdfDocuments.PdfSectionTemplate`1.CalculateHeightAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Asynchronously calculates the required height, in rows, to render the specified model within the given PDF
+            grid page and bounds.
+            </summary>
+            <param name="g">The PDF grid page on which the model will be rendered. Cannot be null.</param>
+            <param name="m">The data model to be rendered. Cannot be null.</param>
+            <param name="bounds">The bounds within which the model should be rendered, specified in rows.</param>
+            <returns>A task that represents the asynchronous operation. The task result contains the calculated height, in rows,
+            required to render the model within the specified bounds.</returns>
         </member>
         <member name="P:PdfDocuments.PdfSectionTemplate`1.ShouldRender">
             <summary>
@@ -3731,7 +3803,7 @@
             <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all debug overlays
             were rendered successfully; otherwise, <see langword="false"/>.</returns>
         </member>
-        <member name="M:PdfDocuments.PdfSectionTemplate`1.SetActualRows(System.Int32)">
+        <member name="M:PdfDocuments.PdfSectionTemplate`1.SetActualRowsAsync(System.Int32)">
             <summary>
             Sets the actual number of rows for the current bounds asynchronously.
             </summary>
@@ -3740,7 +3812,7 @@
             <param name="rows">The number of rows to set. Must be a non-negative integer.</param>
             <returns>A task that represents the asynchronous operation.</returns>
         </member>
-        <member name="M:PdfDocuments.PdfSectionTemplate`1.SetActualColumns(System.Int32)">
+        <member name="M:PdfDocuments.PdfSectionTemplate`1.SetActualColumnsAsync(System.Int32)">
             <summary>
             Sets the actual number of columns for the current bounds asynchronously.
             </summary>
@@ -3787,6 +3859,19 @@
             <param name="bounds">The bounds within which the content should be rendered on the page.</param>
             <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if rendering was
             successful; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfSectionTemplate`1.OnCalculateHeightAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Asynchronously calculates the required height, in device units, for rendering the specified model within the given
+            bounds on the provided PDF grid page.
+            </summary>
+            <remarks>Override this method in a derived class to provide custom height calculation logic based on the
+            model and layout constraints. The default implementation returns 0.</remarks>
+            <param name="g">The PDF grid page on which the model will be rendered. Used to determine page-specific layout constraints.</param>
+            <param name="m">The data model to be rendered. Provides the content and formatting information used in the height calculation.</param>
+            <param name="bounds">The bounding rectangle, in device units, that constrains the rendering area for the model.</param>
+            <returns>A task that represents the asynchronous operation. The task result contains the calculated height, in device
+            units, required to render the model within the specified bounds.</returns>
         </member>
         <member name="M:PdfDocuments.PdfSectionTemplate`1.ToString">
             <summary>

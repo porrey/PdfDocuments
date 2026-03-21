@@ -117,7 +117,7 @@
 				throw new ArgumentOutOfRangeException(nameof(partitionSize), "The partition size must be greater than 0.");
 			}
 
-			List<T> items = source.ToList();
+			List<T> items = [.. source];
 			int totalCount = items.Count;
 			int index = 0;
 

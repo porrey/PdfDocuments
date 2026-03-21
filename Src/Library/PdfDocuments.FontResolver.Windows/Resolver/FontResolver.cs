@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Drawing.Text;
 using PdfSharp.Fonts;
 
@@ -123,6 +124,7 @@ namespace PdfDocuments.FontResolver.Windows
 		/// Collection formats. The dictionary uses a case-insensitive string comparer for font family names.</remarks>
 		/// <returns>A dictionary containing font family names as keys and their associated font file entries as values. The dictionary
 		/// is empty if no fonts are found.</returns>
+		[SuppressMessage("Interoperability", "CA1416:Validate platform compatibility", Justification = "<Pending>")]
 		private static Dictionary<string, FontFamilyEntry> BuildFontFamilyMap()
 		{
 			string fontsFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts");

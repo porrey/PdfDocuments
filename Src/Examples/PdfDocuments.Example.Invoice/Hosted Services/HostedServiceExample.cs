@@ -30,13 +30,35 @@ using PdfSharp.Fonts;
 
 namespace PdfDocuments.Example.Invoice
 {
+	/// <summary>
+	/// Provides a sample implementation of a hosted service that demonstrates PDF generation using a model and manages
+	/// application lifetime events.
+	/// </summary>
+	/// <remarks>This class is intended as an example or template for creating custom hosted services that perform
+	/// background tasks during application startup. It demonstrates how to generate a PDF document asynchronously and
+	/// signal application shutdown upon completion. To implement custom startup logic, derive from this class and override
+	/// the OnStarted method. The class is not intended for production use without modification.</remarks>
 	public class HostedServiceExample : HostedServiceTemplate
 	{
+		/// <summary>
+		/// Initializes a new instance of the HostedServiceExample class with the specified application lifetime, logger, and
+		/// service scope factory.
+		/// </summary>
+		/// <param name="hostApplicationLifetime">The application lifetime object that manages application startup and shutdown events.</param>
+		/// <param name="logger">The logger used to record diagnostic messages for the hosted service.</param>
+		/// <param name="serviceScopeFactory">The factory used to create service scopes for resolving scoped dependencies within the hosted service.</param>
 		public HostedServiceExample(IHostApplicationLifetime hostApplicationLifetime, ILogger<HostedServiceExample> logger, IServiceScopeFactory serviceScopeFactory)
 			: base(hostApplicationLifetime, logger, serviceScopeFactory)
 		{
 		}
 
+		/// <summary>
+		/// Handles initialization logic when the service starts by creating a sample invoice document and generating its PDF
+		/// representation asynchronously.
+		/// </summary>
+		/// <remarks>This method is called automatically as part of the service startup sequence. It is intended for
+		/// demonstration or testing purposes and should be overridden to implement custom startup behavior in derived
+		/// classes. The method executes asynchronously and does not block the calling thread.</remarks>
 		protected override async void OnStarted()
 		{
 			//
@@ -79,6 +101,15 @@ namespace PdfDocuments.Example.Invoice
 			await this.CreatePdfAsync(model);
 		}
 
+		/// <summary>
+		/// Generates a PDF document using the specified model and opens it for viewing.
+		/// </summary>
+		/// <remarks>This method configures font settings and encoding providers required for PDF generation. After
+		/// creating and opening the PDF, the application is signaled to stop. The method should be called from an environment
+		/// where application shutdown is appropriate after PDF generation.</remarks>
+		/// <typeparam name="TModel">The type of the model used to generate the PDF document. Must implement the IPdfModel interface.</typeparam>
+		/// <param name="model">The model containing the data to be rendered in the PDF document. Cannot be null.</param>
+		/// <returns>A task that represents the asynchronous operation. The result is always 0.</returns>
 		protected async Task<int> CreatePdfAsync<TModel>(TModel model)
 			where TModel : IPdfModel
 		{

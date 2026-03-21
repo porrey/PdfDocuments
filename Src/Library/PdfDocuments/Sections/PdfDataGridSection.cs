@@ -22,6 +22,7 @@
  *	SOFTWARE.
  */
 using System.Linq.Expressions;
+using System.Net.Http.Headers;
 using System.Reflection;
 
 namespace PdfDocuments
@@ -158,13 +159,13 @@ namespace PdfDocuments
 			// The total of the column widths must be less
 			// than or equal to bounds.Columns
 			//
-			int[] columnWidth = (from tbl in this.DataColumns
-								 select (int)(bounds.Columns * (tbl.RelativeWidth.Resolve(g, m) / sum))).ToArray();
+			int[] columnWidth = [.. (from tbl in this.DataColumns
+								 select (int)(bounds.Columns * (tbl.RelativeWidth.Resolve(g, m) / sum)))];
 
 			//
 			// Never under allocate the width.
 			//
-			if (columnWidth.Sum() < bounds.Columns)
+			if (columnWidth.Length > 0 && columnWidth.Sum() < bounds.Columns)
 			{
 				//
 				// Allocate the missing width to the last column.
@@ -179,7 +180,7 @@ namespace PdfDocuments
 
 			foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
 			{
-				PdfTextElement<TModel> headerElement = new PdfTextElement<TModel>(column.ColumnHeader.Resolve(g, m));
+				PdfTextElement<TModel> headerElement = new(column.ColumnHeader.Resolve(g, m));
 				PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(column.HeaderStyleName.Resolve(g, m));
 				PdfSize headerSize = headerElement.Measure(g, m, headerStyle);
 				PdfBounds headerBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], headerSize.Rows).SubtractBounds(g, m, headerStyle.Margin.Resolve(g, m));
@@ -211,7 +212,7 @@ namespace PdfDocuments
 
 					foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
 					{
-						PdfTextElement<TModel> dataElement = new PdfTextElement<TModel>(this.FormattedValue(g, m, column, item));
+						PdfTextElement<TModel> dataElement = new(this.FormattedValue(g, m, column, item));
 						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
 						PdfSize dataSize = dataElement.Measure(g, m, dataStyle);
 						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
@@ -270,9 +271,80 @@ namespace PdfDocuments
 		/// <param name="dataStyle">The style to apply when rendering the data column.</param>
 		/// <param name="dataElement">The text element responsible for rendering the content of the data column.</param>
 		/// <param name="item">The item representing the data to be rendered in the column.</param>
-		protected virtual void OnRenderDataColumn(PdfGridPage g, TModel m, PdfBounds dataBounds, PdfStyle<TModel> dataStyle,  PdfTextElement<TModel> dataElement, TItem item)
+		protected virtual void OnRenderDataColumn(PdfGridPage g, TModel m, PdfBounds dataBounds, PdfStyle<TModel> dataStyle, PdfTextElement<TModel> dataElement, TItem item)
 		{
 			dataElement.Render(g, m, dataBounds, dataStyle, item);
+		}
+
+		/// <summary>
+		/// Asynchronously calculates the total height, in rows, required to render the grid page with its headers and data
+		/// rows.
+		/// </summary>
+		/// <remarks>The calculated height accounts for the tallest header and data row in each column, multiplied by
+		/// the number of data items. The result may be used to determine page layout or pagination when rendering the
+		/// grid.</remarks>
+		/// <param name="g">The PDF grid page context used for layout calculations.</param>
+		/// <param name="m">The data model instance providing values for the grid.</param>
+		/// <param name="bounds">The bounds within which the grid content should be measured.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the total height, in rows, needed to
+		/// render the grid including headers and data rows.</returns>
+		protected override Task<int> OnCalculateHeightAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			int returnValue = 0;
+
+			//
+			// Get the items.
+			//
+			IEnumerable<TItem> items = this.Items.Resolve(g, m);
+
+			//
+			// Get the header height.
+			//
+			int headerHeight = 0;
+
+			foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
+			{
+				PdfTextElement<TModel> headerElement = new(column.ColumnHeader.Resolve(g, m));
+				PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(column.HeaderStyleName.Resolve(g, m));
+				PdfSize headerSize = headerElement.Measure(g, m, headerStyle);
+				PdfBounds headerBounds = new PdfBounds(0, 0, 100, headerSize.Rows).SubtractBounds(g, m, headerStyle.Margin.Resolve(g, m));
+				headerBounds = headerBounds.AddBounds(g, m, headerStyle.Margin.Resolve(g, m));
+
+				if (headerBounds.Rows > headerHeight)
+				{
+					headerHeight = headerBounds.Rows;
+				}
+			}
+
+			//
+			// Get the data row height.
+			//
+			int rowHeight = 0;
+			TItem item = items.FirstOrDefault();
+
+			if ((item != null))
+			{
+				foreach (PdfDataGridColumn<TModel> column in this.DataColumns)
+				{
+					PdfTextElement<TModel> dataElement = new(this.FormattedValue(g, m, column, item));
+					PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
+					PdfSize dataSize = dataElement.Measure(g, m, dataStyle);
+					PdfBounds dataBounds = new PdfBounds(0, 0, 100, dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
+					dataBounds = dataBounds.AddBounds(g, m, dataStyle.Margin.Resolve(g, m));
+
+					if (dataBounds.Rows > rowHeight)
+					{
+						rowHeight = dataBounds.Rows;
+					}
+				}
+			}
+
+			//
+			// Calculate the total height based on the header and data row heights.
+			//
+			returnValue = headerHeight + (rowHeight * items.Count());
+
+			return Task.FromResult(returnValue);
 		}
 	}
 }

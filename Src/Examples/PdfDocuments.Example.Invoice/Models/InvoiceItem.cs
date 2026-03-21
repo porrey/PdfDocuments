@@ -23,11 +23,29 @@
  */
 namespace PdfDocuments.Example.Invoice
 {
+	/// <summary>
+	/// Represents a single line item on an invoice, including quantity and pricing information.
+	/// </summary>
 	public class InvoiceItem
 	{
+		/// <summary>
+		/// Gets or sets the unique identifier for the entity.
+		/// </summary>
 		public int Id { get; set; }
+
+		/// <summary>
+		/// Gets or sets the quantity associated with the item.
+		/// </summary>
 		public int Quantity { get; set; }
+
+		/// <summary>
+		/// Gets or sets the unit price of the item.
+		/// </summary>
 		public decimal UnitPrice { get; set; }
+
+		/// <summary>
+		/// Gets the total monetary amount calculated as the product of quantity and unit price.
+		/// </summary>
 		public decimal Amount => this.Quantity * this.UnitPrice;
 	}
 }

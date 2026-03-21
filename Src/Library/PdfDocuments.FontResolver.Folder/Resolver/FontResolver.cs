@@ -246,7 +246,7 @@ namespace PdfDocuments.FontResolver.Folder
 
 				string faceName = BuildFaceName(family.DisplayFamilyName, parsed.Style);
 
-				FontFaceEntry face = new FontFaceEntry(faceName, file, parsed.Style);
+				FontFaceEntry face = new(faceName, file, parsed.Style);
 				this._faceNameToPath[faceName] = file;
 
 				switch (parsed.Style)

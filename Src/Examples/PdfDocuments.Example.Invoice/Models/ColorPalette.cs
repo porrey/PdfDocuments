@@ -25,6 +25,12 @@ using PdfSharp.Drawing;
 
 namespace PdfDocuments.Example.Invoice
 {
+	/// <summary>
+	/// Provides a set of predefined colors for use throughout the application.
+	/// </summary>
+	/// <remarks>The colors in this palette are intended to promote consistency in UI design and can be used
+	/// wherever a standard color scheme is required. All colors are defined as static fields for convenient
+	/// access.</remarks>
 	public static class ColorPalette
 	{
 		public static XColor Transparent = XColors.Transparent;

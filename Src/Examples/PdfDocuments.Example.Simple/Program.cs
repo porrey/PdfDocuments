@@ -27,9 +27,19 @@ using PdfSharp.Fonts;
 
 namespace PdfDocuments.Example.Simple
 {
+	/// <summary>
+	/// The main program.
+	/// </summary>
 	class Program
 	{
-		static async Task<int> Main(string[] args)
+		/// <summary>
+		/// The entry point for the application. Configures font settings, initializes required services, and generates a PDF
+		/// document based on the provided model.
+		/// </summary>
+		/// <param name="args">An array of command-line arguments supplied to the application. Not used by this implementation.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains an exit code of 0 when the operation
+		/// completes successfully.</returns>
+		static async Task<int> Main(string[] _)
 		{
 			//
 			// User windows fonts.

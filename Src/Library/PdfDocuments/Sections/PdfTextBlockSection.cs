@@ -46,7 +46,7 @@ namespace PdfDocuments
 			bool returnValue = true;
 
 			PdfStyle<TModel> style = this.ResolveStyle(0);
-			PdfTextElement<TModel> textElement = new PdfTextElement<TModel>(this.Text.Resolve(g, m));
+			PdfTextElement<TModel> textElement = new(this.Text.Resolve(g, m));
 			textElement.Render(g, m, bounds, style);
 
 			return Task.FromResult(returnValue);

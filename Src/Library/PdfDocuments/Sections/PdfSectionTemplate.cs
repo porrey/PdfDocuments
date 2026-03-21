@@ -38,6 +38,11 @@ namespace PdfDocuments
 		where TModel : IPdfModel
 	{
 		/// <summary>
+		/// Backing field for the StyleManager property. This field is used to store the style manager instance that controls
+		/// </summary>
+		private IPdfStyleManager<TModel> _styleManager = null;
+
+		/// <summary>
 		/// Initializes a new instance of the PdfSectionTemplate class.
 		/// </summary>
 		public PdfSectionTemplate()
@@ -91,6 +96,25 @@ namespace PdfDocuments
 		public virtual PdfBounds ActualBounds { get; set; } = new PdfBounds(0, 0, 0, 0);
 
 		/// <summary>
+		/// Gets or sets a value indicating whether the height should be calculated.
+		/// </summary>
+		public bool MustCalculateHeight { get; set; }
+
+		/// <summary>
+		/// Asynchronously calculates the required height, in rows, to render the specified model within the given PDF
+		/// grid page and bounds.
+		/// </summary>
+		/// <param name="g">The PDF grid page on which the model will be rendered. Cannot be null.</param>
+		/// <param name="m">The data model to be rendered. Cannot be null.</param>
+		/// <param name="bounds">The bounds within which the model should be rendered, specified in rows.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the calculated height, in rows,
+		/// required to render the model within the specified bounds.</returns>
+		public virtual Task<int> CalculateHeightAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			return this.OnCalculateHeightAsync(g, m, bounds);
+		}
+
+		/// <summary>
 		/// Gets or sets a value indicating whether the component should be rendered.
 		/// </summary>
 		public virtual BindProperty<bool, TModel> ShouldRender { get; set; } = true;
@@ -109,8 +133,6 @@ namespace PdfDocuments
 		/// default value includes the standard style provided by the manager. Modifying this collection allows customization
 		/// of appearance or behavior based on style definitions.</remarks>
 		public virtual IEnumerable<string> StyleNames { get; set; } = [PdfStyleManager<TModel>.Default];
-
-		private IPdfStyleManager<TModel> _styleManager = null;
 
 		/// <summary>
 		/// Gets or sets the style manager used to control PDF rendering styles for the current section and its child
@@ -223,7 +245,7 @@ namespace PdfDocuments
 			//
 			// Render child sections.
 			//
-			IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(g, m)).ToArray();
+			IPdfSection<TModel>[] sections = [.. this.Children.Where(t => t.ShouldRender.Resolve(g, m))];
 
 			foreach (IPdfSection<TModel> section in sections)
 			{
@@ -268,7 +290,7 @@ namespace PdfDocuments
 				// Draw the background if set.
 				//
 				XColor backgroundColor = style.BackgroundColor.Resolve(g, m);
-				
+
 				if (backgroundColor != XColor.Empty)
 				{
 					//
@@ -283,7 +305,7 @@ namespace PdfDocuments
 				//
 				// Render child sections.
 				//
-				IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(g, m)).ToArray();
+				IPdfSection<TModel>[] sections = [.. this.Children.Where(t => t.ShouldRender.Resolve(g, m))];
 
 				foreach (IPdfSection<TModel> section in sections)
 				{
@@ -375,7 +397,7 @@ namespace PdfDocuments
 			//
 			// Get a list of section to be rendered.
 			//
-			IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(g, m)).ToArray();
+			IPdfSection<TModel>[] sections = [.. this.Children.Where(t => t.ShouldRender.Resolve(g, m))];
 
 			foreach (IPdfSection<TModel> section in sections)
 			{
@@ -396,7 +418,7 @@ namespace PdfDocuments
 		/// to customize behavior when the actual rows are set.</remarks>
 		/// <param name="rows">The number of rows to set. Must be a non-negative integer.</param>
 		/// <returns>A task that represents the asynchronous operation.</returns>
-		public virtual Task SetActualRows(int rows)
+		public virtual Task SetActualRowsAsync(int rows)
 		{
 			this.ActualBounds.Rows = rows;
 			this.OnSetActualRows(rows);
@@ -408,7 +430,7 @@ namespace PdfDocuments
 		/// </summary>
 		/// <param name="columns">The number of columns to set. Must be a non-negative integer.</param>
 		/// <returns>A task that represents the asynchronous operation. The task completes when the column count has been updated.</returns>
-		public virtual Task SetActualColumns(int columns)
+		public virtual Task SetActualColumnsAsync(int columns)
 		{
 			this.ActualBounds.Columns = columns;
 			this.OnSetActualColumns(columns);
@@ -466,31 +488,53 @@ namespace PdfDocuments
 			g.DrawRectangle(this.ActualBounds, 1.0, color);
 
 			//
+			// Get a pen for the border around th section.
+			//
+			XPen pen = new(XColors.LightGray, 1)
+			{
+				DashStyle = XDashStyle.Dot
+			};
+
+			//
 			// Draw a border to indicate the margin.
 			//
-			XPen pen = new XPen(XColors.LightGray, 1);
-			pen.DashStyle = XDashStyle.Dot;
 			g.DrawRectangle(bounds, pen);
+
+			//
+			// Get the parent count.
+			//
+			int parentCount = -1;
+			IPdfSection<TModel> parent = this.ParentSection;
+
+			while (parent != null)
+			{
+				parentCount++;
+				parent = parent.ParentSection;
+			}
 
 			//
 			// Get the size of the text.
 			//
-			var style = this.StyleManager.GetStyle("Debug");
+			PdfStyle<TModel> style = this.StyleManager.GetStyle("Debug");
 			XFont font = style.Font.Resolve(g, m);
 			string label = $"{this.Key} [{this.ActualBounds.Columns} x {this.ActualBounds.Rows}]";
 			PdfSize textSize = g.MeasureText(font, label);
 
 			//
-			// Draw a small filled rectangle behind the text.
+			// Create padding fo the box and text.
 			//
 			PdfSpacing padding = (1, 1, 1, 1);
-			PdfBounds rectBounds = new PdfBounds(this.ActualBounds.LeftColumn, this.ActualBounds.TopRow, textSize.Columns + padding.Left + (2 * padding.Right), textSize.Rows + padding.Top + padding.Bottom);
+
+			//
+			// Draw a small filled rectangle behind the text.
+			//
+			PdfBounds rectBounds = new(this.ActualBounds.LeftColumn, this.ActualBounds.TopRow, textSize.Columns + padding.Left + (2 * padding.Right), textSize.Rows + padding.Top + padding.Bottom);
 			g.DrawFilledRectangle(rectBounds, color);
 
 			//
 			// Draw the text label.
-			//
-			PdfBounds labelBounds = new PdfBounds(this.ActualBounds.LeftColumn + padding.Left, this.ActualBounds.TopRow, textSize.Columns + padding.Left + padding.Right, textSize.Rows + padding.Top + padding.Bottom);
+			//			
+			PdfBounds labelBounds = new(this.ActualBounds.LeftColumn + padding.Left, this.ActualBounds.TopRow, textSize.Columns + padding.Left + padding.Right, textSize.Rows + padding.Top + padding.Bottom);
 			g.DrawText(label, font, labelBounds, XStringFormats.CenterLeft, labelColor, true);
 
 			return Task.FromResult(returnValue);
@@ -509,6 +553,22 @@ namespace PdfDocuments
 		protected virtual Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			return Task.FromResult(true);
+		}
+
+		/// <summary>
+		/// Asynchronously calculates the required height, in device units, for rendering the specified model within the given
+		/// bounds on the provided PDF grid page.
+		/// </summary>
+		/// <remarks>Override this method in a derived class to provide custom height calculation logic based on the
+		/// model and layout constraints. The default implementation returns 0.</remarks>
+		/// <param name="g">The PDF grid page on which the model will be rendered. Used to determine page-specific layout constraints.</param>
+		/// <param name="m">The data model to be rendered. Provides the content and formatting information used in the height calculation.</param>
+		/// <param name="bounds">The bounding rectangle, in device units, that constrains the rendering area for the model.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the calculated height, in device
+		/// units, required to render the model within the specified bounds.</returns>
+		protected virtual Task<int> OnCalculateHeightAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			return Task.FromResult(0);
 		}
 
 		/// <summary>

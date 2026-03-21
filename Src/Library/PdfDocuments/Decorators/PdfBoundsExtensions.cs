@@ -172,24 +172,28 @@ namespace PdfDocuments
 			return returnValue;
 		}
 
-		//public static PdfBounds SubtractBounds<TModel>(this PdfBounds bounds, PdfGridPage g, TModel m, PdfSpacing padding)
-		//{
-		//	PdfBounds returnValue = bounds;
+		/// <summary>
+		/// Creates a new set of bounds by expanding the specified outer bounds using the provided inner spacing values.
+		/// </summary>
+		/// <typeparam name="TModel">The type of the model associated with the PDF grid page. Must implement the IPdfModel interface.</typeparam>
+		/// <param name="outerBounds">The original bounds to be expanded.</param>
+		/// <param name="g">The PDF grid page to which the bounds and model are related.</param>
+		/// <param name="m">The model instance associated with the PDF grid page.</param>
+		/// <param name="innerBounds">The spacing values to apply to each side of the outer bounds when expanding.</param>
+		/// <returns>A new PdfBounds instance representing the expanded bounds after applying the specified inner spacing.</returns>
+		public static PdfBounds AddBounds<TModel>(this PdfBounds outerBounds, PdfGridPage g, TModel m, PdfSpacing innerBounds)
+			where TModel : IPdfModel
+		{
+			PdfBounds returnValue = outerBounds;
 
-		//	int l = bounds.LeftColumn + padding.Left;
-		//	int t = bounds.TopRow + padding.Top;
-		//	int w = bounds.Columns - (padding.Left + padding.Right);
-		//	int h = bounds.Rows - (padding.Top + padding.Bottom);
+			int left = outerBounds.LeftColumn - innerBounds.Left;
+			int top = outerBounds.TopRow - innerBounds.Top;
+			int columns = outerBounds.Columns + (innerBounds.Left + innerBounds.Right);
+			int rows = outerBounds.Rows + (innerBounds.Top + innerBounds.Bottom);
 
-		//	returnValue = new PdfBounds()
-		//	{
-		//		LeftColumn = l >= 0 ? l : 0,
-		//		TopRow = t >= 0 ? t : 0,
-		//		Columns = w > 0 ? w : 1,
-		//		Rows = h > 0 ? h : 1
-		//	};
+			returnValue = (new PdfBounds(left, top, columns, rows)).Normalize();
 
-		//	return returnValue;
-		//}
+			return returnValue;
+		}
 	}
 }

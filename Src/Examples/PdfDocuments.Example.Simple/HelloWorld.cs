@@ -25,13 +25,30 @@ using PdfSharp.Drawing;
 
 namespace PdfDocuments.Example.Simple
 {
+	/// <summary>
+	/// Generates a PDF document containing a styled 'Hello, World' message using a specified style manager.
+	/// </summary>
+	/// <remarks>This class customizes PDF generation by defining a specific text style and content section for the
+	/// message. It is intended for scenarios where a simple, styled message needs to be rendered in a PDF format. The
+	/// style manager provided to the constructor is used to manage and apply styles to the generated content.</remarks>
 	public class HelloWorld : PdfGenerator<Message>
 	{
+		/// <summary>
+		/// Initializes a new instance of the HelloWorld class with the specified PDF style manager.
+		/// </summary>
+		/// <param name="styleManager">The style manager used to apply formatting to Message objects in generated PDF documents. Cannot be null.</param>
 		public HelloWorld(IPdfStyleManager<Message> styleManager)
 			: base(styleManager)
 		{
 		}
 
+		/// <summary>
+		/// Initializes custom styles for PDF content generation.
+		/// </summary>
+		/// <remarks>Adds a style named "HelloWorld.Text" to the style manager, which can be referenced when creating
+		/// PDF content. The style includes font, color, border, alignment, and padding settings.</remarks>
+		/// <param name="styleManager">The style manager used to register and manage styles for PDF elements.</param>
+		/// <returns>A task that represents the asynchronous operation.</returns>
 		protected override Task OnInitializeStylesAsync(IPdfStyleManager<Message> styleManager)
 		{
 			//
@@ -49,6 +66,11 @@ namespace PdfDocuments.Example.Simple
 			return Task.CompletedTask;
 		}
 
+		/// <summary>
+		/// Creates and returns a PDF section containing a text block for the specified message, applying the defined styles.
+		/// </summary>
+		/// <returns>A task that represents the asynchronous operation. The task result contains a PDF section with the message text,
+		/// styled using the "HelloWorld.Text" style and the current style manager.</returns>
 		protected override Task<IPdfSection<Message>> OnAddContentAsync()
 		{
 			//

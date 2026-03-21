@@ -67,6 +67,22 @@ namespace PdfDocuments
 		PdfBounds ActualBounds { get; set; }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether the height should be calculated.
+		/// </summary>
+		bool MustCalculateHeight { get; set; }
+
+		/// <summary>
+		/// Asynchronously calculates the required height, in rows, to render the specified model within the given PDF
+		/// grid page and bounds.
+		/// </summary>
+		/// <param name="g">The PDF grid page on which the model will be rendered. Cannot be null.</param>
+		/// <param name="m">The data model to be rendered. Cannot be null.</param>
+		/// <param name="bounds">The bounds within which the model should be rendered, specified in rows.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the calculated height, in rows,
+		/// required to render the model within the specified bounds.</returns>
+		Task<int> CalculateHeightAsync(PdfGridPage g, TModel m, PdfBounds bounds);
+
+		/// <summary>
 		/// Gets or sets the parent section of the current PDF section.
 		/// </summary>
 		IPdfSection<TModel> ParentSection { get; set; }
@@ -120,14 +136,14 @@ namespace PdfDocuments
 		/// </summary>
 		/// <param name="rows">The number of rows to set. Must be a non-negative integer.</param>
 		/// <returns>A task that represents the asynchronous operation.</returns>
-		Task SetActualRows(int rows);
+		Task SetActualRowsAsync(int rows);
 
 		/// <summary>
 		/// Sets the actual number of columns to be used for subsequent operations.
 		/// </summary>
 		/// <param name="columns">The number of columns to set. Must be a positive integer.</param>
 		/// <returns>A task that represents the asynchronous operation.</returns>
-		Task SetActualColumns(int columns);
+		Task SetActualColumnsAsync(int columns);
 
 		/// <summary>
 		/// Gets the relative height value bound to the model.

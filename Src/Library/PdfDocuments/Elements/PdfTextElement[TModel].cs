@@ -62,7 +62,7 @@ namespace PdfDocuments
 		/// <returns>A PdfSize representing the total width and height needed to render the text with all style adjustments applied.</returns>
 		public virtual PdfSize Measure(PdfGridPage g, TModel m, PdfStyle<TModel> style)
 		{
-			PdfSize returnValue = new PdfSize();
+			PdfSize returnValue = new();
 
 			//
 			// Measure the text.
@@ -120,7 +120,7 @@ namespace PdfDocuments
 			//
 			// Draw the border.
 			//
-			XPen pen = new XPen(style.BorderColor.Resolve(g, m, state), style.BorderWidth.Resolve(g, m, state));
+			XPen pen = new(style.BorderColor.Resolve(g, m, state), style.BorderWidth.Resolve(g, m, state));
 			g.DrawRectangle(marginBounds, pen);
 
 			//

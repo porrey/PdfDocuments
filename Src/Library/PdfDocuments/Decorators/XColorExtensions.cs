@@ -102,7 +102,7 @@ namespace PdfDocuments
 		/// <returns>An Hsl structure representing the hue, saturation, and lightness values corresponding to the input color.</returns>
 		public static Hsl ToHsl(this Color color)
 		{
-			double[] percentage = new[] { color.R / 255.0d, color.G / 255.0d, color.B / 255.0d };
+			double[] percentage = [color.R / 255.0d, color.G / 255.0d, color.B / 255.0d];
 
 			double min = percentage.Min();
 			double max = percentage.Max();

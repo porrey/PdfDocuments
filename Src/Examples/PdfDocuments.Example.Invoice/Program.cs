@@ -27,8 +27,22 @@ using Serilog;
 
 namespace PdfDocuments.Example.Invoice
 {
+	/// <summary>
+	/// Provides the entry point for the console application.
+	/// </summary>
+	/// <remarks>This class configures and starts the application host using default settings, Serilog for logging,
+	/// and a console lifetime. The application is initialized with the specified startup class and runs asynchronously
+	/// until shutdown.</remarks>
 	public class Program
 	{
+		/// <summary>
+		/// Configures and runs the console application host using default settings, Serilog logging, and a specified startup
+		/// class.
+		/// </summary>
+		/// <remarks>The application host is configured with default settings, Serilog for logging, and a console
+		/// lifetime. The specified startup class is used to configure application services and middleware.</remarks>
+		/// <param name="args">An array of command-line arguments to configure the application host.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the application's exit code.</returns>
 		static Task Main(string[] args) => Host.CreateDefaultBuilder(args)
 					.UseStartup<ConsoleStartup>()
 					.UseSerilog()
