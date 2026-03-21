@@ -23,11 +23,29 @@
  */
 namespace PdfDocuments.Example.Invoice
 {
+	/// <summary>
+	/// Represents a physical or mailing address, including contact information such as name and phone number.
+	/// </summary>
 	public class Address
 	{
+		/// <summary>
+		/// Gets or sets the name associated with the current instance.
+		/// </summary>
 		public string Name { get; set; }
+
+		/// <summary>
+		/// Gets or sets the first line of the street address.
+		/// </summary>
 		public string AddressLine { get; set; }
+
+		/// <summary>
+		/// Gets or sets the combined city, state, and ZIP code information.
+		/// </summary>
 		public string CityStateZip { get; set; }
+
+		/// <summary>
+		/// Gets or sets the phone number associated with the contact.
+		/// </summary>
 		public string Phone { get; set; }
 	}
 }

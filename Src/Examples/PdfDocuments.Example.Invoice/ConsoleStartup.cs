@@ -29,8 +29,23 @@ using Serilog;
 
 namespace PdfDocuments.Example.Invoice
 {
+	/// <summary>
+	/// Provides startup configuration for a console application, including application configuration and service
+	/// registration.
+	/// </summary>
+	/// <remarks>Implements both IStartupConfigureServices and IStartupAppConfiguration to set up configuration
+	/// sources and register services required for the application's operation. This class is typically used to initialize
+	/// logging, dependency injection, and other infrastructure components at application startup.</remarks>
 	public class ConsoleStartup : IStartupConfigureServices, IStartupAppConfiguration
 	{
+		/// <summary>
+		/// Configures the application's configuration sources and initializes the Serilog logger using the provided
+		/// configuration builder.
+		/// </summary>
+		/// <remarks>This method builds the configuration from the specified builder and sets up Serilog to read its
+		/// settings from the resulting configuration. Call this method during application startup to ensure logging is
+		/// configured according to the application's configuration sources.</remarks>
+		/// <param name="builder">The configuration builder used to construct the application's configuration. Must not be null.</param>
 		public void ConfigureAppConfiguration(IConfigurationBuilder builder)
 		{
 			//
@@ -46,6 +61,13 @@ namespace PdfDocuments.Example.Invoice
 					  .CreateLogger();
 		}
 
+		/// <summary>
+		/// Configures application services required for PDF generation and font resolution.
+		/// </summary>
+		/// <remarks>This method registers services for PDF document generation, font resolution from a specified
+		/// folder, and related hosted services. Call this method during application startup to ensure all required
+		/// dependencies are available for PDF generation features.</remarks>
+		/// <param name="services">The service collection to which application services are added. Must not be null.</param>
 		public void ConfigureServices(IServiceCollection services)
 		{
 			//
