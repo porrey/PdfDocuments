@@ -1,0 +1,30 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore "Src/PdfDocuments Solution.sln"
+
+      - name: Build
+        run: dotnet build "Src/PdfDocuments Solution.sln" --no-restore --configuration Release
+
+      - name: Run tests
+        run: dotnet test "Src/PdfDocuments Solution.sln" --no-build --configuration Release --verbosity normal
