@@ -60,6 +60,10 @@ namespace PdfDocuments
 			{
 				debugMode |= flag;
 			}
+			else
+			{
+				debugMode &= ~flag;
+			}
 
 			return debugMode;
 		}
