@@ -126,7 +126,7 @@ namespace PdfDocuments
 		/// <returns>A normalized PdfBounds instance with the left column updated to the specified value.</returns>
 		public static PdfBounds WithLeftColumn(this PdfBounds bounds, int leftColumn)
 		{
-			bounds.TopRow = leftColumn;
+			bounds.LeftColumn = leftColumn;
 			return bounds.Normalize();
 		}
 
