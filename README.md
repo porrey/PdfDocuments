@@ -472,4 +472,4 @@ The result with grid and layout revealed:
 
 ![Simple Debug PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Message-Debug.png)
 
-[View Actual PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Message-debug.pdf)
+[View Actual PDF](https://github.com/porrey/PdfDocuments/raw/main/Images/Message-Debug.pdf)
