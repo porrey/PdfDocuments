@@ -517,14 +517,14 @@ namespace PdfDocuments
 			((PdfStyle<TModel>)styleBuilder).TextAlignment = value;
 			return styleBuilder;
 		}
-			
+
 		/// <summary>
-		/// 
+		/// Configures the text alignment for the style builder using the specified binding action.
 		/// </summary>
-		/// <typeparam name="TModel"></typeparam>
-		/// <param name="styleBuilder"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A binding action that specifies how to set the <see cref="XStringFormat"/> text alignment for the model.</param>
+		/// <returns>The same <see cref="IStyleBuilder{TModel}"/> instance to allow for method chaining.</returns>
 		public static IStyleBuilder<TModel> UseTextAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<XStringFormat, TModel> value)
 			where TModel : IPdfModel
 		{
@@ -562,6 +562,20 @@ namespace PdfDocuments
 			where TModel : IPdfModel
 		{
 			((PdfStyle<TModel>)styleBuilder).ParagraphAlignment = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures whether text wrapping is enabled for the style builder.
+		/// </summary>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder to configure.</param>
+		/// <param name="wrapText">true to enable text wrapping; otherwise, false. The default is true.</param>
+		/// <returns>The same style builder instance with the text wrapping setting applied.</returns>
+		public static IStyleBuilder<TModel> UseTextWrapping<TModel>(this IStyleBuilder<TModel> styleBuilder, bool wrapText = true)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).WrapText = wrapText;
 			return styleBuilder;
 		}
 
@@ -613,6 +627,58 @@ namespace PdfDocuments
 			where TModel : IPdfModel
 		{
 			((PdfStyle<TModel>)styleBuilder).RelativeWidths = new BindProperty<double[], TModel>((g, m) => values);
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures the style builder to use fixed column widths for the associated PDF model.
+		/// </summary>
+		/// <remarks>If the number of widths provided does not match the number of columns, only the specified columns
+		/// will have fixed widths applied. Remaining columns will use default sizing.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A bindable property representing the array of fixed widths, in points, to apply to columns. Each element
+		/// corresponds to a column; a value of <see langword="null"/> indicates that the width is not set for that column.</param>
+		/// <returns>The same style builder instance, enabling method chaining.</returns>
+		public static IStyleBuilder<TModel> UseFixedWidths<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<int[], TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).FixedWidths = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures the style builder to use fixed column widths when rendering the PDF table.
+		/// </summary>
+		/// <remarks>If fixed widths are specified, they override any automatic or proportional column sizing for the
+		/// affected columns.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A delegate that provides an array of nullable integers representing the fixed widths for each column. The array
+		/// length should match the number of columns in the table. A value of <see langword="null"/> for a column indicates
+		/// that its width is not fixed.</param>
+		/// <returns>The same style builder instance, enabling method chaining.</returns>
+		public static IStyleBuilder<TModel> UseFixedWidths<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<int[], TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).FixedWidths = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures the style builder to use fixed column widths for the associated PDF table or layout.
+		/// </summary>
+		/// <remarks>If the number of values does not match the number of columns, excess values are ignored and
+		/// missing values may result in default widths being used.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="values">An array of integers specifying the fixed widths, in points, for each column. The length of the array should match
+		/// the number of columns to be styled.</param>
+		/// <returns>The same <see cref="IStyleBuilder{TModel}"/> instance to allow for method chaining.</returns>
+		public static IStyleBuilder<TModel> UseFixedWidths<TModel>(this IStyleBuilder<TModel> styleBuilder, params int[] values)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).FixedWidths = new BindProperty<int[], TModel>((g, m) => values);
 			return styleBuilder;
 		}
 

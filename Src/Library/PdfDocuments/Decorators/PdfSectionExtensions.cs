@@ -22,6 +22,7 @@
  *	SOFTWARE.
  */
 using System.Linq.Expressions;
+using PdfDocuments.Exceptions;
 
 namespace PdfDocuments
 {
@@ -108,29 +109,36 @@ namespace PdfDocuments
 		{
 			PdfStyle<TModel> returnValue = null;
 
-			if (section.StyleOverridden && section.Style != null)
+			if (section.StyleManager != null)
 			{
-				returnValue = section.Style;
-			}
-			else
-			{
-				if (section.StyleNames.Any())
+				if (section.StyleOverridden && section.Style != null)
 				{
-					if (index < section.StyleNames.Count())
-					{
-						string styleName = section.StyleNames.ElementAt(index);
-						returnValue = section.StyleManager.GetStyle(styleName);
-					}
-					else
-					{
-						string styleName = section.StyleNames.First();
-						returnValue = section.StyleManager.GetStyle(styleName);
-					}
+					returnValue = section.Style;
 				}
 				else
 				{
-					section.StyleManager.GetStyle(PdfStyleManager<TModel>.Default);
+					if (section.StyleNames.Any())
+					{
+						if (index < section.StyleNames.Count())
+						{
+							string styleName = section.StyleNames.ElementAt(index);
+							returnValue = section.StyleManager.GetStyle(styleName);
+						}
+						else
+						{
+							string styleName = section.StyleNames.First();
+							returnValue = section.StyleManager.GetStyle(styleName);
+						}
+					}
+					else
+					{
+						section.StyleManager.GetStyle(PdfStyleManager<TModel>.Default);
+					}
 				}
+			}
+			else
+			{
+				throw new MissingStyleManagerException();
 			}
 
 			return returnValue;

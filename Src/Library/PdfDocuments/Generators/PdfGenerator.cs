@@ -218,10 +218,45 @@ namespace PdfDocuments
 		/// <param name="page">The PDF page for which the grid layout is to be generated. Cannot be null.</param>
 		/// <returns>A task that represents the asynchronous operation. The task result contains a grid layout for the specified PDF
 		/// page.</returns>
-		protected virtual Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
+		protected virtual async Task<PdfGrid> OnSetPageGridAsync(PdfPage page)
 		{
-			return Task.FromResult(new PdfGrid(this.PageWidth(page).Point, this.PageHeight(page).Point, 200, 80));
+			PdfGrid returnValue = null;
+
+			//
+			// Get the page dimensions.
+			//
+			double width = this.PageWidth(page).Point;
+			double height = this.PageHeight(page).Point;
+
+			//
+			// Get the grid dimensions.
+			//
+			int rows = await this.OnGetRowsAsync();
+			int columns = await this.OnGetColumnsAsync();
+
+			//
+			// Create the grid instance.
+			//
+			returnValue = new PdfGrid(width, height, rows, columns);
+
+			return returnValue;
 		}
+
+		/// <summary>
+		/// Asynchronously retrieves the number of rows to process or display.
+		/// </summary>
+		/// <remarks>The default implementation returns 200. Override this method to provide a custom row count based
+		/// on application-specific logic.</remarks>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the number of rows.</returns>
+		protected virtual Task<int> OnGetRowsAsync() => Task.FromResult(200);
+
+		/// <summary>
+		/// Asynchronously retrieves the number of columns to use for output formatting.
+		/// </summary>
+		/// <remarks>Override this method in a derived class to provide a custom column count for output formatting.
+		/// The default implementation returns 80.</remarks>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the number of columns to use.</returns>
+		protected virtual Task<int> OnGetColumnsAsync() => Task.FromResult(80);
 
 		/// <summary>
 		/// Calculates the total number of pages required to display the specified model.
@@ -380,24 +415,18 @@ namespace PdfDocuments
 		{
 			bool returnValue = true;
 
+			//
+			// Get the grid bounds.
+			//
 			PdfBounds bounds = grid.Grid.GetBounds();
-
-			//
-			// Set the report section bounds to the full page.
-			//
-			PdfSize size = await section.CalculateBoundsAsync(grid, m, bounds);
-
-			//
-			// Update the section bounds based on the calculated size.
-			//
-			PdfBounds childBounds = new(bounds.LeftColumn, bounds.TopRow, size.Columns, size.Rows);
 
 			//
 			// Call layout on the primary section if it is being rendered.
 			//
 			if (section.ShouldRender.Resolve(grid, m))
 			{
-				await section.RenderAsync(grid, m, childBounds);
+				section.ActualBounds = bounds;
+				await section.RenderAsync(grid, m, bounds);
 			}
 
 			return returnValue;

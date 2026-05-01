@@ -34,6 +34,17 @@ namespace PdfDocuments
 	public static class Pdf
 	{
 		/// <summary>
+		/// Creates a new content section for the specified PDF model type.
+		/// </summary>
+		/// <typeparam name="TModel">The type of the PDF model associated with the content section. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <returns>An <see cref="IPdfSection{TModel}"/> representing the content section for the specified model type.</returns>
+		public static IPdfSection<TModel> ContentSection<TModel>()
+			where TModel : IPdfModel
+		{
+			return new PdfContentSection<TModel>();
+		}
+
+		/// <summary>
 		/// Creates a section that arranges PDF content vertically in a stack.
 		/// </summary>
 		/// <remarks>Use this method to compose multiple PDF elements in a vertical layout. The section can be further
@@ -212,6 +223,7 @@ namespace PdfDocuments
 		/// section can be customized and added to a PDF document as needed.</remarks>
 		/// <typeparam name="TModel">The type of model used to generate the PDF section. Must implement the IPdfModel interface.</typeparam>
 		/// <returns>An IPdfSection<![CDATA[<TModel>]]> instance that wraps text for the given model type.</returns>
+		[Obsolete("The WrappingTextSection method is deprecated. Use TextBlockSection instead, which provides improved text rendering and layout capabilities.")]
 		public static IPdfSection<TModel> WrappingTextSection<TModel>()
 			where TModel : IPdfModel
 		{

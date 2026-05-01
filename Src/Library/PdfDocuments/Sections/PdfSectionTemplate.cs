@@ -21,6 +21,9 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
+using System.Reflection.PortableExecutable;
+using PdfDocuments.Exceptions;
+using PdfDocuments.Layout_Manager;
 using PdfSharp.Drawing;
 
 namespace PdfDocuments
@@ -71,36 +74,12 @@ namespace PdfDocuments
 		public virtual string Key { get; set; }
 
 		/// <summary>
-		/// Determines the sizing mode to use for rendering the grid on the specified page with the provided model.
-		/// </summary>
-		/// <remarks>Returns SizingMode.Fixed if the resolved style specifies a fixed height or any fixed widths;
-		/// otherwise, returns SizingMode.Relative.</remarks>
-		/// <param name="g">The page context in which the grid will be rendered.</param>
-		/// <param name="m">The model containing data and layout information for the grid.</param>
-		/// <returns>A SizingMode value indicating whether the grid uses fixed or relative sizing based on the resolved style and
-		/// model.</returns>
-		public virtual SectionSizingMode SizingMode(PdfGridPage g, TModel m)
-		{
-			SectionSizingMode returnValue = SectionSizingMode.Relative;
-
-			int? a = this.ResolveStyle(0)?.FixedHeight?.Resolve(g, m);
-			int?[] b = this.ResolveStyle(0)?.FixedWidths?.Resolve(g, m);
-
-			if (a.HasValue || b.Length > 0)
-			{
-				returnValue = SectionSizingMode.Fixed;
-			}
-
-			return returnValue;
-		}
-
-		/// <summary>
 		/// Gets or sets the layout mode used for arranging child sections.
 		/// </summary>
 		/// <remarks>Use this property to control how child sections are positioned and displayed within the parent
 		/// container. The selected layout mode determines the arrangement behavior for all immediate child
 		/// sections.</remarks>
-		public ChildSectionsLayoutMode ChildLayoutMode { get; set; }
+		public PdfSectionsLayoutMode SectionLayoutMode { get; set; }
 
 		/// <summary>
 		/// Gets or sets the text value associated with the model.
@@ -125,7 +104,7 @@ namespace PdfDocuments
 		/// <summary>
 		/// Gets or sets the actual bounding rectangle of the element in PDF coordinates.
 		/// </summary>
-		public virtual PdfBounds ActualBounds { get; internal set; } = new PdfBounds(0, 0, 0, 0);
+		public virtual PdfBounds ActualBounds { get; set; } = new PdfBounds(0, 0, 0, 0);
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the component should be rendered.
@@ -175,6 +154,14 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
+		/// Gets the factory used to create layout manager instances for arranging UI elements.
+		/// </summary>
+		/// <remarks>The returned factory provides layout managers that control the positioning and sizing of child
+		/// elements. Override this property in a derived class to supply a custom layout manager factory if specialized
+		/// layout behavior is required.</remarks>
+		public virtual IPdfLayoutManagerFactory LayoutManagerFactory { get; } = new PdfLayoutManagerFactory();
+
+		/// <summary>
 		/// Asynchronously renders the specified grid page using the provided model and bounds.
 		/// </summary>
 		/// <param name="gridPage">The grid page to render. Cannot be null.</param>
@@ -185,19 +172,6 @@ namespace PdfDocuments
 		public Task RenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
 		{
 			return this.OnRenderAsync(gridPage, model, bounds);
-		}
-
-		/// <summary>
-		/// Asynchronously calculates the bounds for the specified PDF grid page and model.
-		/// </summary>
-		/// <param name="gridPage">The PDF grid page for which to calculate bounds. Cannot be null.</param>
-		/// <param name="model">The model data used to determine the bounds. Cannot be null.</param>
-		/// <param name="parentBounds">The bounds of the parent section, which can be used as a reference for calculating the current section's bounds.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result contains the calculated bounds for the
-		/// specified grid page and model.</returns>
-		public virtual Task<PdfSize> CalculateBoundsAsync(PdfGridPage gridPage, TModel model, PdfBounds parentBounds)
-		{
-			return this.OnCalculateBoundsAsync(gridPage, model, parentBounds);
 		}
 
 		/// <summary>
@@ -343,11 +317,6 @@ namespace PdfDocuments
 			if (this.ShouldRender.Resolve(g, m))
 			{
 				//
-				// Set the actual bounds for this section.
-				//
-				this.ActualBounds = bounds;
-
-				//
 				// The first style is always used for the base section style.
 				//
 				PdfStyle<TModel> style = this.ResolveStyle(0);
@@ -355,7 +324,8 @@ namespace PdfDocuments
 				//
 				// Apply padding.
 				//
-				PdfBounds paddedBounds = this.ApplyPadding(g, m, style.Padding.Resolve(g, m));
+				PdfSpacing padding = style.Padding.Resolve(g, m);
+				PdfBounds paddedBounds = this.ApplyPadding(g, m, padding);
 
 				//
 				// Render the background with padding.
@@ -382,39 +352,6 @@ namespace PdfDocuments
 				//
 				await this.OnRenderWaterMarkAsync(g, m, paddedBounds);
 			}
-		}
-
-		/// <summary>
-		/// Asynchronously calculates the bounds for the specified PDF grid page and model.	
-		/// </summary>
-		/// <remarks>Override this method in a derived class to provide custom bounds calculation logic.</remarks>
-		/// <param name="g">The PDF grid page for which to calculate bounds.</param>
-		/// <param name="m">The model containing data used to determine the bounds.</param>
-		/// <param name="parentBounds">The bounds of the parent section, which can be used as a reference for calculating the current section's bounds.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result contains the calculated bounds for the
-		/// specified grid page and model, or null if no bounds are determined.</returns>
-		protected virtual async Task<PdfSize> OnCalculateBoundsAsync(PdfGridPage g, TModel m, PdfBounds parentBounds)
-		{
-			PdfSize returnValue = new();
-
-			if (this.SizingMode(g, m) == SectionSizingMode.Fixed)
-			{
-				int? fixedRows = this.ResolveStyle(0).FixedHeight?.Resolve(g, m);
-				int?[] fixedColumns = this.ResolveStyle(0).FixedWidths?.Resolve(g, m);
-
-				returnValue.Rows = fixedRows ?? 0;
-				returnValue.Columns = fixedColumns[0] ?? 0;
-			}
-			else
-			{
-				double height = this.ResolveStyle(0).RelativeHeight.Resolve(g, m);
-				double[] width = this.ResolveStyle(0).RelativeWidths.Resolve(g, m);
-
-				returnValue.Rows = (int)(parentBounds.Rows * (height == 0 ? 1 : height));
-				returnValue.Columns = (int)(parentBounds.Columns * (width[0] == 0 ? 1 : width[0]));
-			}
-
-			return returnValue;
 		}
 
 		/// <summary>
@@ -579,14 +516,9 @@ namespace PdfDocuments
 			if (sections.Length != 0)
 			{
 				//
-				// Get the starting column and row for rendering child sections.
+				// Perform the layout of the child sections.
 				//
-				int leftColumn = bounds.LeftColumn;
-
-				//
-				// Get the starting row for rendering child sections.
-				//
-				int topRow = bounds.TopRow;
+				await this.OnLayoutChildrenAsync(g, m, sections, bounds);
 
 				//
 				// Render each child section.
@@ -594,36 +526,46 @@ namespace PdfDocuments
 				foreach (IPdfSection<TModel> section in sections)
 				{
 					//
-					// Calculate the size of the child section.
-					//
-					PdfSize childSize = await section.CalculateBoundsAsync(g, m, bounds);
-
-					//
-					// Create the bounds for the child section.
-					//
-					PdfBounds childBounds = new(leftColumn, topRow, childSize.Rows, childSize.Columns);
-
-					//
 					// Render the child section.
 					//
-					await section.RenderAsync(g, m, childBounds);
-
-					//
-					// Update the top row for the next child section if the layout mode is vertical stacking.
-					//
-					if (this.ChildLayoutMode == ChildSectionsLayoutMode.VerticalStacking)
-					{
-						topRow += childBounds.BottomRow + 1;
-					}
-
-					//
-					// Update the left column for the next child section if the layout mode is horizontal stacking.
-					//
-					if (this.ChildLayoutMode == ChildSectionsLayoutMode.HorizontalStacking)
-					{
-						leftColumn += childBounds.LeftColumn + 1;
-					}
+					await section.RenderAsync(g, m, section.ActualBounds);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Asynchronously arranges the child sections within the specified bounds within the PDF section.
+		/// </summary>
+		/// <param name="g">The PDF grid page on which the child sections are to be laid out.</param>
+		/// <param name="m">The model containing data used for layout calculations.</param>
+		/// <param name="sections">An array of sections to be arranged within the grid page.</param>
+		/// <param name="bounds">The bounds within which the child sections should be laid out.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains an array of bounds representing the
+		/// layout of each child section.</returns>
+		protected virtual async Task OnLayoutChildrenAsync(PdfGridPage g, TModel m, IPdfSection<TModel>[] sections, PdfBounds bounds)
+		{
+			//
+			// Get the layout manager.
+			//
+			IPdfLayoutManager layoutManager = await this.LayoutManagerFactory.GetLayoutManagerAsync(this.SectionLayoutMode);
+
+			if (layoutManager != null)
+			{
+				//
+				// Perform the layout of the child sections. These bounds will have the 
+				// margin applied, so they will be the actual bounds used for rendering
+				// the child sections. The layout manager will also set the actual bounds
+				// for each child section
+				//
+				await layoutManager.LayoutAsync(g, m, this, sections, bounds);
+			}
+			else
+			{
+				//
+				// Throw a layout manager exception if the layout manager factory does not
+				// return a layout manager for the specified layout mode.
+				//
+				throw new LayoutManagerException(this.SectionLayoutMode);
 			}
 		}
 

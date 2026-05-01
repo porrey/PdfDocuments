@@ -43,7 +43,7 @@ namespace PdfDocuments
 		/// side. This section can be added to a PDF document to group elements in a horizontal layout.</remarks>
 		public PdfHorizontalStackSection()
 		{
-			this.ChildLayoutMode = ChildSectionsLayoutMode.HorizontalStacking;
+			this.SectionLayoutMode = PdfSectionsLayoutMode.HorizontalStacking;
 		}
 
 		/// <summary>
@@ -56,7 +56,7 @@ namespace PdfDocuments
 		public PdfHorizontalStackSection(params IPdfSection<TModel>[] children)
 			: base(children)
 		{
-			this.ChildLayoutMode = ChildSectionsLayoutMode.HorizontalStacking;
+			this.SectionLayoutMode = PdfSectionsLayoutMode.HorizontalStacking;
 		}
 	}
 }

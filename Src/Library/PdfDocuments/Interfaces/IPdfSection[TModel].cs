@@ -59,14 +59,17 @@ namespace PdfDocuments
 		IPdfStyleManager<TModel> StyleManager { get; set; }
 
 		/// <summary>
+		/// Gets the factory used to create layout manager instances for arranging UI elements.
+		/// </summary>
+		/// <remarks>Use this property to obtain an implementation of the layout manager factory, which can be used to
+		/// generate layout managers tailored to specific UI requirements. The returned factory is typically configured for
+		/// the current context and may provide different layout strategies depending on application needs.</remarks>
+		IPdfLayoutManagerFactory LayoutManagerFactory { get; }
+
+		/// <summary>
 		/// Gets or sets the collection of style names applied to the element.
 		/// </summary>
 		IEnumerable<string> StyleNames { get; set; }
-
-		/// <summary>
-		/// Gets or sets the sizing mode used to determine how the control adjusts its size.
-		/// </summary>
-		SectionSizingMode SizingMode(PdfGridPage g, TModel m);
 
 		/// <summary>
 		/// Gets or sets the layout mode used for arranging child sections.
@@ -74,7 +77,7 @@ namespace PdfDocuments
 		/// <remarks>Use this property to control how child sections are positioned and displayed within the parent
 		/// container. The selected layout mode determines the arrangement behavior for all immediate child
 		/// sections.</remarks>
-		ChildSectionsLayoutMode ChildLayoutMode { get; set; }
+		PdfSectionsLayoutMode SectionLayoutMode { get; set; }
 
 		/// <summary>
 		/// Gets or sets the text value bound to the model.
@@ -87,7 +90,7 @@ namespace PdfDocuments
 		/// <remarks>The value reflects the final position and size of the element within the PDF document, which may
 		/// differ from initial settings due to layout adjustments. Use this property to determine the rendered area for tasks
 		/// such as hit testing or custom drawing.</remarks>
-		PdfBounds ActualBounds { get; }
+		PdfBounds ActualBounds { get; internal set; }
 
 		/// <summary>
 		/// Gets or sets the parent section of the current PDF section.
@@ -120,16 +123,6 @@ namespace PdfDocuments
 		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if rendering was
 		/// successful; otherwise, <see langword="false"/>.</returns>
 		Task RenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds);
-
-		/// <summary>
-		/// Asynchronously calculates the bounding rectangle for the specified PDF grid page and data model.
-		/// </summary>
-		/// <param name="gridPage">The PDF grid page for which to calculate bounds. Cannot be null.</param>
-		/// <param name="model">The data model used to determine the layout and bounds. Cannot be null.</param>
-		/// <param name="parentBounds">The bounds of the parent section, which can be used to calculate relative positioning. Cannot be null.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result contains a PdfBounds object representing the
-		/// calculated bounds for the specified grid page and model.</returns>
-		Task<PdfSize> CalculateBoundsAsync(PdfGridPage gridPage, TModel model, PdfBounds parentBounds);
 
 		/// <summary>
 		/// Asynchronously renders debug information onto the specified PDF grid page using the provided model.

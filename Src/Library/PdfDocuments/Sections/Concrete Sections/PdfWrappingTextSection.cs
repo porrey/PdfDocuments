@@ -24,23 +24,15 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Specifies the layout mode for arranging child sections within a container.
+	/// Represents a PDF section that renders text with automatic word wrapping within the specified bounds.
 	/// </summary>
-	/// <remarks>Use this enumeration to control whether child sections are stacked horizontally or vertically. The
-	/// selected mode determines the visual arrangement of contained elements.</remarks>
-	public enum ChildSectionsLayoutMode
+	/// <remarks>This section uses the resolved style and padding to determine how text is wrapped and positioned.
+	/// It is useful for displaying paragraphs or blocks of text that need to fit within a constrained area of a PDF
+	/// page.</remarks>
+	/// <typeparam name="TModel">The type of model used to provide data for rendering the PDF section. Must implement the IPdfModel interface.</typeparam>
+	[Obsolete("Use PdfTextSection with appropriate styling instead. This class is retained for backward compatibility but may be removed in future versions.")]
+	public class PdfWrappingTextSection<TModel> : PdfSectionTemplate<TModel>
+		where TModel : IPdfModel
 	{
-		/// <summary>
-		/// Specifies that child elements are arranged horizontally in the layout.
-		/// </summary>
-		HorizontalStacking,
-		/// <summary>
-		/// Specifies that child elements are arranged in a vertical stack.
-		/// </summary>
-		VerticalStacking,
-		/// <summary>
-		/// Specifies that child elements are arranged on top of each other.
-		/// </summary>
-		OverlayStacking
 	}
 }

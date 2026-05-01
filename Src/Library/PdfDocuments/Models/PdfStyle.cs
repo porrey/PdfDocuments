@@ -39,7 +39,7 @@ namespace PdfDocuments
 		/// <summary>
 		/// Gets or sets the relative height value for the model, expressed as a proportion of the total available height.
 		/// </summary>
-		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0;
+		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 1;
 
 		/// <summary>
 		/// Gets or sets the fixed height for the model, specified in rows. This value takes precedence over relative height.
@@ -52,7 +52,7 @@ namespace PdfDocuments
 		/// <remarks>Each value in the array represents the proportional width of a column. The sum of all values
 		/// determines the overall distribution. Values must be non-negative. Adjusting this property changes how space is
 		/// allocated among columns.</remarks>
-		public virtual BindProperty<double[], TModel> RelativeWidths { get; set; } = new double[] { 0 };
+		public virtual BindProperty<double[], TModel> RelativeWidths { get; set; } = new double[] { 1 };
 
 		/// <summary>
 		/// Gets or sets the fixed widths for each column in the layout.
@@ -60,7 +60,7 @@ namespace PdfDocuments
 		/// <remarks>Each value in the array represents the fixed width of a column. The sum of all values
 		/// determines the overall distribution. Values must be non-negative. Adjusting this property changes how space is
 		/// allocated among columns. This value takes precedence over relative widths.</remarks>
-		public virtual BindProperty<int?[], TModel> FixedWidths { get; set; } = Array.Empty<int?>();
+		public virtual BindProperty<int[], TModel> FixedWidths { get; set; } = Array.Empty<int>();
 
 		/// <summary>
 		/// Gets or sets the font used for rendering text in the bound model.
@@ -115,9 +115,14 @@ namespace PdfDocuments
 		/// Gets or sets the paragraph alignment for the bound model.
 		/// </summary>
 		/// <remarks>Use this property to specify how text within a paragraph is aligned, such as left, right, center,
-		/// or justified. The default alignment is justified. Changing the alignment affects the visual layout of paragraph
-		/// content.</remarks>
+		/// or justified when text wrapping is true. The default alignment is justified. Changing the alignment 
+		/// affects the visual layout of paragraph content.</remarks>
 		public virtual BindProperty<XParagraphAlignment, TModel> ParagraphAlignment { get; set; } = XParagraphAlignment.Justify;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether text content should wrap within the section.
+		/// </summary>
+		public virtual BindProperty<bool, TModel> WrapText { get; set; } = false;
 
 		/// <summary>
 		/// Gets or sets the padding applied to each cell within the table.

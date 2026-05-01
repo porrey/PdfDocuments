@@ -64,7 +64,7 @@ namespace PdfDocuments.Example.Simple
 			//
 			// Create an instance of the PDF generator.
 			//
-			HelloWorld helloWorld = new(styleManager);
+			HelloWorldPdf helloWorld = new(styleManager);
 
 			//
 			// Set debug flags.
@@ -79,7 +79,7 @@ namespace PdfDocuments.Example.Simple
 			//
 			// Create an instance of the model.
 			//
-			Message model = new() { Id = "12345", Text = "Hello World" };
+			Message model = new() { Id = "12345", Text = "Hello Big Bad and Scary World" };
 
 			//
 			// Create, save and open the PDF.

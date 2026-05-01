@@ -24,12 +24,23 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Represents a PDF section that contains no content. This class can be used to insert an empty section into a PDF
-	/// document template.
+	/// Specifies the layout mode for arranging child sections within a container.
 	/// </summary>
-	/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement the IPdfModel interface.</typeparam>
-	public class PdfEmptySection<TModel> : PdfSectionTemplate<TModel>
-		where TModel : IPdfModel
+	/// <remarks>Use this enumeration to control whether child sections are stacked horizontally or vertically. The
+	/// selected mode determines the visual arrangement of contained sections.</remarks>
+	public enum PdfSectionsLayoutMode
 	{
+		/// <summary>
+		/// Specifies that child sections are arranged horizontally in the layout.
+		/// </summary>
+		HorizontalStacking,
+		/// <summary>
+		/// Specifies that child sections are arranged in a vertical stack.
+		/// </summary>
+		VerticalStacking,
+		/// <summary>
+		/// Specifies that child sections are arranged on top of each other.
+		/// </summary>
+		OverlayStacking
 	}
 }

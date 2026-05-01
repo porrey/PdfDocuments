@@ -22,6 +22,7 @@
  *	SOFTWARE.
  */
 using PdfSharp.Drawing;
+using PdfSharp.Drawing.Layout;
 
 namespace PdfDocuments.Example.Simple
 {
@@ -31,13 +32,13 @@ namespace PdfDocuments.Example.Simple
 	/// <remarks>This class customizes PDF generation by defining a specific text style and content section for the
 	/// message. It is intended for scenarios where a simple, styled message needs to be rendered in a PDF format. The
 	/// style manager provided to the constructor is used to manage and apply styles to the generated content.</remarks>
-	public class HelloWorld : PdfGenerator<Message>
+	public class HelloWorldPdf : PdfGenerator<Message>
 	{
 		/// <summary>
 		/// Initializes a new instance of the HelloWorld class with the specified PDF style manager.
 		/// </summary>
 		/// <param name="styleManager">The style manager used to apply formatting to Message objects in generated PDF documents. Cannot be null.</param>
-		public HelloWorld(IPdfStyleManager<Message> styleManager)
+		public HelloWorldPdf(IPdfStyleManager<Message> styleManager)
 			: base(styleManager)
 		{
 		}
@@ -61,11 +62,15 @@ namespace PdfDocuments.Example.Simple
 						.UseBackgroundColor(XColors.LightPink)
 						.UseBorderWidth(1)
 						.UseBorderColor(XColors.Red)
-						.UseCellPadding(5, 5, 0, 0)
+						//.UseCellPadding(5, 5, 5, 0)
 						.UseTextAlignment(XStringFormats.TopLeft)
-						.UsePadding(10, 10, 10, 10)
-						//.UseMargin(10, 10, 10, 10)
-						//.UseRelativeHeight(.75)
+						//.UsePadding(2, 2, 2, 2)
+						.UseTextWrapping(true)
+						.UseParagraphAlignment(XParagraphAlignment.Right)
+						//.UseMargin(4, 4, 4, 4)
+						//.UseFixedHeight(75)
+						//.UseFixedWidths(75)
+						//.UseRelativeHeight(.5)
 						//.UseRelativeWidths(.5)
 						.Build());
 
@@ -82,10 +87,14 @@ namespace PdfDocuments.Example.Simple
 			//
 			// Add a basic text block using the style that was created.
 			//
-			return Task.FromResult(Pdf.TextBlockSection<Message>()
-									  .WithText((g, m) => m.Text)
-									  .WithStyles("HelloWorld.Text")
-									  .WithStyleManager(this.StyleManager));
+			return Task.FromResult(
+				Pdf.ContentSection(
+					Pdf.TextBlockSection<Message>()
+						.WithText((g, m) => m.Text)
+						.WithStyles("HelloWorld.Text")
+						.WithKey("HelloWorld.TextBlock")
+				).WithStyleManager(this.StyleManager)
+			);
 		}
 	}
 }

@@ -24,20 +24,19 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Specifies the sizing mode for an element, indicating whether its size is fixed or relative to another value.
+	/// Represents a PDF section that contains no content. This class can be used to insert an empty section into a PDF
+	/// document template.
 	/// </summary>
-	/// <remarks>Use this enumeration to control how an element's size is determined. The Fixed value indicates that
-	/// the element uses an explicit size, while Relative indicates that the size is determined in proportion to another
-	/// value, such as a parent container or available space.</remarks>
-	public enum SectionSizingMode
+	/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement the IPdfModel interface.</typeparam>
+	public class PdfEmptySection<TModel> : PdfSectionTemplate<TModel>
+		where TModel : IPdfModel
 	{
 		/// <summary>
-		/// The sizing mode uses fixed height and/or fixed width.
+		/// Initializes a new instance of the PdfEmptySection class with rendering disabled.
 		/// </summary>
-		Fixed,
-		/// <summary>
-		/// The sizing mode uses height and/or width relative to the parent section widthand height.
-		/// </summary>
-		Relative
+		public PdfEmptySection()
+		{
+			this.ShouldRender = false;
+		}
 	}
 }

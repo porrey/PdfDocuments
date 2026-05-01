@@ -22,6 +22,7 @@
  *	SOFTWARE.
  */
 using PdfSharp.Drawing;
+using PdfSharp.Drawing.Layout;
 
 namespace PdfDocuments
 {
@@ -106,24 +107,58 @@ namespace PdfDocuments
 			//
 			// Draw the border.
 			//
-			XColor bordercolor = style.BorderColor.Resolve(g, m, state);
 			double borderWidth = style.BorderWidth.Resolve(g, m, state);
-			XPen pen = new(bordercolor, borderWidth);
-			g.DrawRectangle(bounds, pen);
+
+			if (borderWidth > 0)
+			{
+				XColor bordercolor = style.BorderColor.Resolve(g, m, state);
+				XPen pen = new(bordercolor, borderWidth);
+				g.DrawRectangle(bounds, pen);
+			}
 
 			//
-			// Pad the text. This allows the border and fill to extend beyond the text.
+			// Calculate the content bounds by applying the cell padding to the provided bounds.
 			//
 			PdfSpacing cellPadding = style.CellPadding.Resolve(g, m, state);
 			PdfBounds textBounds = bounds.SubtractBounds(g, m, cellPadding);
 
 			//
-			// Draw the text.
+			// Get the paramters needed to draw the text.
 			//
 			XFont font = style.Font.Resolve(g, m, state);
 			XStringFormat textAlignment = style.TextAlignment.Resolve(g, m, state);
 			XColor foregroundColor = style.ForegroundColor.Resolve(g, m, state);
-			g.DrawText(this.Text, font, textBounds, textAlignment, foregroundColor);
+			XParagraphAlignment paragraphAlignment = style.ParagraphAlignment.Resolve(g, m, state);
+			bool wrapText = style.WrapText.Resolve(g, m, state);
+
+			if (wrapText)
+			{
+				//
+				// Draw the text wrapped within the text bounds.
+				//
+				g.DrawWrappingText(
+					this.Text,
+					font,
+					textBounds.LeftColumn,
+					textBounds.TopRow,
+					textBounds.Columns,
+					textBounds.Rows,
+					XStringFormats.TopLeft,
+					foregroundColor,
+					paragraphAlignment);
+			}
+			else
+			{
+				//
+				// Draw the text unwrapped.
+				//
+				g.DrawText(
+					this.Text, 
+					font, 
+					textBounds, 
+					textAlignment, 
+					foregroundColor);
+			}
 
 			return Task.CompletedTask;
 		}

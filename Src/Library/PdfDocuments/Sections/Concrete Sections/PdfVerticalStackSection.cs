@@ -38,7 +38,7 @@ namespace PdfDocuments
 		/// </summary>
 		public PdfVerticalStackSection()
 		{
-			this.ChildLayoutMode = ChildSectionsLayoutMode.VerticalStacking;
+			this.SectionLayoutMode = PdfSectionsLayoutMode.VerticalStacking;
 		}
 
 		/// <summary>
@@ -52,7 +52,7 @@ namespace PdfDocuments
 		public PdfVerticalStackSection(params IPdfSection<TModel>[] children)
 			: base(children)
 		{
-			this.ChildLayoutMode = ChildSectionsLayoutMode.VerticalStacking;
+			this.SectionLayoutMode = PdfSectionsLayoutMode.VerticalStacking;
 		}
 	}
 }
