@@ -71,6 +71,38 @@ namespace PdfDocuments
 		public virtual string Key { get; set; }
 
 		/// <summary>
+		/// Determines the sizing mode to use for rendering the grid on the specified page with the provided model.
+		/// </summary>
+		/// <remarks>Returns SizingMode.Fixed if the resolved style specifies a fixed height or any fixed widths;
+		/// otherwise, returns SizingMode.Relative.</remarks>
+		/// <param name="g">The page context in which the grid will be rendered.</param>
+		/// <param name="m">The model containing data and layout information for the grid.</param>
+		/// <returns>A SizingMode value indicating whether the grid uses fixed or relative sizing based on the resolved style and
+		/// model.</returns>
+		public virtual SectionSizingMode SizingMode(PdfGridPage g, TModel m)
+		{
+			SectionSizingMode returnValue = SectionSizingMode.Relative;
+
+			int? a = this.ResolveStyle(0)?.FixedHeight?.Resolve(g, m);
+			int?[] b = this.ResolveStyle(0)?.FixedWidths?.Resolve(g, m);
+
+			if (a.HasValue || b.Length > 0)
+			{
+				returnValue = SectionSizingMode.Fixed;
+			}
+
+			return returnValue;
+		}
+
+		/// <summary>
+		/// Gets or sets the layout mode used for arranging child sections.
+		/// </summary>
+		/// <remarks>Use this property to control how child sections are positioned and displayed within the parent
+		/// container. The selected layout mode determines the arrangement behavior for all immediate child
+		/// sections.</remarks>
+		public ChildSectionsLayoutMode ChildLayoutMode { get; set; }
+
+		/// <summary>
 		/// Gets or sets the text value associated with the model.
 		/// </summary>
 		public virtual BindProperty<string, TModel> Text { get; set; } = string.Empty;
@@ -93,26 +125,7 @@ namespace PdfDocuments
 		/// <summary>
 		/// Gets or sets the actual bounding rectangle of the element in PDF coordinates.
 		/// </summary>
-		public virtual PdfBounds ActualBounds { get; set; } = new PdfBounds(0, 0, 0, 0);
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the height should be calculated.
-		/// </summary>
-		public bool MustCalculateHeight { get; set; }
-
-		/// <summary>
-		/// Asynchronously calculates the required height, in rows, to render the specified model within the given PDF
-		/// grid page and bounds.
-		/// </summary>
-		/// <param name="g">The PDF grid page on which the model will be rendered. Cannot be null.</param>
-		/// <param name="m">The data model to be rendered. Cannot be null.</param>
-		/// <param name="bounds">The bounds within which the model should be rendered, specified in rows.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result contains the calculated height, in rows,
-		/// required to render the model within the specified bounds.</returns>
-		public virtual Task<int> CalculateHeightAsync(PdfGridPage g, TModel m, PdfBounds bounds)
-		{
-			return this.OnCalculateHeightAsync(g, m, bounds);
-		}
+		public virtual PdfBounds ActualBounds { get; internal set; } = new PdfBounds(0, 0, 0, 0);
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the component should be rendered.
@@ -130,8 +143,9 @@ namespace PdfDocuments
 		/// Gets or sets the collection of style names applied to the model.
 		/// </summary>
 		/// <remarks>The collection determines which styles are used when rendering or processing the model. The
-		/// default value includes the standard style provided by the manager. Modifying this collection allows customization
-		/// of appearance or behavior based on style definitions.</remarks>
+		/// default value includes the standard style provided by the manager. Modifying this collection allows
+		/// customization of appearance or behavior based on style definitions. Typical sections will have one
+		/// style name, but sections that have multiple subsections can use more than one style.</remarks>
 		public virtual IEnumerable<string> StyleNames { get; set; } = [PdfStyleManager<TModel>.Default];
 
 		/// <summary>
@@ -161,188 +175,45 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
-		/// Gets the relative height value for the current style, expressed as a bindable property.
+		/// Asynchronously renders the specified grid page using the provided model and bounds.
 		/// </summary>
-		/// <remarks>Use this property to specify or retrieve the height of the element relative to its parent or
-		/// container. The value is typically a ratio or percentage, depending on the layout system. Changes to this property
-		/// may affect the layout and rendering of the element.</remarks>
-		public virtual BindProperty<double, TModel> RelativeHeight => this.ResolveStyle(0).RelativeHeight;
-
-		/// <summary>
-		/// Gets the relative widths for each column in the layout, expressed as proportions of the total available space.
-		/// </summary>
-		/// <remarks>Use this property to specify or retrieve the proportional widths of columns when rendering or
-		/// arranging elements. The values should sum to 1.0 to represent the full width allocation. This property is useful
-		/// for creating flexible, responsive layouts where column sizes are determined by relative proportions rather than
-		/// fixed pixel values.</remarks>
-		public virtual BindProperty<double[], TModel> RelativeWidths => this.ResolveStyle(0).RelativeWidths;
-
-		/// <summary>
-		/// Performs asynchronous layout of the section and its children on the specified PDF grid page using the provided
-		/// model.
-		/// </summary>
-		/// <remarks>The layout operation applies section margins and delegates layout to child elements if the base
-		/// section layout succeeds. Override this method to customize layout behavior for derived sections.</remarks>
-		/// <param name="g">The PDF grid page on which the section layout is performed.</param>
-		/// <param name="m">The model containing data used for layout and style resolution.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if the layout was
-		/// successful; otherwise, <see langword="false"/>.</returns>
-		public virtual async Task<bool> LayoutAsync(PdfGridPage g, TModel m)
+		/// <param name="gridPage">The grid page to render. Cannot be null.</param>
+		/// <param name="model">The data model used to populate the grid page. Cannot be null.</param>
+		/// <param name="bounds">The bounds within which the grid page should be rendered.</param>
+		/// <returns>A task that represents the asynchronous render operation. The task result is <see langword="true"/> if rendering
+		/// succeeds; otherwise, <see langword="false"/>.</returns>
+		public Task RenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds)
 		{
-			bool returnValue = true;
-
-			//
-			// The first style is always used for the base section style.
-			//
-			PdfStyle<TModel> style = this.ResolveStyle(0);
-
-			//
-			// Apply margins.
-			//
-			PdfBounds bounds = this.ApplyMargins(g, m, style.Margin.Resolve(g, m));
-
-			if (await this.OnLayoutAsync(g, m, bounds))
-			{
-				returnValue = await this.OnLayoutChildrenAsync(g, m, bounds);
-			}
-			else
-			{
-				returnValue = false;
-			}
-
-			return returnValue;
+			return this.OnRenderAsync(gridPage, model, bounds);
 		}
 
 		/// <summary>
-		/// Performs asynchronous layout operations for the specified PDF grid page using the provided model and bounds.
+		/// Asynchronously calculates the bounds for the specified PDF grid page and model.
 		/// </summary>
-		/// <remarks>Override this method to implement custom layout logic for a PDF grid page. The default
-		/// implementation always returns <see langword="true"/>.</remarks>
-		/// <param name="g">The PDF grid page to be laid out.</param>
-		/// <param name="m">The data model used to generate content for the layout operation.</param>
-		/// <param name="bounds">The bounds within which the layout should be performed.</param>
-		/// <returns>A task that represents the asynchronous layout operation. The task result is <see langword="true"/> if the layout
-		/// was successful; otherwise, <see langword="false"/>.</returns>
-		protected virtual Task<bool> OnLayoutAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		/// <param name="gridPage">The PDF grid page for which to calculate bounds. Cannot be null.</param>
+		/// <param name="model">The model data used to determine the bounds. Cannot be null.</param>
+		/// <param name="parentBounds">The bounds of the parent section, which can be used as a reference for calculating the current section's bounds.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the calculated bounds for the
+		/// specified grid page and model.</returns>
+		public virtual Task<PdfSize> CalculateBoundsAsync(PdfGridPage gridPage, TModel model, PdfBounds parentBounds)
 		{
-			return Task.FromResult(true);
+			return this.OnCalculateBoundsAsync(gridPage, model, parentBounds);
 		}
 
 		/// <summary>
-		/// Arranges and lays out the child sections of the current grid page asynchronously.
+		/// Renders debug overlays and outlines for the current section and its child sections asynchronously.
 		/// </summary>
-		/// <remarks>Only child sections that are marked to be rendered are processed. If any child section fails to
-		/// layout, the operation stops and returns <see langword="false"/>.</remarks>
-		/// <param name="g">The grid page on which the child sections will be laid out.</param>
-		/// <param name="m">The model containing data used for rendering the child sections.</param>
-		/// <param name="bounds">The bounds within which the child sections should be arranged.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all child sections
-		/// are successfully laid out; otherwise, <see langword="false"/>.</returns>
-		protected virtual async Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		/// <remarks>This method renders debug overlays for the section and recursively for all child sections that
+		/// should be rendered. It can be used to visually inspect layout boundaries and section outlines during PDF
+		/// generation.</remarks>
+		/// <param name="g">The PDF grid page on which the debug overlays are rendered.</param>
+		/// <param name="m">The model instance providing data for rendering the debug overlays.</param>
+		/// <param name="bounds">The bounds within which the grid page should be rendered.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all debug overlays
+		/// were rendered successfully; otherwise, <see langword="false"/>.</returns>
+		public virtual Task RenderDebugAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
-			bool returnValue = true;
-
-			//
-			// Render child sections.
-			//
-			IPdfSection<TModel>[] sections = [.. this.Children.Where(t => t.ShouldRender.Resolve(g, m))];
-
-			foreach (IPdfSection<TModel> section in sections)
-			{
-				if (!await section.LayoutAsync(g, m))
-				{
-					returnValue = false;
-					break;
-				}
-			}
-
-			return returnValue;
-		}
-
-		/// <summary>
-		/// Asynchronously renders the section and its child sections onto the specified PDF grid page using the provided
-		/// model.
-		/// </summary>
-		/// <remarks>Rendering includes applying margins, drawing backgrounds and borders, rendering child sections,
-		/// and optionally drawing a watermark image if specified. The method returns <see langword="false"/> if any child
-		/// section fails to render or if rendering is not performed.</remarks>
-		/// <param name="g">The PDF grid page on which the section will be rendered.</param>
-		/// <param name="m">The model containing data used to resolve styles and content for rendering.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if the section and
-		/// all child sections were rendered successfully; otherwise, <see langword="false"/>.</returns>
-		public virtual async Task<bool> RenderAsync(PdfGridPage g, TModel m)
-		{
-			bool returnValue = true;
-
-			//
-			// The first style is always used for the base section style.
-			//
-			PdfStyle<TModel> style = this.ResolveStyle(0);
-
-			//
-			// Apply margins.
-			//
-			PdfBounds bounds = this.ApplyMargins(g, m, style.Margin.Resolve(g, m));
-
-			if (this.OnShouldDrawBackground())
-			{
-				//
-				// Draw the background if set.
-				//
-				XColor backgroundColor = style.BackgroundColor.Resolve(g, m);
-
-				if (backgroundColor != XColor.Empty)
-				{
-					//
-					// Draw the filled rectangle.
-					//
-					g.DrawFilledRectangle(bounds, backgroundColor);
-				}
-			}
-
-			if (await this.OnRenderAsync(g, m, bounds))
-			{
-				//
-				// Render child sections.
-				//
-				IPdfSection<TModel>[] sections = [.. this.Children.Where(t => t.ShouldRender.Resolve(g, m))];
-
-				foreach (IPdfSection<TModel> section in sections)
-				{
-					if (!await section.RenderAsync(g, m))
-					{
-						returnValue = false;
-						break;
-					}
-				}
-
-				if (this.OnShouldDrawBorder())
-				{
-					//
-					// Render the border.
-					//
-					double borderWidth = style.BorderWidth.Resolve(g, m);
-					if (borderWidth > 0.0)
-					{
-						g.DrawRectangle(bounds, borderWidth, style.BorderColor.Resolve(g, m));
-					}
-				}
-			}
-			else
-			{
-				returnValue = false;
-			}
-
-			//
-			// Draw the page water mark.
-			//
-			string waterMarkPath = this.WaterMarkImagePath.Resolve(g, m);
-			if (!string.IsNullOrWhiteSpace(waterMarkPath) && File.Exists(waterMarkPath))
-			{
-				g.DrawImage(waterMarkPath, this.ActualBounds, PdfHorizontalAlignment.Center, PdfVerticalAlignment.Center);
-			}
-
-			return returnValue;
+			return this.OnRenderDebugAsync(g, m, bounds);
 		}
 
 		/// <summary>
@@ -366,98 +237,6 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
-		/// Renders debug overlays and outlines for the current section and its child sections asynchronously.
-		/// </summary>
-		/// <remarks>This method renders debug overlays for the section and recursively for all child sections that
-		/// should be rendered. It can be used to visually inspect layout boundaries and section outlines during PDF
-		/// generation.</remarks>
-		/// <param name="g">The PDF grid page on which the debug overlays are rendered.</param>
-		/// <param name="m">The model instance providing data for rendering the debug overlays.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all debug overlays
-		/// were rendered successfully; otherwise, <see langword="false"/>.</returns>
-		public virtual async Task<bool> RenderDebugAsync(PdfGridPage g, TModel m)
-		{
-			bool returnValue = true;
-
-			//
-			// The first style is always used for the base section style.
-			//
-			PdfStyle<TModel> style = this.ResolveStyle(0);
-
-			//
-			// Apply margins.
-			//
-			PdfBounds bounds = this.ApplyMargins(g, m, style.Margin.Resolve(g, m));
-
-			//
-			// Call the base to render the outline overlay.
-			//
-			await this.OnRenderDebugAsync(g, m, bounds);
-
-			//
-			// Get a list of section to be rendered.
-			//
-			IPdfSection<TModel>[] sections = [.. this.Children.Where(t => t.ShouldRender.Resolve(g, m))];
-
-			foreach (IPdfSection<TModel> section in sections)
-			{
-				if (!await section.RenderDebugAsync(g, m))
-				{
-					returnValue = false;
-					break;
-				}
-			}
-
-			return returnValue;
-		}
-
-		/// <summary>
-		/// Sets the actual number of rows for the current bounds asynchronously.
-		/// </summary>
-		/// <remarks>This method updates the actual row count and triggers any associated logic. Override this method
-		/// to customize behavior when the actual rows are set.</remarks>
-		/// <param name="rows">The number of rows to set. Must be a non-negative integer.</param>
-		/// <returns>A task that represents the asynchronous operation.</returns>
-		public virtual Task SetActualRowsAsync(int rows)
-		{
-			this.ActualBounds.Rows = rows;
-			this.OnSetActualRows(rows);
-			return Task.FromResult(0);
-		}
-
-		/// <summary>
-		/// Sets the actual number of columns for the current bounds asynchronously.
-		/// </summary>
-		/// <param name="columns">The number of columns to set. Must be a non-negative integer.</param>
-		/// <returns>A task that represents the asynchronous operation. The task completes when the column count has been updated.</returns>
-		public virtual Task SetActualColumnsAsync(int columns)
-		{
-			this.ActualBounds.Columns = columns;
-			this.OnSetActualColumns(columns);
-			return Task.FromResult(0);
-		}
-
-		/// <summary>
-		/// Provides a mechanism for derived classes to respond when the actual number of rows is set.
-		/// </summary>
-		/// <remarks>Override this method in a derived class to implement custom behavior when the actual row count
-		/// changes. The base implementation does nothing.</remarks>
-		/// <param name="rows">The number of rows that have been set. Must be a non-negative integer.</param>
-		protected virtual void OnSetActualRows(int rows)
-		{
-		}
-
-		/// <summary>
-		/// Provides a callback that is invoked when the actual number of columns is set.
-		/// </summary>
-		/// <remarks>Override this method to perform custom actions when the actual column count changes. The default
-		/// implementation does nothing.</remarks>
-		/// <param name="columns">The number of columns that have been set. Must be a non-negative integer.</param>
-		protected virtual void OnSetActualColumns(int columns)
-		{
-		}
-
-		/// <summary>
 		/// Renders debug visual elements for the specified PDF grid page and model within the given bounds.
 		/// </summary>
 		/// <remarks>This method is intended for diagnostic or development purposes and may display visual cues such
@@ -468,10 +247,8 @@ namespace PdfDocuments
 		/// <param name="bounds">The bounds within which debug visuals are drawn.</param>
 		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if debug rendering
 		/// was performed; otherwise, <see langword="false"/>.</returns>
-		protected virtual Task<bool> OnRenderDebugAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		protected virtual async Task OnRenderDebugAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
-			bool returnValue = true;
-
 			//
 			// Create a random color
 			//
@@ -537,7 +314,15 @@ namespace PdfDocuments
 			PdfBounds labelBounds = new(this.ActualBounds.LeftColumn + padding.Left, this.ActualBounds.TopRow, textSize.Columns + padding.Left + padding.Right, textSize.Rows + padding.Top + padding.Bottom);
 			g.DrawText(label, font, labelBounds, XStringFormats.CenterLeft, labelColor, true);
 
-			return Task.FromResult(returnValue);
+			//
+			// Get a list of section to be rendered.
+			//
+			IPdfSection<TModel>[] sections = [.. this.Children.Where(t => t.ShouldRender.Resolve(g, m))];
+
+			foreach (IPdfSection<TModel> section in sections)
+			{
+				await section.RenderDebugAsync(g, m, section.ActualBounds);
+			}
 		}
 
 		/// <summary>
@@ -550,26 +335,307 @@ namespace PdfDocuments
 		/// <param name="bounds">The bounds within which the content should be rendered on the page.</param>
 		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if rendering was
 		/// successful; otherwise, <see langword="false"/>.</returns>
-		protected virtual Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		protected virtual async Task OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
-			return Task.FromResult(true);
+			//
+			// Check if this section should be rendered or not.
+			//
+			if (this.ShouldRender.Resolve(g, m))
+			{
+				//
+				// Set the actual bounds for this section.
+				//
+				this.ActualBounds = bounds;
+
+				//
+				// The first style is always used for the base section style.
+				//
+				PdfStyle<TModel> style = this.ResolveStyle(0);
+
+				//
+				// Apply padding.
+				//
+				PdfBounds paddedBounds = this.ApplyPadding(g, m, style.Padding.Resolve(g, m));
+
+				//
+				// Render the background with padding.
+				//
+				await this.OnRenderBackgroundAsync(g, m, paddedBounds);
+
+				//
+				// Render the border with padding.
+				//
+				await this.OnRenderBorderAsync(g, m, paddedBounds);
+
+				//
+				// Render the text.
+				//
+				await this.OnRenderTextAsync(g, m, paddedBounds);
+
+				//
+				// Render the child sections.
+				//
+				await this.OnRenderChildrenAsync(g, m, paddedBounds);
+
+				//
+				// Render the watermark on top of all other elements.
+				//
+				await this.OnRenderWaterMarkAsync(g, m, paddedBounds);
+			}
 		}
 
 		/// <summary>
-		/// Asynchronously calculates the required height, in device units, for rendering the specified model within the given
-		/// bounds on the provided PDF grid page.
+		/// Asynchronously calculates the bounds for the specified PDF grid page and model.	
 		/// </summary>
-		/// <remarks>Override this method in a derived class to provide custom height calculation logic based on the
-		/// model and layout constraints. The default implementation returns 0.</remarks>
-		/// <param name="g">The PDF grid page on which the model will be rendered. Used to determine page-specific layout constraints.</param>
-		/// <param name="m">The data model to be rendered. Provides the content and formatting information used in the height calculation.</param>
-		/// <param name="bounds">The bounding rectangle, in device units, that constrains the rendering area for the model.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result contains the calculated height, in device
-		/// units, required to render the model within the specified bounds.</returns>
-		protected virtual Task<int> OnCalculateHeightAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		/// <remarks>Override this method in a derived class to provide custom bounds calculation logic.</remarks>
+		/// <param name="g">The PDF grid page for which to calculate bounds.</param>
+		/// <param name="m">The model containing data used to determine the bounds.</param>
+		/// <param name="parentBounds">The bounds of the parent section, which can be used as a reference for calculating the current section's bounds.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains the calculated bounds for the
+		/// specified grid page and model, or null if no bounds are determined.</returns>
+		protected virtual async Task<PdfSize> OnCalculateBoundsAsync(PdfGridPage g, TModel m, PdfBounds parentBounds)
 		{
-			return Task.FromResult(0);
+			PdfSize returnValue = new();
+
+			if (this.SizingMode(g, m) == SectionSizingMode.Fixed)
+			{
+				int? fixedRows = this.ResolveStyle(0).FixedHeight?.Resolve(g, m);
+				int?[] fixedColumns = this.ResolveStyle(0).FixedWidths?.Resolve(g, m);
+
+				returnValue.Rows = fixedRows ?? 0;
+				returnValue.Columns = fixedColumns[0] ?? 0;
+			}
+			else
+			{
+				double height = this.ResolveStyle(0).RelativeHeight.Resolve(g, m);
+				double[] width = this.ResolveStyle(0).RelativeWidths.Resolve(g, m);
+
+				returnValue.Rows = (int)(parentBounds.Rows * (height == 0 ? 1 : height));
+				returnValue.Columns = (int)(parentBounds.Columns * (width[0] == 0 ? 1 : width[0]));
+			}
+
+			return returnValue;
 		}
+
+		/// <summary>
+		/// Renders the background for the grid page using the resolved style and model data.
+		/// </summary>
+		/// <remarks>Override this method to customize how the background is rendered for a grid page. The default
+		/// implementation uses the first style to determine the background color and draws a filled rectangle if a background
+		/// color is specified.</remarks>
+		/// <param name="g">The <see cref="PdfGridPage"/> on which the background will be rendered.</param>
+		/// <param name="m">The model data used to resolve style and background color.</param>
+		/// <param name="bounds">The bounds within which the background should be rendered.</param>
+		/// <returns>A task that represents the asynchronous operation. The task is completed when the background rendering is
+		/// finished.</returns>
+		protected virtual Task OnRenderBackgroundAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			if (this.OnShouldDrawBackground())
+			{
+				//
+				// The first style is always used for the base section style.
+				//
+				PdfStyle<TModel> style = this.ResolveStyle(0);
+
+				//
+				// Draw the background if set.
+				//
+				XColor backgroundColor = style.BackgroundColor.Resolve(g, m);
+
+				if (backgroundColor != XColor.Empty)
+				{
+					//
+					// Draw the filled rectangle.
+					//
+					g.DrawFilledRectangle(bounds, backgroundColor);
+				}
+			}
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Renders the border for the current grid section if border rendering is enabled and the border width is greater
+		/// than zero.
+		/// </summary>
+		/// <remarks>Override this method to customize border rendering behavior for derived grid sections. The border
+		/// is only rendered if the resolved border width is greater than zero.</remarks>
+		/// <param name="g">The PDF grid page on which the border will be rendered.</param>
+		/// <param name="m">The model instance providing data for style and rendering resolution.</param>
+		/// <param name="bounds">The bounds within which the border should be drawn.</param>
+		/// <returns>A completed task that represents the asynchronous operation.</returns>
+		protected virtual Task OnRenderBorderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			if (this.OnShouldDrawBorder())
+			{
+				//
+				// The first style is always used for the base section style.
+				//
+				PdfStyle<TModel> style = this.ResolveStyle(0);
+
+				//
+				// Render the border.
+				//
+				double borderWidth = style.BorderWidth.Resolve(g, m);
+
+				if (borderWidth > 0.0)
+				{
+					g.DrawRectangle(bounds, borderWidth, style.BorderColor.Resolve(g, m));
+				}
+			}
+
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Asynchronously renders text content for a grid cell within the specified bounds on a PDF page.
+		/// </summary>
+		/// <remarks>Override this method in a derived class to customize how text is rendered for a grid cell. The
+		/// default implementation returns <see langword="true"/>.</remarks>
+		/// <param name="g">The PDF grid page on which the text will be rendered.</param>
+		/// <param name="m">The data model containing the information to be rendered as text.</param>
+		/// <param name="bounds">The bounds that define the area within which the text should be rendered.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if the text was
+		/// rendered successfully; otherwise, <see langword="false"/>.</returns>
+		protected virtual async Task OnRenderTextAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			//
+			// Get the text.
+			//
+			string text = this.Text.Resolve(g, m);
+
+			if (text != null)
+			{
+				//
+				// Get the style.
+				//
+				PdfStyle<TModel> style = this.ResolveStyle(0);
+
+				//
+				// Create a new text element.
+				//
+				PdfTextElement<TModel> textElement = new(text);
+
+				//
+				// Render the text element.
+				//
+				await textElement.RenderAsync(g, m, bounds, style);
+			}
+		}
+
+		/// <summary>
+		/// Renders a watermark image onto the specified PDF grid page using the provided model and bounds.
+		/// </summary>
+		/// <remarks>Override this method to customize watermark rendering behavior. The default implementation
+		/// resolves the watermark image path and draws the image centered within the specified bounds if the image
+		/// exists.</remarks>
+		/// <param name="g">The PDF grid page on which to render the watermark.</param>
+		/// <param name="m">The model containing data used to resolve the watermark image path.</param>
+		/// <param name="bounds">The bounds within which the watermark should be rendered.</param>
+		/// <returns>A completed task that represents the asynchronous operation.</returns>
+		protected virtual async Task OnRenderWaterMarkAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			//
+			// Get the path.
+			//
+			string path = this.WaterMarkImagePath.Resolve(g, m);
+
+			if (path != null)
+			{
+				//
+				// Get the style.
+				//
+				PdfStyle<TModel> style = this.ResolveStyle(0);
+
+				//
+				// Create a new text element.
+				//
+				PdfImageElement<TModel> imageElement = new(path);
+
+				//
+				// Render the text element.
+				//
+				await imageElement.RenderAsync(g, m, bounds, style);
+			}
+		}
+
+		/// <summary>
+		/// Asynchronously renders all child sections within the specified bounds using the provided PDF grid page and model.
+		/// </summary>
+		/// <remarks>Rendering stops at the first child section that fails to render successfully.</remarks>
+		/// <param name="g">The PDF grid page on which the child sections are rendered.</param>
+		/// <param name="m">The model containing data used for rendering the child sections.</param>
+		/// <param name="bounds">The bounds within which the child sections are rendered.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all child sections
+		/// are rendered successfully; otherwise, <see langword="false"/>.</returns>
+		protected virtual async Task OnRenderChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			//
+			// Get the child sections that should be rendered. If a child section is not
+			// to be rendered, it will be ignored when calcuating the layout (making it hidden).
+			//
+			IPdfSection<TModel>[] sections = [.. this.Children.Where(t => t.ShouldRender.Resolve(g, m))];
+
+			if (sections.Length != 0)
+			{
+				//
+				// Get the starting column and row for rendering child sections.
+				//
+				int leftColumn = bounds.LeftColumn;
+
+				//
+				// Get the starting row for rendering child sections.
+				//
+				int topRow = bounds.TopRow;
+
+				//
+				// Render each child section.
+				//
+				foreach (IPdfSection<TModel> section in sections)
+				{
+					//
+					// Calculate the size of the child section.
+					//
+					PdfSize childSize = await section.CalculateBoundsAsync(g, m, bounds);
+
+					//
+					// Create the bounds for the child section.
+					//
+					PdfBounds childBounds = new(leftColumn, topRow, childSize.Rows, childSize.Columns);
+
+					//
+					// Render the child section.
+					//
+					await section.RenderAsync(g, m, childBounds);
+
+					//
+					// Update the top row for the next child section if the layout mode is vertical stacking.
+					//
+					if (this.ChildLayoutMode == ChildSectionsLayoutMode.VerticalStacking)
+					{
+						topRow += childBounds.BottomRow + 1;
+					}
+
+					//
+					// Update the left column for the next child section if the layout mode is horizontal stacking.
+					//
+					if (this.ChildLayoutMode == ChildSectionsLayoutMode.HorizontalStacking)
+					{
+						leftColumn += childBounds.LeftColumn + 1;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether the style has been overridden for this instance.
+		/// </summary>
+		public virtual bool StyleOverridden { get; set; }
+
+		/// <summary>
+		/// Gets the style settings applied to this instance of a PDF section.
+		/// </summary>
+		public virtual PdfStyle<TModel> Style { get; } = new PdfStyle<TModel>();
 
 		/// <summary>
 		/// Returns a string that represents the current object, including its type and key information.

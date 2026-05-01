@@ -60,28 +60,19 @@ namespace PdfDocuments
 		/// <param name="m">The model instance providing context for style resolution and text content.</param>
 		/// <param name="style">The style applied to the model, including font, margin, padding, and cell padding settings.</param>
 		/// <returns>A PdfSize representing the total width and height needed to render the text with all style adjustments applied.</returns>
-		public virtual PdfSize Measure(PdfGridPage g, TModel m, PdfStyle<TModel> style)
+		public virtual Task<PdfSize> MeasureAsync(PdfGridPage g, TModel m, PdfStyle<TModel> style)
 		{
 			PdfSize returnValue = new();
 
 			//
+			// Resolve the font from the style, as it is needed to measure the text.
+			//
+			XFont font = style.Font.Resolve(g, m);
+
+			//
 			// Measure the text.
 			//
-			returnValue = g.MeasureText(style.Font.Resolve(g, m), this.Text);
-
-			//
-			// Add the margin
-			//
-			PdfSpacing margin = style.Margin.Resolve(g, m);
-			returnValue.Columns += margin.Left + margin.Right;
-			returnValue.Rows += margin.Top + margin.Bottom;
-
-			//
-			// Add the padding
-			//
-			PdfSpacing padding = style.Padding.Resolve(g, m);
-			returnValue.Columns += padding.Left + padding.Right;
-			returnValue.Rows += padding.Top + padding.Bottom;
+			returnValue = g.MeasureText(font, this.Text);
 
 			//
 			// Add the cell padding
@@ -90,8 +81,7 @@ namespace PdfDocuments
 			returnValue.Columns += cellPaddng.Left + cellPaddng.Right;
 			returnValue.Rows += cellPaddng.Top + cellPaddng.Bottom;
 
-
-			return returnValue;
+			return Task.FromResult(returnValue);
 		}
 
 		/// <summary>
@@ -105,38 +95,37 @@ namespace PdfDocuments
 		/// <param name="bounds">The bounds that define the area in which the cell content will be rendered.</param>
 		/// <param name="style">The style settings that determine appearance aspects such as margin, padding, font, colors, and alignment.</param>
 		/// <param name="state">An optional state object that can be used to resolve dynamic style or content values. May be null.</param>
-		public virtual void Render(PdfGridPage g, TModel m, PdfBounds bounds, PdfStyle<TModel> style, object state = null)
+		public virtual Task RenderAsync(PdfGridPage g, TModel m, PdfBounds bounds, PdfStyle<TModel> style, object state = null)
 		{
-			//
-			// Apply margin. Nothing is drawn in the margin.
-			//
-			PdfBounds marginBounds = bounds.SubtractBounds(g, m, style.Margin.Resolve(g, m, state));
-
 			//
 			// Draw the background.
 			//
-			g.DrawFilledRectangle(marginBounds, style.BackgroundColor.Resolve(g, m, state));
+			XColor backgroundColor = style.BackgroundColor.Resolve(g, m, state);
+			g.DrawFilledRectangle(bounds, backgroundColor);
 
 			//
 			// Draw the border.
 			//
-			XPen pen = new(style.BorderColor.Resolve(g, m, state), style.BorderWidth.Resolve(g, m, state));
-			g.DrawRectangle(marginBounds, pen);
-
-			//
-			// Apply padding. This is where the fill and border will extend to.
-			//
-			PdfBounds elementBounds = marginBounds.SubtractBounds(g, m, style.Padding.Resolve(g, m, state));
+			XColor bordercolor = style.BorderColor.Resolve(g, m, state);
+			double borderWidth = style.BorderWidth.Resolve(g, m, state);
+			XPen pen = new(bordercolor, borderWidth);
+			g.DrawRectangle(bounds, pen);
 
 			//
 			// Pad the text. This allows the border and fill to extend beyond the text.
 			//
-			PdfBounds textBounds = elementBounds.SubtractBounds(g, m, style.CellPadding.Resolve(g, m, state));
+			PdfSpacing cellPadding = style.CellPadding.Resolve(g, m, state);
+			PdfBounds textBounds = bounds.SubtractBounds(g, m, cellPadding);
 
 			//
 			// Draw the text.
 			//
-			g.DrawText(this.Text, style.Font.Resolve(g, m, state), textBounds, style.TextAlignment.Resolve(g, m, state), style.ForegroundColor.Resolve(g, m, state));
+			XFont font = style.Font.Resolve(g, m, state);
+			XStringFormat textAlignment = style.TextAlignment.Resolve(g, m, state);
+			XColor foregroundColor = style.ForegroundColor.Resolve(g, m, state);
+			g.DrawText(this.Text, font, textBounds, textAlignment, foregroundColor);
+
+			return Task.CompletedTask;
 		}
 	}
 }

@@ -41,6 +41,16 @@ namespace PdfDocuments
 		string Key { get; set; }
 
 		/// <summary>
+		/// Gets or sets a value indicating whether the style has been explicitly overridden.
+		/// </summary>
+		bool StyleOverridden { get; set; }
+
+		/// <summary>
+		/// Gets the style settings applied to this instance of a PDF section.
+		/// </summary>
+		PdfStyle<TModel> Style { get; }
+
+		/// <summary>
 		/// Gets or sets the style manager used to configure PDF rendering styles for the model.
 		/// </summary>
 		/// <remarks>Use this property to customize appearance settings such as fonts, colors, and layout when
@@ -54,6 +64,19 @@ namespace PdfDocuments
 		IEnumerable<string> StyleNames { get; set; }
 
 		/// <summary>
+		/// Gets or sets the sizing mode used to determine how the control adjusts its size.
+		/// </summary>
+		SectionSizingMode SizingMode(PdfGridPage g, TModel m);
+
+		/// <summary>
+		/// Gets or sets the layout mode used for arranging child sections.
+		/// </summary>
+		/// <remarks>Use this property to control how child sections are positioned and displayed within the parent
+		/// container. The selected layout mode determines the arrangement behavior for all immediate child
+		/// sections.</remarks>
+		ChildSectionsLayoutMode ChildLayoutMode { get; set; }
+
+		/// <summary>
 		/// Gets or sets the text value bound to the model.
 		/// </summary>
 		BindProperty<string, TModel> Text { get; set; }
@@ -64,23 +87,7 @@ namespace PdfDocuments
 		/// <remarks>The value reflects the final position and size of the element within the PDF document, which may
 		/// differ from initial settings due to layout adjustments. Use this property to determine the rendered area for tasks
 		/// such as hit testing or custom drawing.</remarks>
-		PdfBounds ActualBounds { get; set; }
-
-		/// <summary>
-		/// Gets or sets a value indicating whether the height should be calculated.
-		/// </summary>
-		bool MustCalculateHeight { get; set; }
-
-		/// <summary>
-		/// Asynchronously calculates the required height, in rows, to render the specified model within the given PDF
-		/// grid page and bounds.
-		/// </summary>
-		/// <param name="g">The PDF grid page on which the model will be rendered. Cannot be null.</param>
-		/// <param name="m">The data model to be rendered. Cannot be null.</param>
-		/// <param name="bounds">The bounds within which the model should be rendered, specified in rows.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result contains the calculated height, in rows,
-		/// required to render the model within the specified bounds.</returns>
-		Task<int> CalculateHeightAsync(PdfGridPage g, TModel m, PdfBounds bounds);
+		PdfBounds ActualBounds { get; }
 
 		/// <summary>
 		/// Gets or sets the parent section of the current PDF section.
@@ -105,57 +112,33 @@ namespace PdfDocuments
 		BindProperty<string, TModel> WaterMarkImagePath { get; set; }
 
 		/// <summary>
-		/// Asynchronously renders the specified PDF grid page using the provided model.
+		/// Asynchronously renders the specified model onto the provided PDF grid page within the given bounds.
 		/// </summary>
-		/// <param name="gridPage">The PDF grid page to render. Must not be null.</param>
-		/// <param name="model">The data model used to populate the grid page. Must not be null.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if rendering
-		/// succeeds; otherwise, <see langword="false"/>.</returns>
-		Task<bool> RenderAsync(PdfGridPage gridPage, TModel model);
+		/// <param name="gridPage">The PDF grid page on which the model will be rendered. Cannot be null.</param>
+		/// <param name="model">The data model to render onto the grid page. Cannot be null.</param>
+		/// <param name="bounds">The bounds within the grid page that define the area for rendering the model.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if rendering was
+		/// successful; otherwise, <see langword="false"/>.</returns>
+		Task RenderAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds);
 
 		/// <summary>
-		/// Asynchronously arranges the specified grid page using the provided model data.
+		/// Asynchronously calculates the bounding rectangle for the specified PDF grid page and data model.
 		/// </summary>
-		/// <param name="gridPage">The PDF grid page to be laid out. Cannot be null.</param>
-		/// <param name="model">The model containing data used to layout the grid page. Cannot be null.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if the layout was
-		/// successful; otherwise, <see langword="false"/>.</returns>
-		Task<bool> LayoutAsync(PdfGridPage gridPage, TModel model);
+		/// <param name="gridPage">The PDF grid page for which to calculate bounds. Cannot be null.</param>
+		/// <param name="model">The data model used to determine the layout and bounds. Cannot be null.</param>
+		/// <param name="parentBounds">The bounds of the parent section, which can be used to calculate relative positioning. Cannot be null.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result contains a PdfBounds object representing the
+		/// calculated bounds for the specified grid page and model.</returns>
+		Task<PdfSize> CalculateBoundsAsync(PdfGridPage gridPage, TModel model, PdfBounds parentBounds);
 
 		/// <summary>
 		/// Asynchronously renders debug information onto the specified PDF grid page using the provided model.
 		/// </summary>
 		/// <param name="gridPage">The PDF grid page on which debug information will be rendered. Cannot be null.</param>
 		/// <param name="model">The model containing data used to generate debug output. Cannot be null.</param>
+		/// <param name="bounds">The bounds within the grid page that define the area for rendering the model.</param>
 		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if debug information
 		/// was successfully rendered; otherwise, <see langword="false"/>.</returns>
-		Task<bool> RenderDebugAsync(PdfGridPage gridPage, TModel model);
-
-		/// <summary>
-		/// Sets the actual number of rows processed or affected by the operation asynchronously.
-		/// </summary>
-		/// <param name="rows">The number of rows to set. Must be a non-negative integer.</param>
-		/// <returns>A task that represents the asynchronous operation.</returns>
-		Task SetActualRowsAsync(int rows);
-
-		/// <summary>
-		/// Sets the actual number of columns to be used for subsequent operations.
-		/// </summary>
-		/// <param name="columns">The number of columns to set. Must be a positive integer.</param>
-		/// <returns>A task that represents the asynchronous operation.</returns>
-		Task SetActualColumnsAsync(int columns);
-
-		/// <summary>
-		/// Gets the relative height value bound to the model.
-		/// </summary>
-		BindProperty<double, TModel> RelativeHeight { get; }
-
-		/// <summary>
-		/// Gets the relative widths for each column in the layout as a bindable property.
-		/// </summary>
-		/// <remarks>The array represents proportional widths, where each value determines the relative size of a
-		/// column compared to others. The sum of all values does not need to equal 1; proportions are calculated based on the
-		/// array contents. This property is typically used to control column sizing in dynamic layouts.</remarks>
-		BindProperty<double[], TModel> RelativeWidths { get; }
+		Task RenderDebugAsync(PdfGridPage gridPage, TModel model, PdfBounds bounds);
 	}
 }

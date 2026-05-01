@@ -65,7 +65,7 @@ namespace PdfDocuments
 		/// <param name="bounds">The bounds within the grid page that define the area for rendering the items.</param>
 		/// <returns>A task that represents the asynchronous rendering operation. The task result is <see langword="true"/> if
 		/// rendering completes successfully.</returns>
-		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		protected override async Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			bool returnValue = true;
 
@@ -100,22 +100,22 @@ namespace PdfDocuments
 				// Draw the Key
 				//
 				PdfTextElement<TModel> keyElement = new(item.Key);
-				PdfSize keySize = keyElement.Measure(g, m, keyStyle);
+				PdfSize keySize = await keyElement.MeasureAsync(g, m, keyStyle);
 				PdfBounds keyBounds = new(bounds.LeftColumn, top, keyWidth, keySize.Rows);
-				keyElement.Render(g, m, keyBounds, keyStyle);
+				await keyElement.RenderAsync(g, m, keyBounds, keyStyle);
 
 				//
 				// Draw the Value
 				//
 				PdfTextElement<TModel> valueElement = new(item.Value.Resolve(g, m));
-				PdfSize valueSize = valueElement.Measure(g, m, valueStyle);
+				PdfSize valueSize = await valueElement.MeasureAsync(g, m, valueStyle);
 				PdfBounds valueBounds = new(bounds.LeftColumn + keyWidth, top, bounds.Columns - keyWidth, valueSize.Rows);
-				valueElement.Render(g, m, valueBounds, valueStyle);
+				await valueElement.RenderAsync(g, m, valueBounds, valueStyle);
 
 				top += (new int[] { keySize.Rows, valueSize.Rows }).Max();
 			}
 
-			return Task.FromResult(returnValue);
+			return returnValue;
 		}
 	}
 }

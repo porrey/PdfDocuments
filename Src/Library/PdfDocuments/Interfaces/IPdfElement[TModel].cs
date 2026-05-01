@@ -40,7 +40,7 @@ namespace PdfDocuments
 		/// <param name="style">The style to apply when measuring the model. Influences formatting, spacing, and appearance.</param>
 		/// <returns>A PdfSize object representing the width and height needed to render the model with the specified style on the
 		/// given grid page.</returns>
-		PdfSize Measure(PdfGridPage g, TModel m, PdfStyle<TModel> style);
+		Task<PdfSize> MeasureAsync(PdfGridPage g, TModel m, PdfStyle<TModel> style);
 
 		/// <summary>
 		/// Renders the specified model onto a PDF grid page within the given bounds and using the provided style.
@@ -50,6 +50,6 @@ namespace PdfDocuments
 		/// <param name="bounds">The bounds within which the model will be rendered. Defines the area on the page for rendering.</param>
 		/// <param name="style">The style to apply when rendering the model. Determines visual appearance such as formatting and layout.</param>
 		/// <param name="state">An optional state object that can be used to pass additional information or context required for rendering.</param>
-		void Render(PdfGridPage g, TModel m, PdfBounds bounds, PdfStyle<TModel> style, object state);
+		Task RenderAsync(PdfGridPage g, TModel m, PdfBounds bounds, PdfStyle<TModel> style, object state);
 	}
 }

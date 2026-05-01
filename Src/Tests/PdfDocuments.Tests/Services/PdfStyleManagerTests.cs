@@ -31,7 +31,7 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void DefaultConstructor_AddsTwoDefaultStyles()
 		{
-			PdfStyleManager<NullModel> manager = new();
+			PdfStyleManager<NullModel> manager = [];
 
 			Assert.True(manager.ContainsKey(PdfStyleManager<NullModel>.Default));
 			Assert.True(manager.ContainsKey(PdfStyleManager<NullModel>.Debug));
@@ -50,7 +50,7 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void GetStyle_ExistingKey_ReturnsStyle()
 		{
-			PdfStyleManager<NullModel> manager = new();
+			PdfStyleManager<NullModel> manager = [];
 			PdfStyle<NullModel> customStyle = new();
 			manager.Add("Custom", customStyle);
 
@@ -62,7 +62,7 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void GetStyle_NonExistingKey_ReturnsDefaultStyle()
 		{
-			PdfStyleManager<NullModel> manager = new();
+			PdfStyleManager<NullModel> manager = [];
 			PdfStyle<NullModel> defaultStyle = manager[PdfStyleManager<NullModel>.Default];
 
 			PdfStyle<NullModel> result = manager.GetStyle("NonExistent");
@@ -73,7 +73,7 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void GetStyle_DefaultKey_ReturnsDefaultStyle()
 		{
-			PdfStyleManager<NullModel> manager = new();
+			PdfStyleManager<NullModel> manager = [];
 
 			PdfStyle<NullModel> result = manager.GetStyle(PdfStyleManager<NullModel>.Default);
 
@@ -83,7 +83,7 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void GetStyle_DebugKey_ReturnsDebugStyle()
 		{
-			PdfStyleManager<NullModel> manager = new();
+			PdfStyleManager<NullModel> manager = [];
 
 			PdfStyle<NullModel> result = manager.GetStyle(PdfStyleManager<NullModel>.Debug);
 
@@ -93,7 +93,7 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void Replace_ExistingKey_ReplacesStyle()
 		{
-			PdfStyleManager<NullModel> manager = new();
+			PdfStyleManager<NullModel> manager = [];
 			PdfStyle<NullModel> newDefaultStyle = new();
 
 			manager.Replace(PdfStyleManager<NullModel>.Default, newDefaultStyle);
@@ -105,7 +105,7 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void Replace_NonExistingKey_AddsNewStyle()
 		{
-			PdfStyleManager<NullModel> manager = new();
+			PdfStyleManager<NullModel> manager = [];
 			PdfStyle<NullModel> newStyle = new();
 			int countBefore = manager.Count;
 

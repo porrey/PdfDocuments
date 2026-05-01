@@ -62,6 +62,9 @@ namespace PdfDocuments
 			return new PdfStyle<TModel>()
 			{
 				RelativeHeight = style.RelativeHeight,
+				RelativeWidths = style.RelativeWidths,
+				FixedHeight = style.FixedHeight,
+				FixedWidths = style.FixedWidths,
 				Font = style.Font,
 				Margin = style.Margin,
 				Padding = style.Padding,
@@ -71,8 +74,7 @@ namespace PdfDocuments
 				BorderColor = style.BorderColor,
 				TextAlignment = style.TextAlignment,
 				ParagraphAlignment = style.ParagraphAlignment,
-				CellPadding = style.CellPadding,
-				RelativeWidths = style.RelativeWidths
+				CellPadding = style.CellPadding
 			};
 		}
 
@@ -360,6 +362,38 @@ namespace PdfDocuments
 			where TModel : IPdfModel
 		{
 			((PdfStyle<TModel>)styleBuilder).RelativeHeight = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Sets a fixed height for the styled PDF element using the specified bindable value.
+		/// </summary>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A bindable property representing the fixed height, in points, to apply to the element. The value can be null to
+		/// indicate no fixed height.</param>
+		/// <returns>The same style builder instance, enabling method chaining.</returns>
+		public static IStyleBuilder<TModel> UseFixedHeight<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<int?, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).FixedHeight = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures the style builder to use a fixed height for the element, using the specified binding action.
+		/// </summary>
+		/// <remarks>Use this method to set a fixed height for PDF elements when generating documents. If the value is
+		/// null, the element's height is determined automatically.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A binding action that provides the fixed height value, in points, for the element. The value can be null to
+		/// indicate no fixed height.</param>
+		/// <returns>The same style builder instance, enabling method chaining.</returns>
+		public static IStyleBuilder<TModel> UseFixedHeight<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<int?, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).FixedHeight = value;
 			return styleBuilder;
 		}
 

@@ -24,14 +24,23 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Represents a PDF section that renders a block of text using a specified model.
+	/// Specifies the layout mode for arranging child sections within a container.
 	/// </summary>
-	/// <remarks>Use PdfTextBlockSection<![CDATA[<TModel>]]> to display formatted text within a PDF document section. This class
-	/// is intended for scenarios where text content is dynamically resolved from the provided model and rendered with
-	/// customizable styles. Background and border drawing are not supported for this section.</remarks>
-	/// <typeparam name="TModel">The type of model used to provide data for the text block. Must implement the IPdfModel interface.</typeparam>
-	public class PdfTextBlockSection<TModel> : PdfSectionTemplate<TModel>
-		where TModel : IPdfModel
+	/// <remarks>Use this enumeration to control whether child sections are stacked horizontally or vertically. The
+	/// selected mode determines the visual arrangement of contained elements.</remarks>
+	public enum ChildSectionsLayoutMode
 	{
+		/// <summary>
+		/// Specifies that child elements are arranged horizontally in the layout.
+		/// </summary>
+		HorizontalStacking,
+		/// <summary>
+		/// Specifies that child elements are arranged in a vertical stack.
+		/// </summary>
+		VerticalStacking,
+		/// <summary>
+		/// Specifies that child elements are arranged on top of each other.
+		/// </summary>
+		OverlayStacking
 	}
 }

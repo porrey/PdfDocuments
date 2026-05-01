@@ -52,43 +52,43 @@ namespace PdfDocuments
 		{
 		}
 
-		/// <summary>
-		/// Performs asynchronous layout of all child sections within the specified bounds on the given PDF grid page.
-		/// </summary>
-		/// <remarks>Only sections that are determined to be renderable are included in the layout process. The method
-		/// stops processing further sections if any section fails to layout successfully.</remarks>
-		/// <param name="g">The PDF grid page on which the child sections will be laid out.</param>
-		/// <param name="m">The model data used to determine rendering and layout for each section.</param>
-		/// <param name="bounds">The bounds within which the child sections should be arranged.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all sections were
-		/// successfully laid out; otherwise, <see langword="false"/>.</returns>
-		protected override async Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
-		{
-			bool returnValue = true;
+		///// <summary>
+		///// Performs asynchronous layout of all child sections within the specified bounds on the given PDF grid page.
+		///// </summary>
+		///// <remarks>Only sections that are determined to be renderable are included in the layout process. The method
+		///// stops processing further sections if any section fails to layout successfully.</remarks>
+		///// <param name="g">The PDF grid page on which the child sections will be laid out.</param>
+		///// <param name="m">The model data used to determine rendering and layout for each section.</param>
+		///// <param name="bounds">The bounds within which the child sections should be arranged.</param>
+		///// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all sections were
+		///// successfully laid out; otherwise, <see langword="false"/>.</returns>
+		//protected override async Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		//{
+		//	bool returnValue = true;
 
-			//
-			// Get a list of each section to be rendered.
-			//
-			IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(g, m)).ToArray();
+		//	//
+		//	// Get a list of each section to be rendered.
+		//	//
+		//	IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(g, m)).ToArray();
 
-			foreach (IPdfSection<TModel> section in sections)
-			{
-				section.ActualBounds = bounds;
-			}
+		//	foreach (IPdfSection<TModel> section in sections)
+		//	{
+		//		section.ActualBounds = bounds;
+		//	}
 
-			//
-			// Allow each section to perform a layout.
-			//
-			foreach (IPdfSection<TModel> section in sections)
-			{
-				if (!await section.LayoutAsync(g, m))
-				{
-					returnValue = false;
-					break;
-				}
-			}
+		//	//
+		//	// Allow each section to perform a layout.
+		//	//
+		//	foreach (IPdfSection<TModel> section in sections)
+		//	{
+		//		if (!await section.LayoutAsync(g, m))
+		//		{
+		//			returnValue = false;
+		//			break;
+		//		}
+		//	}
 
-			return returnValue;
-		}
+		//	return returnValue;
+		//}
 	}
 }

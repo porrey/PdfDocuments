@@ -24,14 +24,20 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Represents a PDF section that renders a block of text using a specified model.
+	/// Specifies the sizing mode for an element, indicating whether its size is fixed or relative to another value.
 	/// </summary>
-	/// <remarks>Use PdfTextBlockSection<![CDATA[<TModel>]]> to display formatted text within a PDF document section. This class
-	/// is intended for scenarios where text content is dynamically resolved from the provided model and rendered with
-	/// customizable styles. Background and border drawing are not supported for this section.</remarks>
-	/// <typeparam name="TModel">The type of model used to provide data for the text block. Must implement the IPdfModel interface.</typeparam>
-	public class PdfTextBlockSection<TModel> : PdfSectionTemplate<TModel>
-		where TModel : IPdfModel
+	/// <remarks>Use this enumeration to control how an element's size is determined. The Fixed value indicates that
+	/// the element uses an explicit size, while Relative indicates that the size is determined in proportion to another
+	/// value, such as a parent container or available space.</remarks>
+	public enum SectionSizingMode
 	{
+		/// <summary>
+		/// The sizing mode uses fixed height and/or fixed width.
+		/// </summary>
+		Fixed,
+		/// <summary>
+		/// The sizing mode uses height and/or width relative to the parent section widthand height.
+		/// </summary>
+		Relative
 	}
 }

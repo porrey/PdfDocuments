@@ -413,13 +413,13 @@ namespace PdfDocuments.Example.Invoice
 					.WithStyles("ThankYou.Section"),
 
 				//
-				//
+				// Page footer.
 				//
 				Pdf.PageFooterSection<Invoice>()
 					.WithTopLeftText("Contact us immediately with any questions")
 					.WithTopRightText((g, m) => $"Page {g.PageNumber} of {g.Document.PageCount}")
 					.WithBottomLeftText("Copyright Daniel Porrey. All rights reserved.")
-					.WithBottomRightText((g, m) => $"Invoiced: {m.InvoiceDate.ToLongDateString()}")
+					.WithBottomRightText((g, m) => $"Invoiced: {m.InvoiceDate:D}")
 					.WithStyles("PageFooter.Section")
 			)
 			.WithStyleManager(this.StyleManager)

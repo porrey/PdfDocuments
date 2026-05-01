@@ -42,12 +42,25 @@ namespace PdfDocuments
 		public virtual BindProperty<double, TModel> RelativeHeight { get; set; } = 0;
 
 		/// <summary>
+		/// Gets or sets the fixed height for the model, specified in rows. This value takes precedence over relative height.
+		/// </summary>
+		public virtual BindProperty<int?, TModel> FixedHeight { get; set; } = null;
+
+		/// <summary>
 		/// Gets or sets the relative widths for each column in the layout.
 		/// </summary>
 		/// <remarks>Each value in the array represents the proportional width of a column. The sum of all values
 		/// determines the overall distribution. Values must be non-negative. Adjusting this property changes how space is
 		/// allocated among columns.</remarks>
 		public virtual BindProperty<double[], TModel> RelativeWidths { get; set; } = new double[] { 0 };
+
+		/// <summary>
+		/// Gets or sets the fixed widths for each column in the layout.
+		/// </summary>
+		/// <remarks>Each value in the array represents the fixed width of a column. The sum of all values
+		/// determines the overall distribution. Values must be non-negative. Adjusting this property changes how space is
+		/// allocated among columns. This value takes precedence over relative widths.</remarks>
+		public virtual BindProperty<int?[], TModel> FixedWidths { get; set; } = Array.Empty<int?>();
 
 		/// <summary>
 		/// Gets or sets the font used for rendering text in the bound model.

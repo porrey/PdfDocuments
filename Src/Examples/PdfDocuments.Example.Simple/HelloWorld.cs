@@ -58,9 +58,15 @@ namespace PdfDocuments.Example.Simple
 			this.StyleManager.Add("HelloWorld.Text", Style.Create<Message>()
 						.UseFont("Arial", 48)
 						.UseForegroundColor(XColors.Purple)
+						.UseBackgroundColor(XColors.LightPink)
 						.UseBorderWidth(1)
-						.UseTextAlignment(XStringFormats.Center)
+						.UseBorderColor(XColors.Red)
+						.UseCellPadding(5, 5, 0, 0)
+						.UseTextAlignment(XStringFormats.TopLeft)
 						.UsePadding(10, 10, 10, 10)
+						//.UseMargin(10, 10, 10, 10)
+						//.UseRelativeHeight(.75)
+						//.UseRelativeWidths(.5)
 						.Build());
 
 			return Task.CompletedTask;

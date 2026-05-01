@@ -43,6 +43,7 @@ namespace PdfDocuments
 		/// side. This section can be added to a PDF document to group elements in a horizontal layout.</remarks>
 		public PdfHorizontalStackSection()
 		{
+			this.ChildLayoutMode = ChildSectionsLayoutMode.HorizontalStacking;
 		}
 
 		/// <summary>
@@ -55,131 +56,7 @@ namespace PdfDocuments
 		public PdfHorizontalStackSection(params IPdfSection<TModel>[] children)
 			: base(children)
 		{
-		}
-
-		/// <summary>
-		/// Arranges and lays out child sections within the specified grid page using the provided model and bounds.
-		/// </summary>
-		/// <remarks>Child sections are arranged left to right, with column widths determined by relative or absolute
-		/// specifications. Padding is applied to each section before layout. If any section fails to layout, the operation
-		/// returns <see langword="false"/>.</remarks>
-		/// <param name="g">The PDF grid page on which the child sections are to be laid out.</param>
-		/// <param name="m">The model instance containing data used for layout calculations and rendering.</param>
-		/// <param name="bounds">The bounds defining the area and column/row constraints for layout within the grid page.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all child sections
-		/// were successfully laid out; otherwise, <see langword="false"/>.</returns>
-		protected override async Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
-		{
-			bool returnValue = true;
-
-			//
-			// Get style.
-			//
-			PdfStyle<TModel> style = this.ResolveStyle(0);
-			PdfSpacing padding = style.Padding.Resolve(g, m);
-
-			//
-			// Get a list of each section to be rendered.
-			//
-			IPdfSection<TModel>[] sections = this.Children.Where(t => t.ShouldRender.Resolve(g, m)).ToArray();
-
-			//
-			// Determine the width of each item. First divide the list
-			// into two sets: sections with a relative width and sections
-			// without. Those sections without get the remaining space
-			// evenly divided.
-			//
-			foreach (IPdfSection<TModel> section in sections.Where(t => t.RelativeWidths.Resolve(g, m)[0] != 0))
-			{
-				await section.SetActualColumnsAsync((int)(section.RelativeWidths.Resolve(g, m)[0] * bounds.Columns));
-				await section.SetActualRowsAsync(bounds.Rows);
-			}
-
-			//
-			// Get the sum of the height of the previous sections.
-			//
-			int usedColumns = sections.Where(t => t.RelativeWidths.Resolve(g, m)[0] != 0).Sum(t => t.ActualBounds.Columns);
-
-			//
-			// Get the remaining rows.
-			//
-			int remainingColumns = bounds.Columns - usedColumns;
-
-			//
-			// Get a count of sections where the relative height is not specified.
-			//
-			int nonRelativeSectionCount = sections.Where(t => t.RelativeWidths.Resolve(g, m)[0] == 0).Count();
-
-			if (nonRelativeSectionCount > 0)
-			{
-				//
-				// Divide the remaining columns evenly among these sections.
-				//
-				int columnsPerSection = (int)(remainingColumns / nonRelativeSectionCount);
-
-				//
-				// Assign the rows to the remaining sections.
-				//
-				IPdfSection<TModel>[] sectionList = sections.Where(t => t.RelativeWidths.Resolve(g, m)[0] == 0).ToArray();
-
-				foreach (IPdfSection<TModel> section in sectionList)
-				{
-					if (section != sectionList.Last())
-					{
-						//
-						// Assign the columns calculated dividing the remaining
-						// columns by the number of sections.
-						//
-						await section.SetActualColumnsAsync(columnsPerSection);
-						await section.SetActualRowsAsync(bounds.Rows);
-						remainingColumns -= columnsPerSection;
-					}
-					else
-					{
-						//
-						// If the remaining rows was not evenly divisible by the
-						// number of sections, this will assign all remaining columns
-						// to the last section.
-						//
-						await section.SetActualColumnsAsync(remainingColumns);
-						await section.SetActualRowsAsync(bounds.Rows);
-					}
-				}
-			}
-
-			//
-			// Now align the sections left to right.
-			//
-			int left = bounds.LeftColumn;
-
-			foreach (IPdfSection<TModel> section in sections)
-			{
-				section.ActualBounds.LeftColumn = left;
-				left = section.ActualBounds.RightColumn + 1;
-				section.ActualBounds.TopRow = bounds.TopRow;
-			}
-
-			//
-			// Apply padding
-			//
-			foreach (IPdfSection<TModel> section in sections)
-			{
-				section.ActualBounds = section.ActualBounds.SubtractBounds(g, m, padding);
-			}
-
-			//
-			// Allow each section to perform a layout.
-			//
-			foreach (IPdfSection<TModel> section in sections)
-			{
-				if (!await section.LayoutAsync(g, m))
-				{
-					returnValue = false;
-					break;
-				}
-			}
-
-			return returnValue;
+			this.ChildLayoutMode = ChildSectionsLayoutMode.HorizontalStacking;
 		}
 	}
 }

@@ -142,7 +142,7 @@ namespace PdfDocuments
 		/// created successfully; otherwise, <see langword="false"/>.</returns>
 		protected virtual async Task<bool> OnCreatePdfAsync(PdfDocument document, TModel model)
 		{
-			bool returnValue = false;
+			bool returnValue = true;
 
 			//
 			// Initialize styles.
@@ -323,18 +323,15 @@ namespace PdfDocuments
 						};
 
 						//
-						// Layout and render the sections.
+						// Render the sections.
 						//
-						if (await this.OnLayoutSectionsAsync(section, gridPage, model))
+						if (!this.DebugMode.HasFlag(DebugMode.HideDetails))
 						{
-							if (!this.DebugMode.HasFlag(DebugMode.HideDetails))
-							{
-								returnValue = await this.OnRenderSectionsAsync(section, gridPage, model);
-							}
-							else
-							{
-								returnValue = true;
-							}
+							returnValue = await this.OnRenderSectionsAsync(section, gridPage, model);
+						}
+						else
+						{
+							returnValue = true;
 						}
 
 						#region Debug Elements
@@ -346,7 +343,7 @@ namespace PdfDocuments
 							//
 							// Have the primary section render the debug elements.
 							//
-							await section.RenderDebugAsync(gridPage, model);
+							await section.RenderDebugAsync(gridPage, model, section.ActualBounds);
 						}
 
 						if (this.DebugMode.HasFlag(DebugMode.RevealGrid))
@@ -370,40 +367,6 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
-		/// Performs asynchronous layout of the specified PDF section within the given grid page using the provided model.
-		/// </summary>
-		/// <remarks>Override this method to customize how sections are laid out within a grid page. The section's
-		/// bounds are set to the full page before layout. Rendering occurs only if the section's render condition is
-		/// satisfied.</remarks>
-		/// <param name="section">The PDF section to be laid out. Determines whether it should be rendered and manages its layout state.</param>
-		/// <param name="grid">The grid page representing the layout context for the section. Provides bounds and rendering information.</param>
-		/// <param name="m">The model instance containing data used for layout and rendering decisions.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if the section was
-		/// rendered; otherwise, <see langword="false"/>.</returns>
-		protected virtual async Task<bool> OnLayoutSectionsAsync(IPdfSection<TModel> section, PdfGridPage grid, TModel m)
-		{
-			bool returnValue = false;
-
-			//
-			// Set the report section bounds to the full page.
-			//
-			section.ActualBounds = grid.Grid.GetBounds();
-
-			//
-			// Call layout on the primary section if it is being rendered.
-			//
-			if (section.ShouldRender.Resolve(grid, m))
-			{
-				if (await section.LayoutAsync(grid, m))
-				{
-					returnValue = true;
-				}
-			}
-
-			return returnValue;
-		}
-
-		/// <summary>
 		/// Renders the specified PDF section asynchronously on the given grid page using the provided model.
 		/// </summary>
 		/// <remarks>Override this method to customize how sections are rendered or to implement additional rendering
@@ -415,22 +378,26 @@ namespace PdfDocuments
 		/// rendered; otherwise, <see langword="false"/>.</returns>
 		protected virtual async Task<bool> OnRenderSectionsAsync(IPdfSection<TModel> section, PdfGridPage grid, TModel m)
 		{
-			bool returnValue = false;
+			bool returnValue = true;
+
+			PdfBounds bounds = grid.Grid.GetBounds();
 
 			//
 			// Set the report section bounds to the full page.
 			//
-			section.ActualBounds = grid.Grid.GetBounds();
+			PdfSize size = await section.CalculateBoundsAsync(grid, m, bounds);
+
+			//
+			// Update the section bounds based on the calculated size.
+			//
+			PdfBounds childBounds = new(bounds.LeftColumn, bounds.TopRow, size.Columns, size.Rows);
 
 			//
 			// Call layout on the primary section if it is being rendered.
 			//
 			if (section.ShouldRender.Resolve(grid, m))
 			{
-				if (await section.RenderAsync(grid, m))
-				{
-					returnValue = true;
-				}
+				await section.RenderAsync(grid, m, childBounds);
 			}
 
 			return returnValue;

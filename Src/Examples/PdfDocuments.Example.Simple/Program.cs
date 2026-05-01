@@ -59,7 +59,7 @@ namespace PdfDocuments.Example.Simple
 			//
 			// Create an instance of the style manager.
 			//
-			PdfStyleManager<Message> styleManager = new();
+			PdfStyleManager<Message> styleManager = [];
 
 			//
 			// Create an instance of the PDF generator.
@@ -74,7 +74,7 @@ namespace PdfDocuments.Example.Simple
 									.SetFlag(DebugMode.RevealLayout, true)
 									.SetFlag(DebugMode.HideDetails, false)
 									.SetFlag(DebugMode.RevealFontDetails, true)
-									.SetFlag(DebugMode.OutlineText, false);
+									.SetFlag(DebugMode.OutlineText, true);
 
 			//
 			// Create an instance of the model.

@@ -35,45 +35,45 @@ namespace PdfDocuments
 	public class PdfHeaderContentSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
-		/// <summary>
-		/// Arranges the child elements of the grid section asynchronously, positioning them relative to the header within the
-		/// specified bounds.
-		/// </summary>
-		/// <remarks>This method positions child elements directly below the header section, adjusting their bounds
-		/// based on the header's size. Only the first child is affected if multiple children exist.</remarks>
-		/// <param name="g">The PDF grid page on which the layout operation is performed.</param>
-		/// <param name="m">The model containing data used for layout calculations.</param>
-		/// <param name="bounds">The bounds within which the child elements should be arranged.</param>
-		/// <returns>A task that represents the asynchronous layout operation. The result is <see langword="true"/> if the layout was
-		/// applied; otherwise, <see langword="false"/>.</returns>
-		protected override Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
-		{
-			bool returnValue = true;
+		///// <summary>
+		///// Arranges the child elements of the grid section asynchronously, positioning them relative to the header within the
+		///// specified bounds.
+		///// </summary>
+		///// <remarks>This method positions child elements directly below the header section, adjusting their bounds
+		///// based on the header's size. Only the first child is affected if multiple children exist.</remarks>
+		///// <param name="g">The PDF grid page on which the layout operation is performed.</param>
+		///// <param name="m">The model containing data used for layout calculations.</param>
+		///// <param name="bounds">The bounds within which the child elements should be arranged.</param>
+		///// <returns>A task that represents the asynchronous layout operation. The result is <see langword="true"/> if the layout was
+		///// applied; otherwise, <see langword="false"/>.</returns>
+		//protected override Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		//{
+		//	bool returnValue = true;
 
-			if (this.Children.Any())
-			{
-				//
-				// Get the header rectangle.
-				//
-				PdfBounds headerRect = this.GetHeaderRect(g, m, bounds);
+		//	if (this.Children.Any())
+		//	{
+		//		//
+		//		// Get the header rectangle.
+		//		//
+		//		PdfBounds headerRect = this.GetHeaderRect(g, m, bounds);
 
-				//
-				// Set the bound of the child section to be just
-				// below the header section.
-				//
-				this.Children.Single().ActualBounds.LeftColumn = headerRect.LeftColumn;
-				this.Children.Single().SetActualColumnsAsync(headerRect.Columns);
-				this.Children.Single().ActualBounds.TopRow = headerRect.BottomRow + 1;
-				this.Children.Single().SetActualRowsAsync(bounds.Rows - headerRect.Rows);
+		//		//
+		//		// Set the bound of the child section to be just
+		//		// below the header section.
+		//		//
+		//		this.Children.Single().ActualBounds.LeftColumn = headerRect.LeftColumn;
+		//		this.Children.Single().SetActualColumnsAsync(headerRect.Columns);
+		//		this.Children.Single().ActualBounds.TopRow = headerRect.BottomRow + 1;
+		//		this.Children.Single().SetActualRowsAsync(bounds.Rows - headerRect.Rows);
 
-				//
-				// Apply the layout.
-				//
-				this.Children.Single().LayoutAsync(g, m);
-			}
+		//		//
+		//		// Apply the layout.
+		//		//
+		//		this.Children.Single().LayoutAsync(g, m);
+		//	}
 
-			return Task.FromResult(returnValue);
-		}
+		//	return Task.FromResult(returnValue);
+		//}
 
 		/// <summary>
 		/// Determines whether the background should be drawn for the current control.
