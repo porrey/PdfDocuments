@@ -16,7 +16,7 @@
 		/// <param name="g">The PDF grid page on which the sections will be laid out.</param>
 		/// <param name="m">The model instance providing data for the layout operation. Cannot be null.</param>
 		/// <param name="parentSection">The parent section that contains the sections to be arranged. Cannot be null.</param>
-		/// <param name="sections">An array of sections to arrange within the parent section. Cannot be null or contain null elements.</param>
+		/// <param name="sections">An array of sections to arrange within the parent section. Cannot be null or contain null sections.</param>
 		/// <param name="bounds">The bounds within which the sections should be arranged on the page.</param>
 		/// <returns>A task that represents the asynchronous layout operation.</returns>
 		Task LayoutAsync<TModel>(PdfGridPage g, TModel m, IPdfSection<TModel> parentSection, IPdfSection<TModel>[] sections, PdfBounds bounds) 

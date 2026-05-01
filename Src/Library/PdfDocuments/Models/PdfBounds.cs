@@ -27,7 +27,7 @@ namespace PdfDocuments
 	/// Represents a rectangular region within a PDF document, defined by its position and size in terms of rows and
 	/// columns.
 	/// </summary>
-	/// <remarks>Use this class to specify the bounds of a table, grid, or other layout element in a PDF by
+	/// <remarks>Use this class to specify the bounds of a table, grid, or other layout section in a PDF by
 	/// indicating its top-left position and dimensions. The bounds are expressed as integer values for rows and columns,
 	/// which can be useful for mapping content or extracting regions from structured PDF layouts.</remarks>
 	public class PdfBounds

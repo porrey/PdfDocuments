@@ -1,5 +1,4 @@
 ﻿using PdfDocuments.Exceptions;
-using static System.Collections.Specialized.BitVector32;
 
 namespace PdfDocuments
 {
@@ -43,10 +42,20 @@ namespace PdfDocuments
 					PdfSpacing margin = section.ResolveStyle(0).Margin.Resolve(g, m);
 
 					//
-					// Set the actual bounds for the section to the full bounds with
+					// Set the full section bounds.
+					//
+					section.SectionArea = fullBounds[i].Constrain(g, m, bounds);
+
+					//
+					// Set the renderable bounds for the section to the full bounds with
 					// the margin subtracted.
 					//
-					section.ActualBounds = fullBounds[i].Constrain(g, m, bounds).SubtractBounds(g, m, margin);
+					section.RenderArea = section.SectionArea.SubtractBounds(g, m, margin);
+
+					//
+					// Increment i.
+					//
+					i++;
 				}
 			}
 			else
@@ -77,12 +86,12 @@ namespace PdfDocuments
 			//
 			// Calculate the heights for each section to be rendered within the specified bounds.
 			//
-			int[] sectionHeights = await this.CalculateSectionHeights(g, m, parentSection, sections, bounds);
+			SectionDimension[] sectionHeights = await this.CalculateSectionHeights(g, m, sections, bounds);
 
 			//
 			// Calculate the widths for each section to be rendered within the specified bounds.
 			//
-			int[] sectionWidths = await this.CalculateSectionWidths(g, m, parentSection, sections, bounds);
+			SectionDimension[] sectionWidths = await this.CalculateSectionWidths(g, m, sections, bounds);
 
 			if (sectionHeights.Length == sections.Length && sectionWidths.Length == sections.Length)
 			{
@@ -96,7 +105,7 @@ namespace PdfDocuments
 					//
 					// Create the bounds for the child section.
 					//
-					PdfBounds sectionBounds = new(leftColumn, topRow, sectionWidths[i], sectionHeights[i]);
+					PdfBounds sectionBounds = new(leftColumn, topRow, sectionWidths[i].Value, sectionHeights[i].Value);
 
 					//
 					// Add the child bounds to the return value list.
@@ -106,7 +115,7 @@ namespace PdfDocuments
 					//
 					// Update the top row for the next child section if the layout mode is vertical stacking.
 					//
-					topRow += sectionBounds.BottomRow + 1;
+					topRow += sectionBounds.Rows;
 
 					//
 					// Update the left column for the next child section if the layout mode is horizontal stacking.
@@ -126,10 +135,10 @@ namespace PdfDocuments
 			return [.. returnValue];
 		}
 
-		private async Task<int[]> CalculateSectionHeights<TModel>(PdfGridPage g, TModel m, IPdfSection<TModel> parentSection, IPdfSection<TModel>[] sections, PdfBounds bounds)
+		private async Task<SectionDimension[]> CalculateSectionHeights<TModel>(PdfGridPage g, TModel m, IPdfSection<TModel>[] sections, PdfBounds bounds)
 			where TModel : IPdfModel
 		{
-			List<int> returnValue = [];
+			List<SectionDimension> returnValue = [];
 
 			//
 			// Calculate the heights for each section to be rendered within the specified bounds.
@@ -144,27 +153,32 @@ namespace PdfDocuments
 				if (fixedHeight.HasValue)
 				{
 					int rows = fixedHeight.Value;
-					returnValue.Add(rows);
+					returnValue.Add(new SectionDimension(true, rows));
 				}
 				else
 				{
 					double height = section.ResolveStyle(0).RelativeHeight.Resolve(g, m);
 					int rows = (int)(bounds.Rows * (height == 0 ? 1 : height));
-					returnValue.Add(rows);
+					returnValue.Add(new SectionDimension(false, rows));
 				}
 			}
 
-			if (returnValue.Sum() > bounds.Rows)
+			if (returnValue.Sum(t => t.Value) > bounds.Rows)
 			{
+				//
+				// If the total calculated height exceeds the available rows in the bounds,
+				// normalize the section heights to fit within the bounds.
+				//
+				await this.NormalizeSectionDimensions(returnValue, bounds.Rows);
 			}
 
 			return [.. returnValue];
 		}
 
-		private async Task<int[]> CalculateSectionWidths<TModel>(PdfGridPage g, TModel m, IPdfSection<TModel> parentSection, IPdfSection<TModel>[] sections, PdfBounds bounds)
+		private async Task<SectionDimension[]> CalculateSectionWidths<TModel>(PdfGridPage g, TModel m, IPdfSection<TModel>[] sections, PdfBounds bounds)
 			where TModel : IPdfModel
 		{
-			List<int> returnValue = [];
+			List<SectionDimension> returnValue = [];
 
 			foreach (IPdfSection<TModel> section in sections)
 			{
@@ -176,17 +190,45 @@ namespace PdfDocuments
 				if (fixedWidth.Length > 0)
 				{
 					int columns = fixedWidth[0];
-					returnValue.Add(columns);
+					returnValue.Add(new SectionDimension(true, columns));
 				}
 				else
 				{
 					double width = section.ResolveStyle(0).RelativeWidths.Resolve(g, m)[0];
 					int columns = (int)(bounds.Columns * (width == 0 ? 1 : width));
-					returnValue.Add(columns);
+					returnValue.Add(new SectionDimension(false, columns));
 				}
 			}
 
+			//if (returnValue.Sum(t => t.Value) > bounds.Columns)
+			//{
+			//	//
+			//	// If the total calculated width exceeds the available columns in the bounds,
+			//	// normalize the section widths to fit within the bounds.
+			//	//
+			//	await this.NormalizeSectionDimensions(returnValue, bounds.Columns);
+			//}
+
 			return [.. returnValue];
+		}
+
+		private Task NormalizeSectionDimensions(List<SectionDimension> sectionDimensions, int totalSize)
+		{
+			int fixedSize = sectionDimensions.Where(s => s.Fixed).Sum(s => s.Value);
+			int remainingSize = totalSize - fixedSize;
+			int flexibleSections = sectionDimensions.Count(s => !s.Fixed);
+
+			if (flexibleSections > 0)
+			{
+				int rowsPerFlexibleSection = remainingSize / flexibleSections;
+			
+				foreach (SectionDimension section in sectionDimensions.Where(s => !s.Fixed))
+				{
+					section.Value = rowsPerFlexibleSection;
+				}
+			}
+
+			return Task.CompletedTask;
 		}
 	}
 }

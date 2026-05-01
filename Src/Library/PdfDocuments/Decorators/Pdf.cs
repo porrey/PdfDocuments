@@ -24,9 +24,9 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Provides static helper methods for constructing and configuring PDF section objects in a composable manner.
+	/// Provides static helper methods for constructing and configuring PDF sections.
 	/// </summary>
-	/// <remarks>The Pdf class offers a fluent API for building complex PDF document structures by composing,
+	/// <remarks>The PDF class offers a fluent API for building complex PDF document structures by composing,
 	/// styling, and configuring sections. It includes methods for creating common section types, setting styles, managing
 	/// section hierarchies, and applying content or layout options. These extension methods are intended to simplify the
 	/// creation and customization of PDF documents using strongly-typed models. All methods are static and are designed to
@@ -47,8 +47,8 @@ namespace PdfDocuments
 		/// <summary>
 		/// Creates a section that arranges PDF content vertically in a stack.
 		/// </summary>
-		/// <remarks>Use this method to compose multiple PDF elements in a vertical layout. The section can be further
-		/// configured or populated with child elements as needed.</remarks>
+		/// <remarks>Use this method to compose multiple PDF sections in a vertical layout. The section can be further
+		/// configured or populated with child sections as needed.</remarks>
 		/// <typeparam name="TModel">The type of the model used to bind data to the PDF section. Must implement IPdfModel.</typeparam>
 		/// <returns>An IPdfSection<![CDATA[<TModel>]]> instance representing a vertically stacked section in the PDF document.</returns>
 		public static IPdfSection<TModel> VerticalStackSection<TModel>()
@@ -61,7 +61,7 @@ namespace PdfDocuments
 		/// Creates a section that arranges its child sections vertically in the PDF document.
 		/// </summary>
 		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement the IPdfModel interface.</typeparam>
-		/// <param name="children">An array of child sections to be stacked vertically. Cannot be null; each element represents a section to include
+		/// <param name="children">An array of child sections to be stacked vertically. Cannot be null; each item represents a section to include
 		/// in the vertical stack.</param>
 		/// <returns>A PDF section that displays the specified child sections in a vertical arrangement.</returns>
 		public static IPdfSection<TModel> VerticalStackSection<TModel>(params IPdfSection<TModel>[] children)
@@ -71,12 +71,12 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
-		/// Creates a section that arranges PDF elements horizontally in a stack.
+		/// Creates a section that arranges PDF sections horizontally in a stack.
 		/// </summary>
-		/// <remarks>Use this method to build layouts where elements are placed side by side within a PDF document.
-		/// The section can be customized by adding child elements and configuring their properties.</remarks>
+		/// <remarks>Use this method to build layouts where sections are placed side by side within a PDF document.
+		/// The section can be customized by adding child sections and configuring their properties.</remarks>
 		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement IPdfModel.</typeparam>
-		/// <returns>An IPdfSection<![CDATA[<TModel>]]> instance that stacks its child elements horizontally.</returns>
+		/// <returns>An IPdfSection<![CDATA[<TModel>]]> instance that stacks its child sections horizontally.</returns>
 		public static IPdfSection<TModel> HorizontalStackSection<TModel>()
 			where TModel : IPdfModel
 		{
@@ -190,9 +190,9 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
-		/// Creates a new PDF section that displays multiple text elements stacked vertically.
+		/// Creates a new PDF section that displays multiple text sections stacked vertically.
 		/// </summary>
-		/// <remarks>Use this method to add a section to a PDF document where each text element is rendered in its own
+		/// <remarks>Use this method to add a section to a PDF document where each text section is rendered in its own
 		/// row. This is useful for displaying lists or grouped textual content. The returned section can be further
 		/// configured or added to a PDF layout as needed.</remarks>
 		/// <typeparam name="TModel">The type of the model used to bind data to the PDF section. Must implement the IPdfModel interface.</typeparam>

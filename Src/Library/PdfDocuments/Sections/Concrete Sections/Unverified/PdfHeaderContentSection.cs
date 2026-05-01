@@ -36,14 +36,14 @@ namespace PdfDocuments
 		where TModel : IPdfModel
 	{
 		///// <summary>
-		///// Arranges the child elements of the grid section asynchronously, positioning them relative to the header within the
+		///// Arranges the child sections of the grid section asynchronously, positioning them relative to the header within the
 		///// specified bounds.
 		///// </summary>
-		///// <remarks>This method positions child elements directly below the header section, adjusting their bounds
+		///// <remarks>This method positions child sections directly below the header section, adjusting their bounds
 		///// based on the header's size. Only the first child is affected if multiple children exist.</remarks>
 		///// <param name="g">The PDF grid page on which the layout operation is performed.</param>
 		///// <param name="m">The model containing data used for layout calculations.</param>
-		///// <param name="bounds">The bounds within which the child elements should be arranged.</param>
+		///// <param name="bounds">The bounds within which the child sections should be arranged.</param>
 		///// <returns>A task that represents the asynchronous layout operation. The result is <see langword="true"/> if the layout was
 		///// applied; otherwise, <see langword="false"/>.</returns>
 		//protected override Task<bool> OnLayoutChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)

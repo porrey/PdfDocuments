@@ -191,6 +191,20 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
+		/// Returns a new XColor instance with the specified alpha (opacity) value applied to the given color.
+		/// </summary>
+		/// <remarks>This method does not modify the original color instance; it returns a new color with the updated
+		/// alpha value.</remarks>
+		/// <param name="color">The original color to which the alpha value will be applied.</param>
+		/// <param name="alpha">The alpha (opacity) value to set, typically in the range 0.0 (fully transparent) to 1.0 (fully opaque).</param>
+		/// <returns>A new XColor instance with the same color components as the original, but with the specified alpha value.</returns>
+		public static XColor WithAlpha(this XColor color, double alpha)
+		{
+			color.A = alpha;
+			return color;
+		}
+
+		/// <summary>
 		/// Converts a hexadecimal color string to an equivalent XColor instance.
 		/// </summary>
 		/// <remarks>If the input string contains six hexadecimal digits, the color is interpreted as opaque (alpha

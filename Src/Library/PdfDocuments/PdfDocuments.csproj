@@ -35,12 +35,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Include="Xml\PdfDocuments.xml">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Content>
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
 		<PackageReference Include="PDFsharp" Version="6.2.4" />
 	</ItemGroup>
@@ -54,6 +48,10 @@
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Xml\" />
 	</ItemGroup>
 
 </Project>

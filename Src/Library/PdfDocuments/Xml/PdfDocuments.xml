@@ -61,9 +61,9 @@
         </member>
         <member name="T:PdfDocuments.Pdf">
             <summary>
-            Provides static helper methods for constructing and configuring PDF section objects in a composable manner.
+            Provides static helper methods for constructing and configuring PDF sections.
             </summary>
-            <remarks>The Pdf class offers a fluent API for building complex PDF document structures by composing,
+            <remarks>The PDF class offers a fluent API for building complex PDF document structures by composing,
             styling, and configuring sections. It includes methods for creating common section types, setting styles, managing
             section hierarchies, and applying content or layout options. These extension methods are intended to simplify the
             creation and customization of PDF documents using strongly-typed models. All methods are static and are designed to
@@ -80,8 +80,8 @@
             <summary>
             Creates a section that arranges PDF content vertically in a stack.
             </summary>
-            <remarks>Use this method to compose multiple PDF elements in a vertical layout. The section can be further
-            configured or populated with child elements as needed.</remarks>
+            <remarks>Use this method to compose multiple PDF sections in a vertical layout. The section can be further
+            configured or populated with child sections as needed.</remarks>
             <typeparam name="TModel">The type of the model used to bind data to the PDF section. Must implement IPdfModel.</typeparam>
             <returns>An IPdfSection<![CDATA[<TModel>]]> instance representing a vertically stacked section in the PDF document.</returns>
         </member>
@@ -90,18 +90,18 @@
             Creates a section that arranges its child sections vertically in the PDF document.
             </summary>
             <typeparam name="TModel">The type of the model associated with the PDF section. Must implement the IPdfModel interface.</typeparam>
-            <param name="children">An array of child sections to be stacked vertically. Cannot be null; each element represents a section to include
+            <param name="children">An array of child sections to be stacked vertically. Cannot be null; each item represents a section to include
             in the vertical stack.</param>
             <returns>A PDF section that displays the specified child sections in a vertical arrangement.</returns>
         </member>
         <member name="M:PdfDocuments.Pdf.HorizontalStackSection``1">
             <summary>
-            Creates a section that arranges PDF elements horizontally in a stack.
+            Creates a section that arranges PDF sections horizontally in a stack.
             </summary>
-            <remarks>Use this method to build layouts where elements are placed side by side within a PDF document.
-            The section can be customized by adding child elements and configuring their properties.</remarks>
+            <remarks>Use this method to build layouts where sections are placed side by side within a PDF document.
+            The section can be customized by adding child sections and configuring their properties.</remarks>
             <typeparam name="TModel">The type of the model associated with the PDF section. Must implement IPdfModel.</typeparam>
-            <returns>An IPdfSection<![CDATA[<TModel>]]> instance that stacks its child elements horizontally.</returns>
+            <returns>An IPdfSection<![CDATA[<TModel>]]> instance that stacks its child sections horizontally.</returns>
         </member>
         <member name="M:PdfDocuments.Pdf.HorizontalStackSection``1(PdfDocuments.IPdfSection{``0}[])">
             <summary>
@@ -179,9 +179,9 @@
         </member>
         <member name="M:PdfDocuments.Pdf.StackedTextSection``1">
             <summary>
-            Creates a new PDF section that displays multiple text elements stacked vertically.
+            Creates a new PDF section that displays multiple text sections stacked vertically.
             </summary>
-            <remarks>Use this method to add a section to a PDF document where each text element is rendered in its own
+            <remarks>Use this method to add a section to a PDF document where each text section is rendered in its own
             row. This is useful for displaying lists or grouped textual content. The returned section can be further
             configured or added to a PDF layout as needed.</remarks>
             <typeparam name="TModel">The type of the model used to bind data to the PDF section. Must implement the IPdfModel interface.</typeparam>
@@ -481,6 +481,22 @@
             <param name="bottomRow">The index of the bottommost row of the rectangle within the grid.</param>
             <param name="color">The color used to fill the rectangle.</param>
         </member>
+        <member name="M:PdfDocuments.PdfGridPageLineExtensions.DrawFilledRectangle(PdfDocuments.PdfGridPage,PdfDocuments.PdfBounds,PdfSharp.Drawing.XColor,PdfSharp.Drawing.XColor,System.Double,System.Double)">
+            <summary>
+            Draws a filled rectangle on the specified PDF grid page, applying a background color and overlaying diagonal line
+            patterns within the given bounds.
+            </summary>
+            <remarks>The rectangle is aligned to the specified grid columns and rows. The diagonal line pattern is
+            drawn from the lower left to the upper right within the rectangle. This method does not return a value and
+            modifies the graphics state of the provided PDF grid page.</remarks>
+            <param name="source">The PDF grid page on which to draw the filled rectangle.</param>
+            <param name="bounds">The grid-based bounds that define the rectangle's position and size on the page.</param>
+            <param name="backgroundColor">The color used to fill the interior of the rectangle.</param>
+            <param name="lineColor">The color used for the diagonal line pattern drawn over the filled rectangle.</param>
+            <param name="spacing">The distance, in points, between adjacent diagonal lines in the overlay pattern. Must be positive. The default is
+            6.</param>
+            <param name="lineWidth">The width, in points, of the diagonal lines in the overlay pattern. Must be positive. The default is 0.5.</param>
+        </member>
         <member name="M:PdfDocuments.PdfGridPageLineExtensions.DrawRectangle(PdfDocuments.PdfGridPage,PdfDocuments.PdfBounds,PdfSharp.Drawing.XPen)">
             <summary>
             Draws a rectangle on the specified PDF grid page using the provided bounds and pen.
@@ -585,7 +601,7 @@
             <remarks>These extension methods simplify text rendering and measurement on PDF pages that use a grid
             layout. They offer overloads for specifying fonts, bounds, and formatting options, and include features for
             debugging such as font detail overlays and outlines. Methods are designed to work with the grid structure, allowing
-            precise placement and sizing of text elements.</remarks>
+            precise placement and sizing of text sections.</remarks>
         </member>
         <member name="M:PdfDocuments.PdfGridPageTextExtensions.MeasureText(PdfDocuments.PdfGridPage,System.String,System.Double,PdfSharp.Drawing.XFontStyleEx,System.String)">
             <summary>
@@ -618,7 +634,7 @@
             Optionally disables debug overlays such as font details and outline.
             </summary>
             <remarks>When debug overlays are enabled and not suppressed, the method may draw additional visual
-            elements such as the font name and an outline around the text area. These overlays are useful for debugging layout
+            sections such as the font name and an outline around the text area. These overlays are useful for debugging layout
             and font selection.</remarks>
             <param name="source">The PDF page on which the text will be drawn.</param>
             <param name="text">The text to render. If null, an empty string is drawn.</param>
@@ -1262,11 +1278,11 @@
         </member>
         <member name="T:PdfDocuments.Style">
             <summary>
-            Provides static methods for creating and configuring PDF style builders for document elements. Enables fluent
+            Provides static methods for creating and configuring PDF style builders for document sections. Enables fluent
             customization of visual properties such as font, color, spacing, alignment, and borders for models implementing the
             IPdfModel interface.
             </summary>
-            <remarks>Use the methods in this class to construct and modify style definitions for PDF elements in a
+            <remarks>Use the methods in this class to construct and modify style definitions for PDF sections in a
             type-safe and composable manner. Styles can be built incrementally by chaining configuration methods, allowing for
             flexible reuse and adaptation. All methods are thread-safe when used with separate style builder instances. The
             class supports both property binding and direct value assignment for style attributes.</remarks>
@@ -1339,7 +1355,7 @@
             <summary>
             Sets the border width for the style builder using the specified binding value.
             </summary>
-            <remarks>Use this method to specify the border width for PDF elements when building styles. The border
+            <remarks>Use this method to specify the border width for PDF sections when building styles. The border
             width is applied to subsequent style configurations for the associated model.</remarks>
             <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
             <param name="styleBuilder">The style builder instance to configure the border width for.</param>
@@ -1351,7 +1367,7 @@
             Sets the border width for the style builder using the specified binding action.
             </summary>
             <remarks>Use this method to specify the border width dynamically based on the model's properties. The
-            border width is applied when rendering the PDF element.</remarks>
+            border width is applied when rendering the PDF section.</remarks>
             <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
             <param name="styleBuilder">The style builder instance to configure the border width for.</param>
             <param name="value">A binding action that determines the border width value for the model. Cannot be null.</param>
@@ -1371,7 +1387,7 @@
             Sets the border color for the style builder using the specified binding action.
             </summary>
             <remarks>Use this method to bind the border color dynamically based on the model's properties. This
-            enables flexible styling for PDF elements.</remarks>
+            enables flexible styling for PDF sections.</remarks>
             <typeparam name="TModel">The type of the PDF model associated with the style builder. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
             <param name="styleBuilder">The style builder instance to configure the border color for.</param>
             <param name="value">A binding action that determines the border color based on the model. Cannot be null.</param>
@@ -1394,7 +1410,7 @@
             Sets the foreground color for the style builder using the specified binding action.
             </summary>
             <remarks>Use this method to bind the foreground color dynamically based on the model's properties. This
-            enables flexible styling for PDF elements.</remarks>
+            enables flexible styling for PDF sections.</remarks>
             <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
             <param name="styleBuilder">The style builder instance to configure.</param>
             <param name="value">A binding action that determines the foreground color based on the model.</param>
@@ -1416,7 +1432,7 @@
             Sets the background color for the style builder using the specified binding action.
             </summary>
             <remarks>Use this method to bind the background color dynamically based on the model's properties. The
-            background color will be applied when rendering the PDF element.</remarks>
+            background color will be applied when rendering the PDF section.</remarks>
             <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
             <param name="styleBuilder">The style builder instance to configure the background color for.</param>
             <param name="value">A binding action that determines the background color based on the model.</param>
@@ -1463,7 +1479,7 @@
             <summary>
             Sets the relative height for the style using the specified binding value.
             </summary>
-            <remarks>Use this method to define the height of an element relative to its container or context within a
+            <remarks>Use this method to define the height of an section relative to its container or context within a
             PDF model. The relative height is determined by the provided binding property and can be used for responsive
             layout scenarios.</remarks>
             <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
@@ -1473,9 +1489,9 @@
         </member>
         <member name="M:PdfDocuments.Style.UseRelativeHeight``1(PdfDocuments.IStyleBuilder{``0},PdfDocuments.BindPropertyAction{System.Double,``0})">
             <summary>
-            Configures the style builder to use a relative height value for the PDF element.
+            Configures the style builder to use a relative height value for the PDF section.
             </summary>
-            <remarks>Use this method to specify the height of a PDF element as a proportion relative to its container
+            <remarks>Use this method to specify the height of a PDF section as a proportion relative to its container
             or context. This is useful for responsive layouts where absolute sizing is not appropriate.</remarks>
             <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
             <param name="styleBuilder">The style builder instance to configure.</param>
@@ -1484,23 +1500,23 @@
         </member>
         <member name="M:PdfDocuments.Style.UseFixedHeight``1(PdfDocuments.IStyleBuilder{``0},PdfDocuments.BindProperty{System.Nullable{System.Int32},``0})">
             <summary>
-            Sets a fixed height for the styled PDF element using the specified bindable value.
+            Sets a fixed height for the styled PDF section using the specified bindable value.
             </summary>
             <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
             <param name="styleBuilder">The style builder instance to configure.</param>
-            <param name="value">A bindable property representing the fixed height, in points, to apply to the element. The value can be null to
+            <param name="value">A bindable property representing the fixed height, in points, to apply to the section. The value can be null to
             indicate no fixed height.</param>
             <returns>The same style builder instance, enabling method chaining.</returns>
         </member>
         <member name="M:PdfDocuments.Style.UseFixedHeight``1(PdfDocuments.IStyleBuilder{``0},PdfDocuments.BindPropertyAction{System.Nullable{System.Int32},``0})">
             <summary>
-            Configures the style builder to use a fixed height for the element, using the specified binding action.
+            Configures the style builder to use a fixed height for the section, using the specified binding action.
             </summary>
-            <remarks>Use this method to set a fixed height for PDF elements when generating documents. If the value is
-            null, the element's height is determined automatically.</remarks>
+            <remarks>Use this method to set a fixed height for PDF sections when generating documents. If the value is
+            null, the section's height is determined automatically.</remarks>
             <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
             <param name="styleBuilder">The style builder instance to configure.</param>
-            <param name="value">A binding action that provides the fixed height value, in points, for the element. The value can be null to
+            <param name="value">A binding action that provides the fixed height value, in points, for the section. The value can be null to
             indicate no fixed height.</param>
             <returns>The same style builder instance, enabling method chaining.</returns>
         </member>
@@ -1508,7 +1524,7 @@
             <summary>
             Sets the margin spacing for the PDF style builder using the specified binding value.
             </summary>
-            <remarks>Use this method to configure margin spacing for PDF elements in a fluent style-building workflow.
+            <remarks>Use this method to configure margin spacing for PDF sections in a fluent style-building workflow.
             The margin value is applied to the style builder and can be further customized with additional style
             settings.</remarks>
             <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
@@ -1520,7 +1536,7 @@
             <summary>
             Sets the margin style for the PDF model using the specified binding action.
             </summary>
-            <remarks>Use this method to specify custom margin settings for PDF elements. The margin is set based on
+            <remarks>Use this method to specify custom margin settings for PDF sections. The margin is set based on
             the provided binding action, allowing dynamic or model-driven spacing.</remarks>
             <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
             <param name="styleBuilder">The style builder instance used to configure styles for the PDF model.</param>
@@ -1532,7 +1548,7 @@
             <summary>
             Sets the margin values for the style builder using the specified left, top, right, and bottom spacing.
             </summary>
-            <remarks>Use this method to specify individual margin values for each side of a PDF element. Margin values
+            <remarks>Use this method to specify individual margin values for each side of a PDF section. Margin values
             are applied in points and should be non-negative to ensure correct layout.</remarks>
             <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
             <param name="styleBuilder">The style builder instance to configure margin values for.</param>
@@ -1546,7 +1562,7 @@
             <summary>
             Sets the padding style for the PDF model using the specified binding property.
             </summary>
-            <remarks>Use this method to define padding for PDF elements in a fluent style-building workflow. The
+            <remarks>Use this method to define padding for PDF sections in a fluent style-building workflow. The
             padding is set based on the provided binding property, allowing dynamic or model-driven spacing.</remarks>
             <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
             <param name="styleBuilder">The style builder instance used to configure styles for the PDF model.</param>
@@ -1557,7 +1573,7 @@
             <summary>
             Configures the padding for the style builder using the specified binding action.
             </summary>
-            <remarks>Use this method to set custom padding values for PDF elements when building styles. The padding
+            <remarks>Use this method to set custom padding values for PDF sections when building styles. The padding
             is applied according to the provided binding action, which allows dynamic configuration based on the
             model.</remarks>
             <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
@@ -1583,7 +1599,7 @@
             <summary>
             Sets the text alignment style for the PDF model using the specified binding value.
             </summary>
-            <remarks>Use this method to configure text alignment for PDF elements when building styles. The alignment
+            <remarks>Use this method to configure text alignment for PDF sections when building styles. The alignment
             is determined by the provided binding value, which allows dynamic formatting based on the model's state.</remarks>
             <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
             <param name="styleBuilder">The style builder instance used to configure styles for the PDF model.</param>
@@ -1675,7 +1691,7 @@
             will have fixed widths applied. Remaining columns will use default sizing.</remarks>
             <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
             <param name="styleBuilder">The style builder instance to configure.</param>
-            <param name="value">A bindable property representing the array of fixed widths, in points, to apply to columns. Each element
+            <param name="value">A bindable property representing the array of fixed widths, in points, to apply to columns. Each section
             corresponds to a column; a value of <see langword="null"/> indicates that the width is not set for that column.</param>
             <returns>The same style builder instance, enabling method chaining.</returns>
         </member>
@@ -1791,6 +1807,16 @@
             <param name="color">The source color to modify.</param>
             <param name="luminosity">The luminosity value to set, typically in the range 0.0 (black) to 1.0 (white).</param>
             <returns>A new XColor instance with the same hue and saturation as the original color, but with the specified luminosity.</returns>
+        </member>
+        <member name="M:PdfDocuments.XColorExtensions.WithAlpha(PdfSharp.Drawing.XColor,System.Double)">
+            <summary>
+            Returns a new XColor instance with the specified alpha (opacity) value applied to the given color.
+            </summary>
+            <remarks>This method does not modify the original color instance; it returns a new color with the updated
+            alpha value.</remarks>
+            <param name="color">The original color to which the alpha value will be applied.</param>
+            <param name="alpha">The alpha (opacity) value to set, typically in the range 0.0 (fully transparent) to 1.0 (fully opaque).</param>
+            <returns>A new XColor instance with the same color components as the original, but with the specified alpha value.</returns>
         </member>
         <member name="M:PdfDocuments.XColorExtensions.ToXColor(System.String)">
             <summary>
@@ -2200,7 +2226,7 @@
             for troubleshooting. Override this method to customize section rendering or layout logic for derived
             classes.</remarks>
             <param name="section">The PDF section to render. Represents the content and layout instructions for the page.</param>
-            <param name="grid">The grid layout used to position elements on the page. Influences how content is arranged during rendering.</param>
+            <param name="grid">The grid layout used to position sections on the page. Influences how content is arranged during rendering.</param>
             <param name="document">The PDF document instance to which the page belongs. Used for context and resource management during rendering.</param>
             <param name="page">The PDF page where the section will be rendered. Must be a valid, initialized page within the document.</param>
             <param name="pageNumber">The zero-based index of the page within the document. Used for layout and numbering purposes.</param>
@@ -2327,7 +2353,7 @@
             <param name="g">The PDF grid page on which the sections will be laid out.</param>
             <param name="m">The model instance providing data for the layout operation. Cannot be null.</param>
             <param name="parentSection">The parent section that contains the sections to be arranged. Cannot be null.</param>
-            <param name="sections">An array of sections to arrange within the parent section. Cannot be null or contain null elements.</param>
+            <param name="sections">An array of sections to arrange within the parent section. Cannot be null or contain null sections.</param>
             <param name="bounds">The bounds within which the sections should be arranged on the page.</param>
             <returns>A task that represents the asynchronous layout operation.</returns>
         </member>
@@ -2394,7 +2420,7 @@
         </member>
         <member name="P:PdfDocuments.IPdfSection`1.LayoutManagerFactory">
             <summary>
-            Gets the factory used to create layout manager instances for arranging UI elements.
+            Gets the factory used to create layout manager instances for arranging UI sections.
             </summary>
             <remarks>Use this property to obtain an implementation of the layout manager factory, which can be used to
             generate layout managers tailored to specific UI requirements. The returned factory is typically configured for
@@ -2402,7 +2428,7 @@
         </member>
         <member name="P:PdfDocuments.IPdfSection`1.StyleNames">
             <summary>
-            Gets or sets the collection of style names applied to the element.
+            Gets or sets the collection of style names applied to the section.
             </summary>
         </member>
         <member name="P:PdfDocuments.IPdfSection`1.SectionLayoutMode">
@@ -2418,11 +2444,16 @@
             Gets or sets the text value bound to the model.
             </summary>
         </member>
-        <member name="P:PdfDocuments.IPdfSection`1.ActualBounds">
+        <member name="P:PdfDocuments.IPdfSection`1.SectionArea">
             <summary>
-            Gets or sets the actual bounds of the PDF element after layout calculations are applied.
+            Gets or sets the actual bounds of the PDF section.
             </summary>
-            <remarks>The value reflects the final position and size of the element within the PDF document, which may
+        </member>
+        <member name="P:PdfDocuments.IPdfSection`1.RenderArea">
+            <summary>
+            Gets or sets the renderable bounds of the PDF section after layout calculations are applied.
+            </summary>
+            <remarks>The value reflects the final position and size of the section within the PDF document, which may
             differ from initial settings due to layout adjustments. Use this property to determine the rendered area for tasks
             such as hit testing or custom drawing.</remarks>
         </member>
@@ -2696,7 +2727,7 @@
         </member>
         <member name="F:PdfDocuments.ColumnEdge.Left">
             <summary>
-            Gets or sets the left coordinate of the element.
+            Gets or sets the left coordinate of the section.
             </summary>
         </member>
         <member name="F:PdfDocuments.ColumnEdge.Right">
@@ -2823,7 +2854,7 @@
             Represents a rectangular region within a PDF document, defined by its position and size in terms of rows and
             columns.
             </summary>
-            <remarks>Use this class to specify the bounds of a table, grid, or other layout element in a PDF by
+            <remarks>Use this class to specify the bounds of a table, grid, or other layout section in a PDF by
             indicating its top-left position and dimensions. The bounds are expressed as integer values for rows and columns,
             which can be useful for mapping content or extracting regions from structured PDF layouts.</remarks>
         </member>
@@ -2913,7 +2944,7 @@
         </member>
         <member name="P:PdfDocuments.PdfDataGridColumn`1.RelativeWidth">
             <summary>
-            Gets or sets the relative width of the element as a proportion of its container.
+            Gets or sets the relative width of the section as a proportion of its container.
             </summary>
             <remarks>The value typically ranges from 0.0 to 1.0, where 1.0 represents full width. Setting this
             property allows dynamic sizing based on container dimensions.</remarks>
@@ -2935,7 +2966,7 @@
         </member>
         <member name="T:PdfDocuments.PdfGrid">
             <summary>
-            Represents a rectangular grid layout for arranging elements within a PDF document. Provides methods and properties
+            Represents a rectangular grid layout for arranging sections within a PDF document. Provides methods and properties
             for calculating cell positions and dimensions based on the specified grid size and offsets.
             </summary>
             <remarks>Use the grid to determine the coordinates and sizes of individual cells or groups of cells when
@@ -2998,7 +3029,7 @@
             Calculates the horizontal position of the left edge of the specified column.
             </summary>
             <remarks>The returned value is based on the current X offset and column width. Use this method to align
-            elements or determine layout positions for columns.</remarks>
+            sections or determine layout positions for columns.</remarks>
             <param name="columnIndex">The zero-based index of the column for which to determine the left edge position. Must be greater than or equal to
             1.</param>
             <returns>A double value representing the horizontal offset of the left edge of the specified column.</returns>
@@ -3194,7 +3225,7 @@
             Represents spacing values for the left, top, right, and bottom edges, typically used to define margins or padding
             in PDF layouts.
             </summary>
-            <remarks>Use this class to specify edge spacing when rendering or manipulating PDF elements. The spacing
+            <remarks>Use this class to specify edge spacing when rendering or manipulating PDF sections. The spacing
             values are measured in units consistent with the PDF rendering context, such as points or pixels. The class
             provides properties for each edge and supports implicit conversion from a tuple for convenience.</remarks>
         </member>
@@ -3248,7 +3279,7 @@
         </member>
         <member name="T:PdfDocuments.PdfStyle`1">
             <summary>
-            Provides a configurable set of style properties for PDF elements, supporting data binding to a model type.
+            Provides a configurable set of style properties for PDF sections, supporting data binding to a model type.
             </summary>
             <remarks>Use this class to define visual appearance and layout for PDF components, such as fonts, colors,
             spacing, and alignment. Each property supports binding to values from the specified model type, enabling dynamic
@@ -3516,10 +3547,10 @@
         <member name="M:PdfDocuments.PdfHorizontalStackSection`1.#ctor">
             <summary>
             Initializes a new instance of the PdfHorizontalStackSection class, which represents a section that arranges PDF
-            elements horizontally.
+            sections horizontally.
             </summary>
             <remarks>Use this constructor to create a horizontal stack section for organizing PDF content side by
-            side. This section can be added to a PDF document to group elements in a horizontal layout.</remarks>
+            side. This section can be added to a PDF document to group sections in a horizontal layout.</remarks>
         </member>
         <member name="M:PdfDocuments.PdfHorizontalStackSection`1.#ctor(PdfDocuments.IPdfSection{`0}[])">
             <summary>
@@ -3528,7 +3559,7 @@
             <remarks>Each child section will be rendered side by side in the order provided. Use this constructor to
             compose complex layouts from multiple sections.</remarks>
             <param name="children">An array of child sections to be arranged horizontally within this section. Cannot be null or contain null
-            elements.</param>
+            sections.</param>
         </member>
         <member name="T:PdfDocuments.PdfOverlayStackSection`1">
             <summary>
@@ -3537,7 +3568,7 @@
             </summary>
             <remarks>Use this class to group and overlay multiple PDF sections so that each child section is rendered on
             top of the others within the specified bounds. Only child sections whose ShouldRender condition evaluates to true
-            will be included in the overlay. This is useful for scenarios where layered content or composite visual elements
+            will be included in the overlay. This is useful for scenarios where layered content or composite visual sections
             are required in a PDF document.</remarks>
             <typeparam name="TModel">The type of model data used for rendering the section. Must implement the IPdfModel interface.</typeparam>
         </member>
@@ -4167,9 +4198,14 @@
             collection may affect the structure of the document. The collection is read-only; to add or remove child sections,
             use the appropriate methods provided by the containing class, if available.</remarks>
         </member>
-        <member name="P:PdfDocuments.PdfSectionTemplate`1.ActualBounds">
+        <member name="P:PdfDocuments.PdfSectionTemplate`1.SectionArea">
             <summary>
-            Gets or sets the actual bounding rectangle of the element in PDF coordinates.
+            Gets or sets the actual bounding rectangle of the section in PDF coordinates.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.PdfSectionTemplate`1.RenderArea">
+            <summary>
+            Gets or sets the renderable bounding rectangle of the section in PDF coordinates.
             </summary>
         </member>
         <member name="P:PdfDocuments.PdfSectionTemplate`1.ShouldRender">
@@ -4196,17 +4232,17 @@
         <member name="P:PdfDocuments.PdfSectionTemplate`1.StyleManager">
             <summary>
             Gets or sets the style manager used to control PDF rendering styles for the current section and its child
-            elements.
+            sections.
             </summary>
             <remarks>If not explicitly set, the style manager is inherited from the parent section. Setting this
             property overrides the inherited style manager for the current section.</remarks>
         </member>
         <member name="P:PdfDocuments.PdfSectionTemplate`1.LayoutManagerFactory">
             <summary>
-            Gets the factory used to create layout manager instances for arranging UI elements.
+            Gets the factory used to create layout manager instances for arranging UI sections.
             </summary>
             <remarks>The returned factory provides layout managers that control the positioning and sizing of child
-            elements. Override this property in a derived class to supply a custom layout manager factory if specialized
+            sections. Override this property in a derived class to supply a custom layout manager factory if specialized
             layout behavior is required.</remarks>
         </member>
         <member name="M:PdfDocuments.PdfSectionTemplate`1.RenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
@@ -4234,30 +4270,17 @@
         </member>
         <member name="M:PdfDocuments.PdfSectionTemplate`1.OnShouldDrawBackground">
             <summary>
-            Determines whether the background should be drawn for the current element.
+            Determines whether the background should be drawn for the current section.
             </summary>
             <returns>true if the background should be drawn; otherwise, false.</returns>
         </member>
         <member name="M:PdfDocuments.PdfSectionTemplate`1.OnShouldDrawBorder">
             <summary>
-            Determines whether a border should be drawn for the current element.
+            Determines whether a border should be drawn for the current section.
             </summary>
             <remarks>Override this method in a derived class to customize the border drawing behavior based on
             specific conditions.</remarks>
             <returns>Returns <see langword="true"/> if a border should be drawn; otherwise, <see langword="false"/>.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfSectionTemplate`1.OnRenderDebugAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
-            <summary>
-            Renders debug visual elements for the specified PDF grid page and model within the given bounds.
-            </summary>
-            <remarks>This method is intended for diagnostic or development purposes and may display visual cues such
-            as borders and labels to assist in layout debugging. Override this method to customize debug rendering
-            behavior.</remarks>
-            <param name="g">The PDF grid page on which debug visuals are rendered.</param>
-            <param name="m">The model instance providing context for rendering debug information.</param>
-            <param name="bounds">The bounds within which debug visuals are drawn.</param>
-            <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if debug rendering
-            was performed; otherwise, <see langword="false"/>.</returns>
         </member>
         <member name="M:PdfDocuments.PdfSectionTemplate`1.OnRenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
             <summary>
@@ -4270,6 +4293,19 @@
             <param name="bounds">The bounds within which the content should be rendered on the page.</param>
             <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if rendering was
             successful; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfSectionTemplate`1.OnRenderDebugAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Renders debug visual sections for the specified PDF grid page and model within the given bounds.
+            </summary>
+            <remarks>This method is intended for diagnostic or development purposes and may display visual cues such
+            as borders and labels to assist in layout debugging. Override this method to customize debug rendering
+            behavior.</remarks>
+            <param name="g">The PDF grid page on which debug visuals are rendered.</param>
+            <param name="m">The model instance providing context for rendering debug information.</param>
+            <param name="bounds">The bounds within which debug visuals are drawn.</param>
+            <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if debug rendering
+            was performed; otherwise, <see langword="false"/>.</returns>
         </member>
         <member name="M:PdfDocuments.PdfSectionTemplate`1.OnRenderBackgroundAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
             <summary>

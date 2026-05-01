@@ -76,7 +76,7 @@ namespace PdfDocuments
 		public static PdfBounds ApplyPadding<TModel>(this IPdfSection<TModel> section, PdfGridPage g, TModel m, PdfSpacing margin)
 			where TModel : IPdfModel
 		{
-			return section.ActualBounds.SubtractBounds(g, m, margin);
+			return section.RenderArea.SubtractBounds(g, m, margin);
 		}
 
 		/// <summary>
@@ -91,7 +91,7 @@ namespace PdfDocuments
 		public static PdfBounds ApplyMargin<TModel>(this IPdfSection<TModel> section, PdfGridPage g, TModel m, PdfSpacing margin)
 			where TModel : IPdfModel
 		{
-			return section.ActualBounds.AddBounds(g, m, margin);
+			return section.RenderArea.AddBounds(g, m, margin);
 		}
 
 		/// <summary>

@@ -59,7 +59,7 @@ namespace PdfDocuments
 		IPdfStyleManager<TModel> StyleManager { get; set; }
 
 		/// <summary>
-		/// Gets the factory used to create layout manager instances for arranging UI elements.
+		/// Gets the factory used to create layout manager instances for arranging UI sections.
 		/// </summary>
 		/// <remarks>Use this property to obtain an implementation of the layout manager factory, which can be used to
 		/// generate layout managers tailored to specific UI requirements. The returned factory is typically configured for
@@ -67,7 +67,7 @@ namespace PdfDocuments
 		IPdfLayoutManagerFactory LayoutManagerFactory { get; }
 
 		/// <summary>
-		/// Gets or sets the collection of style names applied to the element.
+		/// Gets or sets the collection of style names applied to the section.
 		/// </summary>
 		IEnumerable<string> StyleNames { get; set; }
 
@@ -85,12 +85,17 @@ namespace PdfDocuments
 		BindProperty<string, TModel> Text { get; set; }
 
 		/// <summary>
-		/// Gets or sets the actual bounds of the PDF element after layout calculations are applied.
+		/// Gets or sets the actual bounds of the PDF section.
 		/// </summary>
-		/// <remarks>The value reflects the final position and size of the element within the PDF document, which may
+		PdfBounds SectionArea { get; set; }
+
+		/// <summary>
+		/// Gets or sets the renderable bounds of the PDF section after layout calculations are applied.
+		/// </summary>
+		/// <remarks>The value reflects the final position and size of the section within the PDF document, which may
 		/// differ from initial settings due to layout adjustments. Use this property to determine the rendered area for tasks
 		/// such as hit testing or custom drawing.</remarks>
-		PdfBounds ActualBounds { get; internal set; }
+		PdfBounds RenderArea { get; internal set; }
 
 		/// <summary>
 		/// Gets or sets the parent section of the current PDF section.

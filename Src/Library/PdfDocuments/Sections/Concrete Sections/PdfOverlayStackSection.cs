@@ -29,7 +29,7 @@ namespace PdfDocuments
 	/// </summary>
 	/// <remarks>Use this class to group and overlay multiple PDF sections so that each child section is rendered on
 	/// top of the others within the specified bounds. Only child sections whose ShouldRender condition evaluates to true
-	/// will be included in the overlay. This is useful for scenarios where layered content or composite visual elements
+	/// will be included in the overlay. This is useful for scenarios where layered content or composite visual sections
 	/// are required in a PDF document.</remarks>
 	/// <typeparam name="TModel">The type of model data used for rendering the section. Must implement the IPdfModel interface.</typeparam>
 	public class PdfOverlayStackSection<TModel> : PdfSectionTemplate<TModel>

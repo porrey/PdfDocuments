@@ -326,7 +326,7 @@ namespace PdfDocuments
 		/// for troubleshooting. Override this method to customize section rendering or layout logic for derived
 		/// classes.</remarks>
 		/// <param name="section">The PDF section to render. Represents the content and layout instructions for the page.</param>
-		/// <param name="grid">The grid layout used to position elements on the page. Influences how content is arranged during rendering.</param>
+		/// <param name="grid">The grid layout used to position sections on the page. Influences how content is arranged during rendering.</param>
 		/// <param name="document">The PDF document instance to which the page belongs. Used for context and resource management during rendering.</param>
 		/// <param name="page">The PDF page where the section will be rendered. Must be a valid, initialized page within the document.</param>
 		/// <param name="pageNumber">The zero-based index of the page within the document. Used for layout and numbering purposes.</param>
@@ -378,7 +378,7 @@ namespace PdfDocuments
 							//
 							// Have the primary section render the debug elements.
 							//
-							await section.RenderDebugAsync(gridPage, model, section.ActualBounds);
+							await section.RenderDebugAsync(gridPage, model, section.RenderArea);
 						}
 
 						if (this.DebugMode.HasFlag(DebugMode.RevealGrid))
@@ -425,7 +425,8 @@ namespace PdfDocuments
 			//
 			if (section.ShouldRender.Resolve(grid, m))
 			{
-				section.ActualBounds = bounds;
+				section.SectionArea = bounds;
+				section.RenderArea = bounds;
 				await section.RenderAsync(grid, m, bounds);
 			}
 

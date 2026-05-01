@@ -74,6 +74,121 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
+		/// Draws a filled rectangle on the specified PDF grid page, applying a background color and overlaying diagonal line
+		/// patterns within the given bounds.
+		/// </summary>
+		/// <remarks>The rectangle is aligned to the specified grid columns and rows. The diagonal line pattern is
+		/// drawn from the lower left to the upper right within the rectangle. This method does not return a value and
+		/// modifies the graphics state of the provided PDF grid page.</remarks>
+		/// <param name="source">The PDF grid page on which to draw the filled rectangle.</param>
+		/// <param name="bounds">The grid-based bounds that define the rectangle's position and size on the page.</param>
+		/// <param name="backgroundColor">The color used to fill the interior of the rectangle.</param>
+		/// <param name="lineColor">The color used for the diagonal line pattern drawn over the filled rectangle.</param>
+		/// <param name="spacing">The distance, in points, between adjacent diagonal lines in the overlay pattern. Must be positive. The default is
+		/// 6.</param>
+		/// <param name="lineWidth">The width, in points, of the diagonal lines in the overlay pattern. Must be positive. The default is 0.5.</param>
+		public static void DrawFilledRectangle(this PdfGridPage source, PdfBounds bounds, XColor backgroundColor, XColor lineColor, double spacing = 12, double lineWidth = 0.5)
+		{
+			source.Graphics.Save();
+
+			//
+			// Create the rectangle.
+			//
+			XRect rect = new(source.Grid.Left(bounds.LeftColumn), source.Grid.Top(bounds.TopRow), source.Grid.Right(bounds.RightColumn) - source.Grid.Left(bounds.LeftColumn), source.Grid.Bottom(bounds.BottomRow) - source.Grid.Top(bounds.TopRow));
+
+			//
+			// Set the clipping region to the rectangle to ensure that drawing operations are confined within it.
+			//
+			source.Graphics.IntersectClip(rect);
+
+			//
+			// Fill the rectangle with the background color.
+			//
+			XBrush backgroundBrush = new XSolidBrush(backgroundColor);			
+			source.Graphics.DrawRectangle(backgroundBrush, rect);
+
+			//
+			// Draw diagonal lines across the rectangle at the specified spacing and line width.
+			//
+			XPen patternPen = new(lineColor, lineWidth);
+			
+			double height = rect.Height;
+			double startX = rect.Left - height;
+			double endX = rect.Right;
+
+			for (double x = startX; x <= endX; x += spacing)
+			{
+				XPoint point1 = new(x, rect.Bottom);
+				XPoint point2 = new(x + height, rect.Top);
+				source.Graphics.DrawLine(patternPen, point1, point2);
+			}
+
+			source.Graphics.Restore();
+		}
+
+		public static void DrawFilledRectangle(this PdfGridPage source, PdfBounds outerBounds, PdfBounds innerBounds, XColor backgroundColor, XColor lineColor, double spacing = 6, double lineWidth = 0.5)
+		{
+			source.Graphics.Save();
+
+			//
+			// Create the outer rectangle.
+			//
+			XRect outerRect = new(
+				source.Grid.Left(outerBounds.LeftColumn),
+				source.Grid.Top(outerBounds.TopRow),
+				source.Grid.Right(outerBounds.RightColumn) - source.Grid.Left(outerBounds.LeftColumn),
+				source.Grid.Bottom(outerBounds.BottomRow) - source.Grid.Top(outerBounds.TopRow));
+
+			//
+			// Create the inner rectangle.
+			//
+			XRect innerRect = new(
+				source.Grid.Left(innerBounds.LeftColumn),
+				source.Grid.Top(innerBounds.TopRow),
+				source.Grid.Right(innerBounds.RightColumn) - source.Grid.Left(innerBounds.LeftColumn),
+				source.Grid.Bottom(innerBounds.BottomRow) - source.Grid.Top(innerBounds.TopRow));
+
+			//
+			// Create a clipping path where the outer rectangle is included and the inner rectangle is excluded.
+			//
+			XGraphicsPath clipPath = new();
+			clipPath.AddRectangle(outerRect);
+			clipPath.AddRectangle(innerRect);
+
+			//
+			// Use Alternate fill mode so the second rectangle becomes a hole in the clipping region.
+			//
+			source.Graphics.IntersectClip(clipPath);
+			clipPath.FillMode = XFillMode.Alternate;
+
+			//
+			// Fill only the outer ring area with the background color.
+			//
+			XBrush backgroundBrush = new XSolidBrush(backgroundColor);
+			source.Graphics.DrawRectangle(backgroundBrush, outerRect);
+
+			//
+			// Draw diagonal lines across the outer rectangle. The clipping path prevents them
+			// from drawing inside the inner rectangle.
+			//
+			XPen patternPen = new(lineColor, lineWidth);
+
+			double height = outerRect.Height;
+			double startX = outerRect.Left - height;
+			double endX = outerRect.Right;
+
+			for (double x = startX; x <= endX; x += spacing)
+			{
+				XPoint point1 = new(x, outerRect.Bottom);
+				XPoint point2 = new(x + height, outerRect.Top);
+
+				source.Graphics.DrawLine(patternPen, point1, point2);
+			}
+
+			source.Graphics.Restore();
+		}
+
+		/// <summary>
 		/// Draws a rectangle on the specified PDF grid page using the provided bounds and pen.
 		/// </summary>
 		/// <param name="source">The PDF grid page on which the rectangle will be drawn.</param>

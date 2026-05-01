@@ -32,7 +32,7 @@ namespace PdfDocuments
 	public enum ColumnEdge
 	{
 		/// <summary>
-		/// Gets or sets the left coordinate of the element.
+		/// Gets or sets the left coordinate of the section.
 		/// </summary>
 		Left,
 		/// <summary>

@@ -33,7 +33,7 @@ namespace PdfDocuments
 	/// <remarks>These extension methods simplify text rendering and measurement on PDF pages that use a grid
 	/// layout. They offer overloads for specifying fonts, bounds, and formatting options, and include features for
 	/// debugging such as font detail overlays and outlines. Methods are designed to work with the grid structure, allowing
-	/// precise placement and sizing of text elements.</remarks>
+	/// precise placement and sizing of text sections.</remarks>
 	public static class PdfGridPageTextExtensions
 	{
 		/// <summary>
@@ -84,7 +84,7 @@ namespace PdfDocuments
 		/// Optionally disables debug overlays such as font details and outline.
 		/// </summary>
 		/// <remarks>When debug overlays are enabled and not suppressed, the method may draw additional visual
-		/// elements such as the font name and an outline around the text area. These overlays are useful for debugging layout
+		/// sections such as the font name and an outline around the text area. These overlays are useful for debugging layout
 		/// and font selection.</remarks>
 		/// <param name="source">The PDF page on which the text will be drawn.</param>
 		/// <param name="text">The text to render. If null, an empty string is drawn.</param>

@@ -62,12 +62,12 @@ namespace PdfDocuments.Example.Simple
 						.UseBackgroundColor(XColors.LightPink)
 						.UseBorderWidth(1)
 						.UseBorderColor(XColors.Red)
-						//.UseCellPadding(5, 5, 5, 0)
+						.UseCellPadding(5, 5, 5, 0)
 						.UseTextAlignment(XStringFormats.TopLeft)
-						//.UsePadding(2, 2, 2, 2)
+						.UsePadding(2, 2, 2, 2)
 						.UseTextWrapping(true)
 						.UseParagraphAlignment(XParagraphAlignment.Right)
-						//.UseMargin(4, 4, 4, 4)
+						.UseMargin(4, 4, 4, 4)
 						//.UseFixedHeight(75)
 						//.UseFixedWidths(75)
 						//.UseRelativeHeight(.5)
@@ -88,8 +88,16 @@ namespace PdfDocuments.Example.Simple
 			// Add a basic text block using the style that was created.
 			//
 			return Task.FromResult(
-				Pdf.ContentSection(
+				Pdf.VerticalStackSection(
 					Pdf.TextBlockSection<Message>()
+						.WithText((g, m) => m.Text)
+						.WithStyles("HelloWorld.Text")
+						.WithKey("HelloWorld.TextBlock"),
+					Pdf.TextBlockSection<Message>()
+						.WithText((g, m) => m.Text)
+						.WithStyles("HelloWorld.Text")
+						.WithKey("HelloWorld.TextBlock"),
+						Pdf.TextBlockSection<Message>()
 						.WithText((g, m) => m.Text)
 						.WithStyles("HelloWorld.Text")
 						.WithKey("HelloWorld.TextBlock")

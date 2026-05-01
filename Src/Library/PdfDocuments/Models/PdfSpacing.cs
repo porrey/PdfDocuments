@@ -27,7 +27,7 @@ namespace PdfDocuments
 	/// Represents spacing values for the left, top, right, and bottom edges, typically used to define margins or padding
 	/// in PDF layouts.
 	/// </summary>
-	/// <remarks>Use this class to specify edge spacing when rendering or manipulating PDF elements. The spacing
+	/// <remarks>Use this class to specify edge spacing when rendering or manipulating PDF sections. The spacing
 	/// values are measured in units consistent with the PDF rendering context, such as points or pixels. The class
 	/// provides properties for each edge and supports implicit conversion from a tuple for convenience.</remarks>
 	public class PdfSpacing

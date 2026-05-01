@@ -21,7 +21,6 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Reflection.PortableExecutable;
 using PdfDocuments.Exceptions;
 using PdfDocuments.Layout_Manager;
 using PdfSharp.Drawing;
@@ -102,9 +101,14 @@ namespace PdfDocuments
 		public virtual IList<IPdfSection<TModel>> Children { get; } = [];
 
 		/// <summary>
-		/// Gets or sets the actual bounding rectangle of the element in PDF coordinates.
+		/// Gets or sets the actual bounding rectangle of the section in PDF coordinates.
 		/// </summary>
-		public virtual PdfBounds ActualBounds { get; set; } = new PdfBounds(0, 0, 0, 0);
+		public virtual PdfBounds SectionArea { get; set; } = new PdfBounds(0, 0, 0, 0);
+
+		/// <summary>
+		/// Gets or sets the renderable bounding rectangle of the section in PDF coordinates.
+		/// </summary>
+		public virtual PdfBounds RenderArea { get; set; } = new PdfBounds(0, 0, 0, 0);
 
 		/// <summary>
 		/// Gets or sets a value indicating whether the component should be rendered.
@@ -129,7 +133,7 @@ namespace PdfDocuments
 
 		/// <summary>
 		/// Gets or sets the style manager used to control PDF rendering styles for the current section and its child
-		/// elements.
+		/// sections.
 		/// </summary>
 		/// <remarks>If not explicitly set, the style manager is inherited from the parent section. Setting this
 		/// property overrides the inherited style manager for the current section.</remarks>
@@ -154,10 +158,10 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
-		/// Gets the factory used to create layout manager instances for arranging UI elements.
+		/// Gets the factory used to create layout manager instances for arranging UI sections.
 		/// </summary>
 		/// <remarks>The returned factory provides layout managers that control the positioning and sizing of child
-		/// elements. Override this property in a derived class to supply a custom layout manager factory if specialized
+		/// sections. Override this property in a derived class to supply a custom layout manager factory if specialized
 		/// layout behavior is required.</remarks>
 		public virtual IPdfLayoutManagerFactory LayoutManagerFactory { get; } = new PdfLayoutManagerFactory();
 
@@ -191,7 +195,7 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
-		/// Determines whether the background should be drawn for the current element.
+		/// Determines whether the background should be drawn for the current section.
 		/// </summary>
 		/// <returns>true if the background should be drawn; otherwise, false.</returns>
 		protected virtual bool OnShouldDrawBackground()
@@ -200,7 +204,7 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
-		/// Determines whether a border should be drawn for the current element.
+		/// Determines whether a border should be drawn for the current section.
 		/// </summary>
 		/// <remarks>Override this method in a derived class to customize the border drawing behavior based on
 		/// specific conditions.</remarks>
@@ -208,95 +212,6 @@ namespace PdfDocuments
 		protected virtual bool OnShouldDrawBorder()
 		{
 			return true;
-		}
-
-		/// <summary>
-		/// Renders debug visual elements for the specified PDF grid page and model within the given bounds.
-		/// </summary>
-		/// <remarks>This method is intended for diagnostic or development purposes and may display visual cues such
-		/// as borders and labels to assist in layout debugging. Override this method to customize debug rendering
-		/// behavior.</remarks>
-		/// <param name="g">The PDF grid page on which debug visuals are rendered.</param>
-		/// <param name="m">The model instance providing context for rendering debug information.</param>
-		/// <param name="bounds">The bounds within which debug visuals are drawn.</param>
-		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if debug rendering
-		/// was performed; otherwise, <see langword="false"/>.</returns>
-		protected virtual async Task OnRenderDebugAsync(PdfGridPage g, TModel m, PdfBounds bounds)
-		{
-			//
-			// Create a random color
-			//
-			XColor color = XColorExtensions.RandomColor();
-
-			//
-			// Set the label color.
-			//
-			XColor labelColor = color.Contrast(XColors.White) > color.Contrast(XColors.Black) ? XColors.White : XColors.Black;
-
-			//
-			// Draw a border around the section.
-			//
-			g.DrawRectangle(this.ActualBounds, 1.0, color);
-
-			//
-			// Get a pen for the border around th section.
-			//
-			XPen pen = new(XColors.LightGray, 1)
-			{
-				DashStyle = XDashStyle.Dot
-			};
-
-			//
-			// Draw a border to indicate the margin.
-			//
-			g.DrawRectangle(bounds, pen);
-
-			//
-			// Get the parent count.
-			//
-			int parentCount = -1;
-			IPdfSection<TModel> parent = this.ParentSection;
-
-			while (parent != null)
-			{
-				parentCount++;
-				parent = parent.ParentSection;
-			}
-
-			//
-			// Get the size of the text.
-			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle("Debug");
-			XFont font = style.Font.Resolve(g, m);
-			string label = $"{this.Key} [{this.ActualBounds.Columns} x {this.ActualBounds.Rows}]";
-			PdfSize textSize = g.MeasureText(font, label);
-
-			//
-			// Create padding fo the box and text.
-			//
-			PdfSpacing padding = (1, 1, 1, 1);
-
-			//
-			// Draw a small filled rectangle behind the text.
-			//
-			PdfBounds rectBounds = new(this.ActualBounds.LeftColumn, this.ActualBounds.TopRow, textSize.Columns + padding.Left + (2 * padding.Right), textSize.Rows + padding.Top + padding.Bottom);
-			g.DrawFilledRectangle(rectBounds, color);
-
-			//
-			// Draw the text label.
-			//			
-			PdfBounds labelBounds = new(this.ActualBounds.LeftColumn + padding.Left, this.ActualBounds.TopRow, textSize.Columns + padding.Left + padding.Right, textSize.Rows + padding.Top + padding.Bottom);
-			g.DrawText(label, font, labelBounds, XStringFormats.CenterLeft, labelColor, true);
-
-			//
-			// Get a list of section to be rendered.
-			//
-			IPdfSection<TModel>[] sections = [.. this.Children.Where(t => t.ShouldRender.Resolve(g, m))];
-
-			foreach (IPdfSection<TModel> section in sections)
-			{
-				await section.RenderDebugAsync(g, m, section.ActualBounds);
-			}
 		}
 
 		/// <summary>
@@ -348,9 +263,107 @@ namespace PdfDocuments
 				await this.OnRenderChildrenAsync(g, m, paddedBounds);
 
 				//
-				// Render the watermark on top of all other elements.
+				// Render the watermark on top of all other sections.
 				//
 				await this.OnRenderWaterMarkAsync(g, m, paddedBounds);
+			}
+		}
+
+		/// <summary>
+		/// Renders debug visual sections for the specified PDF grid page and model within the given bounds.
+		/// </summary>
+		/// <remarks>This method is intended for diagnostic or development purposes and may display visual cues such
+		/// as borders and labels to assist in layout debugging. Override this method to customize debug rendering
+		/// behavior.</remarks>
+		/// <param name="g">The PDF grid page on which debug visuals are rendered.</param>
+		/// <param name="m">The model instance providing context for rendering debug information.</param>
+		/// <param name="bounds">The bounds within which debug visuals are drawn.</param>
+		/// <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if debug rendering
+		/// was performed; otherwise, <see langword="false"/>.</returns>
+		protected virtual async Task OnRenderDebugAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			//
+			// Create a random color
+			//
+			XColor color = XColorExtensions.RandomColor();
+
+			//
+			// Set the label color.
+			//
+			XColor labelColor = color.Contrast(XColors.White) > color.Contrast(XColors.Black) ? XColors.White : XColors.Black;
+
+			//
+			// Draw a border around the renderable area and fill the it
+			// with a lighter version of the color using alpha so the
+			// fill does not cover up the rendered section. This fill will
+			// highlight the padded area.
+			//
+			if (this.RenderArea != this.SectionArea)
+			{
+				XColor backgroundColor = color.WithLuminosity(.65).WithAlpha(.15);
+				g.DrawFilledRectangle(this.SectionArea, this.RenderArea, backgroundColor, color);
+			}
+
+			g.DrawRectangle(this.RenderArea, 1.0, color);
+
+			//
+			// Get a pen for the border around the section.
+			//
+			XPen pen = new(color, 1)
+			{
+				DashStyle = XDashStyle.Dash
+			};
+
+			//
+			// Draw a border around the section area.
+			//
+			g.DrawRectangle(this.SectionArea, pen);
+
+			//
+			// Get the parent count.
+			//
+			int parentCount = -1;
+			IPdfSection<TModel> parent = this.ParentSection;
+
+			while (parent != null)
+			{
+				parentCount++;
+				parent = parent.ParentSection;
+			}
+
+			//
+			// Get the size of the text.
+			//
+			PdfStyle<TModel> style = this.StyleManager.GetStyle("Debug");
+			XFont font = style.Font.Resolve(g, m);
+			string label = $"{this.Key} [x{this.RenderArea.LeftColumn}, y{this.RenderArea.TopRow}, w{this.RenderArea.Columns}, h{this.RenderArea.Rows}]";
+			PdfSize textSize = g.MeasureText(font, label);
+
+			//
+			// Create padding fo the box and text.
+			//
+			PdfSpacing padding = (1, 1, 1, 1);
+
+			//
+			// Draw a small filled rectangle behind the text.
+			//
+			PdfBounds rectBounds = new(this.RenderArea.LeftColumn, this.RenderArea.TopRow, textSize.Columns + padding.Left + (2 * padding.Right), textSize.Rows + padding.Top + padding.Bottom);
+			g.DrawFilledRectangle(rectBounds, color);
+
+			//
+			// Draw the text label.
+			//			
+			PdfBounds labelBounds = new(this.RenderArea.LeftColumn + padding.Left, this.RenderArea.TopRow, textSize.Columns + padding.Left + padding.Right, textSize.Rows + padding.Top + padding.Bottom);
+			g.DrawText(label, font, labelBounds, XStringFormats.CenterLeft, labelColor, true);
+
+			//
+			// Get a list of section to be rendered.
+			//
+			IPdfSection<TModel>[] sections = [.. this.Children.Where(t => t.ShouldRender.Resolve(g, m))];
+
+			foreach (IPdfSection<TModel> section in sections)
+			{
+				await section.RenderDebugAsync(g, m, section.SectionArea);
 			}
 		}
 
@@ -528,7 +541,7 @@ namespace PdfDocuments
 					//
 					// Render the child section.
 					//
-					await section.RenderAsync(g, m, section.ActualBounds);
+					await section.RenderAsync(g, m, section.RenderArea);
 				}
 			}
 		}

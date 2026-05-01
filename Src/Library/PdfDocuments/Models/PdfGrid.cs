@@ -24,7 +24,7 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Represents a rectangular grid layout for arranging elements within a PDF document. Provides methods and properties
+	/// Represents a rectangular grid layout for arranging sections within a PDF document. Provides methods and properties
 	/// for calculating cell positions and dimensions based on the specified grid size and offsets.
 	/// </summary>
 	/// <remarks>Use the grid to determine the coordinates and sizes of individual cells or groups of cells when
@@ -101,7 +101,7 @@ namespace PdfDocuments
 		/// Calculates the horizontal position of the left edge of the specified column.
 		/// </summary>
 		/// <remarks>The returned value is based on the current X offset and column width. Use this method to align
-		/// elements or determine layout positions for columns.</remarks>
+		/// sections or determine layout positions for columns.</remarks>
 		/// <param name="columnIndex">The zero-based index of the column for which to determine the left edge position. Must be greater than or equal to
 		/// 1.</param>
 		/// <returns>A double value representing the horizontal offset of the left edge of the specified column.</returns>

@@ -27,7 +27,7 @@ using PdfSharp.Drawing.Layout;
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Provides a configurable set of style properties for PDF elements, supporting data binding to a model type.
+	/// Provides a configurable set of style properties for PDF sections, supporting data binding to a model type.
 	/// </summary>
 	/// <remarks>Use this class to define visual appearance and layout for PDF components, such as fonts, colors,
 	/// spacing, and alignment. Each property supports binding to values from the specified model type, enabling dynamic

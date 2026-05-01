@@ -37,10 +37,10 @@ namespace PdfDocuments
 	{
 		/// <summary>
 		/// Initializes a new instance of the PdfHorizontalStackSection class, which represents a section that arranges PDF
-		/// elements horizontally.
+		/// sections horizontally.
 		/// </summary>
 		/// <remarks>Use this constructor to create a horizontal stack section for organizing PDF content side by
-		/// side. This section can be added to a PDF document to group elements in a horizontal layout.</remarks>
+		/// side. This section can be added to a PDF document to group sections in a horizontal layout.</remarks>
 		public PdfHorizontalStackSection()
 		{
 			this.SectionLayoutMode = PdfSectionsLayoutMode.HorizontalStacking;
@@ -52,7 +52,7 @@ namespace PdfDocuments
 		/// <remarks>Each child section will be rendered side by side in the order provided. Use this constructor to
 		/// compose complex layouts from multiple sections.</remarks>
 		/// <param name="children">An array of child sections to be arranged horizontally within this section. Cannot be null or contain null
-		/// elements.</param>
+		/// sections.</param>
 		public PdfHorizontalStackSection(params IPdfSection<TModel>[] children)
 			: base(children)
 		{
