@@ -283,80 +283,40 @@ namespace PdfDocuments
 		protected virtual async Task OnRenderDebugAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
 			//
-			// Create a random color
+			// Get random colors for the debug rendering.
 			//
-			XColor color = XColorExtensions.RandomColor();
+			(XColor color, XColor labelColor) = await g.GetDebugColorsAsync<TModel>();
 
 			//
-			// Set the label color.
+			// Fill the margin area.
 			//
-			XColor labelColor = color.Contrast(XColors.White) > color.Contrast(XColors.Black) ? XColors.White : XColors.Black;
-
-			//
-			// Draw a border around the renderable area and fill the it
-			// with a lighter version of the color using alpha so the
-			// fill does not cover up the rendered section. The background
-			// will have diagonal lines through it. This fill will
-			// highlight the margin area only.
-			//
-			if (this.RenderArea != this.SectionArea)
+			if (g.DebugMode.HasFlag(DebugMode.RevealLayout))
 			{
-				XColor backgroundColor = color.WithLuminosity(.65).WithAlpha(.15);
-				XColor lineColor = color.WithLuminosity(.55).WithAlpha(.15);
-				g.DrawFilledRectangle(this.SectionArea, this.RenderArea, backgroundColor, lineColor);
+				await g.HighlightMarginBackgroundAsync(this, color, 1.5);
+
+				//
+				// Draw a border around the section area.
+				//
+				await g.HighlightSectionAreaAsync(this, color, 1.5);
+
+				//
+				// Draw the label for the section that shows the size and position.
+				//
+				await g.DrawSizeLabelAsync(m, this, color, labelColor);
 			}
 
-			g.DrawRectangle(this.RenderArea, 1.0, color);
-
-			//
-			// Get a pen for the border around the section.
-			//
-			XPen pen = new(color, 1)
+			if (g.DebugMode.HasFlag(DebugMode.RevealFontDetails))
 			{
-				DashStyle = XDashStyle.Dash
-			};
+				//
+				// Draw the label for the font name.
+				//
+				await g.DrawFontLabelAsync(m, this, XColors.Wheat, XColors.Black);
 
-			//
-			// Draw a border around the section area.
-			//
-			g.DrawRectangle(this.SectionArea, pen);
-
-			//
-			// Get the parent count.
-			//
-			int parentCount = -1;
-			IPdfSection<TModel> parent = this.ParentSection;
-
-			while (parent != null)
-			{
-				parentCount++;
-				parent = parent.ParentSection;
+				//
+				// Highlight the area for the font.
+				//
+				await g.HighlightFontAreaAsync(m, this, XColors.Black, 1.5);
 			}
-
-			//
-			// Get the size of the text.
-			//
-			PdfStyle<TModel> style = this.StyleManager.GetStyle("Debug");
-			XFont font = style.Font.Resolve(g, m);
-			string label = $"{this.Key} [x{this.RenderArea.LeftColumn}, y{this.RenderArea.TopRow}, w{this.RenderArea.Columns}, h{this.RenderArea.Rows}]";
-			PdfSize textSize = g.MeasureText(font, label);
-
-			//
-			// Create padding fo the box and text.
-			//
-			PdfSpacing padding = (1, 1, 1, 1);
-
-			//
-			// Draw a small filled rectangle behind the text.
-			//
-			PdfBounds rectBounds = new(this.RenderArea.LeftColumn, this.RenderArea.TopRow, textSize.Columns + padding.Left + (2 * padding.Right), textSize.Rows + padding.Top + padding.Bottom);
-			g.DrawFilledRectangle(rectBounds, color);
-
-			//
-			// Draw the text label.
-			//			
-			PdfBounds labelBounds = new(this.RenderArea.LeftColumn + padding.Left, this.RenderArea.TopRow, textSize.Columns + padding.Left + padding.Right, textSize.Rows + padding.Top + padding.Bottom);
-			g.DrawText(label, font, labelBounds, XStringFormats.CenterLeft, labelColor, true);
 
 			//
 			// Get a list of section to be rendered.

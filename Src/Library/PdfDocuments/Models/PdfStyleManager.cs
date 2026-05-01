@@ -64,14 +64,14 @@ namespace PdfDocuments
 		/// <remarks>The constructor adds a default style and a debug style using the provided font name. Use this to
 		/// ensure consistent font settings across generated PDF styles.</remarks>
 		/// <param name="defaultFontName">The name of the font to use as the default for styles managed by this instance. Cannot be null or empty.</param>
-		/// <param name="emSize">The size of the font in points. Default is 8. Use this to specify the default font size for styles.</param>
-		public PdfStyleManager(string defaultFontName, double emSize = 8)
+		/// <param name="emSize">The size of the font in points. Default is 7. Use this to specify the default font size for styles.</param>
+		public PdfStyleManager(string defaultFontName, double emSize = 7)
 		{
 			//
 			// Add default style.
 			//
-			this.Add(PdfStyleManager<TModel>.Default, new PdfStyle<TModel>());
-			this.Add(PdfStyleManager<TModel>.Debug, new PdfStyle<TModel>() { Font = new XFont(defaultFontName, emSize, XFontStyleEx.Regular) });
+			this.Add(Default, new PdfStyle<TModel>());
+			this.Add(Debug, new PdfStyle<TModel>() { Font = new XFont(defaultFontName, emSize, XFontStyleEx.Regular) });
 		}
 
 		/// <summary>

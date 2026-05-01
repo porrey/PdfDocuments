@@ -183,6 +183,7 @@ namespace PdfDocuments
 		/// <param name="horizontalAlignment">Specifies how the image is aligned horizontally within the provided bounds.</param>
 		/// <param name="verticalAlignment">Specifies how the image is aligned vertically within the provided bounds.</param>
 		/// <param name="scale">An optional scaling factor to apply to the image size. Default is 1.0 (no scaling).</param>
+		/// <param name="clipDrawing">Indicates whether the drawing should be clipped to the specified bounds.</param>
 		public static void DrawImage(this PdfGridPage source, XImage image, PdfBounds bounds, PdfHorizontalAlignment horizontalAlignment, PdfVerticalAlignment verticalAlignment, float scale = 1.0f, bool clipDrawing = true)
 		{
 			//

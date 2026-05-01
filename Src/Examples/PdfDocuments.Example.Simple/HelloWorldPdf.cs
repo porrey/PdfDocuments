@@ -97,7 +97,7 @@ namespace PdfDocuments.Example.Simple
 			// Add a basic text block using the style that was created.
 			//
 			return Task.FromResult(
-				Pdf.OverlayStackSection(
+				Pdf.VerticalStackSection(
 					Pdf.TextBlockSection<Message>()
 						.WithText((g, m) => m.Text)
 						.WithStyles("HelloWorld.Text")

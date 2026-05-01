@@ -483,6 +483,16 @@
             <param name="rowCount">The number of rows for which to calculate the total height. Must be non-negative.</param>
             <returns>The combined height of all rows, calculated as the product of the row count and the row height.</returns>
         </member>
+        <member name="T:PdfDocuments.PdfGridPageDebugExtensions">
+            <summary>
+            Provides extension methods for debugging and visualizing layout information on PdfGridPage instances during PDF
+            generation.
+            </summary>
+            <remarks>These methods are intended to assist with development and troubleshooting by rendering visual cues,
+            such as colored highlights and labels, onto PDF grid pages. They are typically used in debug builds or diagnostic
+            scenarios to inspect layout boundaries, section sizes, and font usage. The extensions do not affect the final
+            output in production and are safe to use for non-destructive visual feedback.</remarks>
+        </member>
         <member name="T:PdfDocuments.PdfGridPageImageExtensions">
             <summary>
             Provides extension methods for drawing images onto a PDF grid page with fixed dimensions or alignment options.
@@ -559,6 +569,7 @@
             <param name="horizontalAlignment">Specifies how the image is aligned horizontally within the provided bounds.</param>
             <param name="verticalAlignment">Specifies how the image is aligned vertically within the provided bounds.</param>
             <param name="scale">An optional scaling factor to apply to the image size. Default is 1.0 (no scaling).</param>
+            <param name="clipDrawing">Indicates whether the drawing should be clipped to the specified bounds.</param>
         </member>
         <member name="T:PdfDocuments.PdfGridPageLineExtensions">
             <summary>
@@ -757,7 +768,7 @@
             <returns>A PdfSize object containing the number of rows and columns needed to fit the text within the grid, based on the
             font and page settings.</returns>
         </member>
-        <member name="M:PdfDocuments.PdfGridPageTextExtensions.DrawText(PdfDocuments.PdfGridPage,System.String,PdfSharp.Drawing.XFont,PdfDocuments.PdfBounds,PdfSharp.Drawing.XStringFormat,PdfSharp.Drawing.XColor,System.Boolean,System.Boolean)">
+        <member name="M:PdfDocuments.PdfGridPageTextExtensions.DrawText(PdfDocuments.PdfGridPage,System.String,PdfSharp.Drawing.XFont,PdfDocuments.PdfBounds,PdfSharp.Drawing.XStringFormat,PdfSharp.Drawing.XColor,System.Boolean)">
             <summary>
             Draws the specified text within the given bounds on the PDF page using the provided font, formatting, and color.
             Optionally disables debug overlays such as font details and outline.
@@ -771,8 +782,6 @@
             <param name="bounds">The area within which the text will be drawn, specified as PDF bounds.</param>
             <param name="formats">The formatting options that control text alignment and layout.</param>
             <param name="color">The color used to render the text.</param>
-            <param name="forceNoDebug">If set to <see langword="true"/>, disables debug overlays such as font details and outline regardless of the
-            page's debug mode.</param>
             <param name="clipDrawing">true to restrict drawing to the specified grid area; otherwise, false.</param>
             <returns>A <see cref="T:PdfDocuments.PdfSize"/> representing the measured size of the rendered text.</returns>
         </member>
@@ -3762,7 +3771,7 @@
             <remarks>The constructor adds a default style and a debug style using the provided font name. Use this to
             ensure consistent font settings across generated PDF styles.</remarks>
             <param name="defaultFontName">The name of the font to use as the default for styles managed by this instance. Cannot be null or empty.</param>
-            <param name="emSize">The size of the font in points. Default is 8. Use this to specify the default font size for styles.</param>
+            <param name="emSize">The size of the font in points. Default is 7. Use this to specify the default font size for styles.</param>
         </member>
         <member name="M:PdfDocuments.PdfStyleManager`1.GetStyle(System.String)">
             <summary>

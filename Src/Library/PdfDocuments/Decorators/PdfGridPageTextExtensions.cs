@@ -92,11 +92,9 @@ namespace PdfDocuments
 		/// <param name="bounds">The area within which the text will be drawn, specified as PDF bounds.</param>
 		/// <param name="formats">The formatting options that control text alignment and layout.</param>
 		/// <param name="color">The color used to render the text.</param>
-		/// <param name="forceNoDebug">If set to <see langword="true"/>, disables debug overlays such as font details and outline regardless of the
-		/// page's debug mode.</param>
 		/// <param name="clipDrawing">true to restrict drawing to the specified grid area; otherwise, false.</param>
 		/// <returns>A <see cref="PdfSize"/> representing the measured size of the rendered text.</returns>
-		public static PdfSize DrawText(this PdfGridPage source, string text, XFont font, PdfBounds bounds, XStringFormat formats, XColor color, bool clipDrawing = false, bool forceNoDebug = false)
+		public static PdfSize DrawText(this PdfGridPage source, string text, XFont font, PdfBounds bounds, XStringFormat formats, XColor color, bool clipDrawing = false)
 		{
 			PdfSize returnValue = source.MeasureText(font, text);
 
@@ -119,33 +117,6 @@ namespace PdfDocuments
 				// Draw the text.
 				//
 				source.Graphics.DrawString(text ?? string.Empty, font, new XSolidBrush(color), source.GetRect(bounds), formats);
-
-				//
-				// Draw the name of the font over the text.
-				//
-				if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.RevealFontDetails))
-				{
-					XFont debugFont = new(GlobalPdfDocumentsSettings.DefaultFontName, 8, XFontStyleEx.Regular);
-					PdfSize textSize = source.MeasureText(debugFont, font.FontFamily.Name);
-					PdfBounds labelBounds = new(bounds.LeftColumn + (int)((bounds.Columns - textSize.Columns) / 2.0), bounds.TopRow + (int)((bounds.Rows - textSize.Rows) / 2.0), textSize.Columns + 2, textSize.Rows + 2);
-					source.DrawFilledRectangle(labelBounds, XColors.Black);
-					XRect labelLayout = source.GetRect(labelBounds);
-					XBrush labelBrush = new XSolidBrush(XColors.Wheat);
-					source.Graphics.DrawString(font.FontFamily.Name, debugFont, labelBrush, labelLayout, XStringFormats.Center);
-				}
-
-				//
-				// Draw a dotted line around the area used to draw the text.
-				//
-				if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.OutlineText))
-				{
-					XPen pen = new(XColors.HotPink, .5)
-					{
-						DashStyle = XDashStyle.Dot
-					};
-
-					source.DrawRectangle(bounds, pen);
-				}
 			}
 			finally
 			{
