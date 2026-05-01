@@ -28,7 +28,7 @@ namespace PdfDocuments
 	/// </summary>
 	/// <remarks>Use this type when a PDF model is required but no actual model is available. This can be useful for
 	/// scenarios where a default or 'null object' pattern is needed to avoid null references.</remarks>
-	public class NullModel : IPdfModel
+	public class PdfNullModel : IPdfModel
 	{
 		/// <summary>
 		/// Gets the identifier for the current instance.

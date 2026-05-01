@@ -130,5 +130,41 @@ namespace PdfDocuments
 		/// <remarks>Cell padding determines the space between the cell content and its borders. Adjusting this
 		/// property affects the visual layout and spacing of table cells.</remarks>
 		public virtual BindProperty<PdfSpacing, TModel> CellPadding { get; set; } = new PdfSpacing(0, 0, 0, 0);
+
+		/// <summary>
+		/// Gets or sets the horizontal alignment for images within the associated model.
+		/// </summary>
+		/// <remarks>Use this property to control how images are aligned horizontally, such as left, center, or right,
+		/// when rendered. The alignment affects the visual layout of images in the generated PDF output.</remarks>
+		public virtual BindProperty<PdfHorizontalAlignment, TModel> HorizontalImageAlignment { get; set; } = PdfHorizontalAlignment.Center;
+
+		/// <summary>
+		/// Gets or sets the vertical alignment for images within the PDF content.
+		/// </summary>
+		/// <remarks>Use this property to control how images are positioned vertically relative to their containing
+		/// element. The alignment affects rendering when images do not fill the entire available vertical space.</remarks>
+		public virtual BindProperty<PdfVerticalAlignment, TModel> VerticalImageAlignment { get; set; } = PdfVerticalAlignment.Center;
+
+		/// <summary>
+		/// Gets or sets the opacity level applied to the image.
+		/// </summary>
+		/// <remarks>The opacity value typically ranges from 0.0 (completely transparent) to 1.0 (fully opaque).
+		/// Values outside this range may be clamped or produce undefined results depending on the implementation.</remarks>
+		public virtual BindProperty<float, TModel> ImageOpacity { get; set; } = 1.0f;
+
+		/// <summary>
+		/// Gets or sets the scale factor applied to the image.
+		/// </summary>
+		/// <remarks>The scale factor typically ranges from 0.0 (completely shrunk) to 1.0 (original size).
+		/// Values greater than 1 will increase the image size.</remarks>
+		public virtual BindProperty<float, TModel> ImageScale { get; set; } = 1.0f;
+
+		/// <summary>
+		/// Gets or sets a value indicating whether drawing operations are clipped to the bounds of the control.
+		/// </summary>
+		/// <remarks>When set to <see langword="true"/>, any drawing that exceeds the control's boundaries will be
+		/// clipped and not rendered. Set this property to <see langword="false"/> to allow drawing outside the control's
+		/// bounds, which may be useful for custom rendering scenarios.</remarks>
+		public virtual BindProperty<bool, TModel> ClipDrawing { get; set; } = true;
 	}
 }

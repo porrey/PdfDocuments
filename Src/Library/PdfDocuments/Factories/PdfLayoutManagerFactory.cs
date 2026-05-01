@@ -23,13 +23,13 @@
 			switch (layoutMode)
 			{
 				case PdfSectionsLayoutMode.VerticalStacking:
-					returnValue = new VerticalStackingLayoutManager();
+					returnValue = new StackingLayoutManager();
 					break;
 				case PdfSectionsLayoutMode.HorizontalStacking:
-
+					returnValue = new StackingLayoutManager();
 					break;
 				case PdfSectionsLayoutMode.OverlayStacking:
-
+					returnValue = new StackingLayoutManager();
 					break;
 			}
 

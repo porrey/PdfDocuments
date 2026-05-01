@@ -120,7 +120,7 @@ namespace PdfDocuments
 			// Calculate the content bounds by applying the cell padding to the provided bounds.
 			//
 			PdfSpacing cellPadding = style.CellPadding.Resolve(g, m, state);
-			PdfBounds textBounds = bounds.SubtractBounds(g, m, cellPadding);
+			PdfBounds textBounds = bounds.SubtractSpacing(g, m, cellPadding);
 
 			//
 			// Get the paramters needed to draw the text.
@@ -130,6 +130,7 @@ namespace PdfDocuments
 			XColor foregroundColor = style.ForegroundColor.Resolve(g, m, state);
 			XParagraphAlignment paragraphAlignment = style.ParagraphAlignment.Resolve(g, m, state);
 			bool wrapText = style.WrapText.Resolve(g, m, state);
+			bool clipDrawing = style.ClipDrawing.Resolve(g, m, state);
 
 			if (wrapText)
 			{
@@ -145,7 +146,8 @@ namespace PdfDocuments
 					textBounds.Rows,
 					XStringFormats.TopLeft,
 					foregroundColor,
-					paragraphAlignment);
+					paragraphAlignment,
+					clipDrawing);
 			}
 			else
 			{
@@ -157,7 +159,8 @@ namespace PdfDocuments
 					font, 
 					textBounds, 
 					textAlignment, 
-					foregroundColor);
+					foregroundColor,
+					clipDrawing);
 			}
 
 			return Task.CompletedTask;

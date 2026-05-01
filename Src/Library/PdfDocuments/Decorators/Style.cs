@@ -683,6 +683,175 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
+		/// Configures the horizontal alignment for images in the PDF style builder.
+		/// </summary>
+		/// <remarks>Use this method to specify how images should be horizontally aligned within the generated PDF
+		/// content. This setting affects all images rendered using the configured style.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A delegate that binds a <see cref="PdfHorizontalAlignment"/> value to the model. Determines the horizontal
+		/// alignment of images.</param>
+		/// <returns>The same <see cref="IStyleBuilder{TModel}"/> instance to allow for method chaining.</returns>
+		public static IStyleBuilder<TModel> UseHorizontalImageAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<PdfHorizontalAlignment, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).HorizontalImageAlignment = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Sets the horizontal alignment for images within the PDF style builder.
+		/// </summary>
+		/// <remarks>Use this method to control how images are horizontally aligned within PDF elements. This setting
+		/// affects all images rendered using the configured style.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder. Must implement IPdfModel.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A bindable property specifying the horizontal alignment to apply to images.</param>
+		/// <returns>The same style builder instance with the horizontal image alignment configured.</returns>
+		public static IStyleBuilder<TModel> UseHorizontalImageAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<PdfHorizontalAlignment, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).HorizontalImageAlignment = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures the vertical alignment for images within the style builder.
+		/// </summary>
+		/// <remarks>Use this method to specify how images should be vertically aligned when rendering PDF content.
+		/// This setting affects only image elements within the styled content.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A delegate that binds the vertical alignment value for images. The delegate receives the current model and returns
+		/// the desired <see cref="PdfVerticalAlignment"/>.</param>
+		/// <returns>The same <see cref="IStyleBuilder{TModel}"/> instance to allow for method chaining.</returns>
+		public static IStyleBuilder<TModel> UseVerticalImageAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<PdfVerticalAlignment, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).VerticalImageAlignment = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures the vertical alignment for images within the PDF style builder.
+		/// </summary>
+		/// <remarks>Use this method to control how images are vertically aligned within PDF elements. This setting
+		/// affects the rendering of images in the generated PDF output.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A bindable property specifying the vertical alignment to apply to images.</param>
+		/// <returns>The same <see cref="IStyleBuilder{TModel}"/> instance to allow for method chaining.</returns>
+		public static IStyleBuilder<TModel> UseVerticalImageAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<PdfVerticalAlignment, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).VerticalImageAlignment = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Sets the opacity level to use when rendering images in the PDF style builder.
+		/// </summary>
+		/// <remarks>Use this method to control the transparency of images rendered in the PDF output. Setting an
+		/// opacity less than 1.0 will make images partially transparent.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A delegate that provides the opacity value for images. The value should be between 0.0 (fully transparent) and 1.0
+		/// (fully opaque).</param>
+		/// <returns>The same style builder instance, enabling method chaining.</returns>
+		public static IStyleBuilder<TModel> UseImageOpacity<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<float, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).ImageOpacity = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures the image opacity for the PDF style using the specified binding.
+		/// </summary>
+		/// <remarks>Setting the image opacity affects the transparency of images rendered in the PDF output. This
+		/// method enables fluent configuration of image appearance.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A binding that specifies the opacity value for images. The value should be between 0.0 (fully transparent) and 1.0
+		/// (fully opaque).</param>
+		/// <returns>The same style builder instance, enabling method chaining.</returns>
+		public static IStyleBuilder<TModel> UseImageOpacity<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<float, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).ImageOpacity = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures the image scale factor to be used when rendering images in the PDF output.
+		/// </summary>
+		/// <remarks>Use this method to control the scaling of images in the generated PDF. The scale factor is
+		/// typically a value greater than 0, where 1.0 represents the original size. Setting an appropriate scale can help
+		/// fit images within page boundaries or achieve desired visual effects.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A delegate that provides the image scale factor for the model. The value determines how images are scaled during
+		/// rendering.</param>
+		/// <returns>The same <see cref="IStyleBuilder{TModel}"/> instance so that additional configuration can be chained.</returns>
+		public static IStyleBuilder<TModel> UseImageScale<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<float, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).ImageScale = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures the image scale factor to be used when rendering images in the PDF style builder.
+		/// </summary>
+		/// <remarks>Use this method to specify a custom scaling factor for images in the generated PDF. This is
+		/// useful for adjusting image sizes relative to other content. The provided value can be data-bound to model
+		/// properties for dynamic scaling.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A bindable property representing the image scale factor. The value determines how images are scaled when rendered.</param>
+		/// <returns>The same <see cref="IStyleBuilder{TModel}"/> instance so that additional configuration can be chained.</returns>
+		public static IStyleBuilder<TModel> UseImageScale<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<float, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).ImageScale = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures whether drawing operations should be clipped to the current path for the specified style builder.
+		/// </summary>
+		/// <remarks>When clip drawing is enabled, subsequent drawing operations are restricted to the current
+		/// clipping path. This can be used to control rendering within specific regions of the PDF.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder to configure.</param>
+		/// <param name="value">An action that binds a Boolean value indicating whether to enable clip drawing for the model.</param>
+		/// <returns>The same style builder instance with clip drawing configuration applied.</returns>
+		public static IStyleBuilder<TModel> UseClipDrawing<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<bool, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).ClipDrawing = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures whether drawing operations should be clipped according to the specified binding for the style builder.
+		/// </summary>
+		/// <remarks>Use this method to enable or disable clipping of drawing operations based on a model property.
+		/// This is useful when conditional rendering is required in PDF generation scenarios.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder.</typeparam>
+		/// <param name="styleBuilder">The style builder to configure.</param>
+		/// <param name="value">A binding that determines whether drawing operations are clipped. The value is applied to the style builder.</param>
+		/// <returns>The same style builder instance with the clip drawing setting applied.</returns>
+		public static IStyleBuilder<TModel> UseClipDrawing<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<bool, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).ClipDrawing = value;
+			return styleBuilder;
+		}
+
+
+
+		/// <summary>
 		/// Creates a strongly-typed PDF style from the specified style builder.
 		/// </summary>
 		/// <remarks>Use this method to convert an <see cref="IStyleBuilder{TModel}"/> into a reusable PDF style for

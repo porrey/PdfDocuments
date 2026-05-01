@@ -104,14 +104,14 @@ namespace PdfDocuments
 			//
 			// Fill the rectangle with the background color.
 			//
-			XBrush backgroundBrush = new XSolidBrush(backgroundColor);			
+			XBrush backgroundBrush = new XSolidBrush(backgroundColor);
 			source.Graphics.DrawRectangle(backgroundBrush, rect);
 
 			//
 			// Draw diagonal lines across the rectangle at the specified spacing and line width.
 			//
 			XPen patternPen = new(lineColor, lineWidth);
-			
+
 			double height = rect.Height;
 			double startX = rect.Left - height;
 			double endX = rect.Right;
@@ -126,66 +126,94 @@ namespace PdfDocuments
 			source.Graphics.Restore();
 		}
 
+		/// <summary>
+		/// Draws a filled rectangle with a hollow center on the specified PDF grid page, using the given colors and line
+		/// pattern.
+		/// </summary>
+		/// <remarks>The method fills the area between the outer and inner rectangles and overlays diagonal lines,
+		/// leaving the inner rectangle transparent. The drawing is clipped so that lines and fill do not appear inside the
+		/// inner rectangle. This method does not modify the PDF page outside the specified bounds.</remarks>
+		/// <param name="source">The PDF grid page on which to draw the filled rectangle.</param>
+		/// <param name="outerBounds">The grid bounds that define the outer rectangle to be filled and outlined.</param>
+		/// <param name="innerBounds">The grid bounds that define the inner rectangle to be excluded from filling and pattern drawing, creating a hollow
+		/// center.</param>
+		/// <param name="backgroundColor">The background color used to fill the area between the outer and inner rectangles.</param>
+		/// <param name="lineColor">The color of the diagonal lines drawn across the filled area.</param>
+		/// <param name="spacing">The spacing, in points, between diagonal lines in the pattern. The default is 6.</param>
+		/// <param name="lineWidth">The width, in points, of the diagonal lines. The default is 0.5.</param>
 		public static void DrawFilledRectangle(this PdfGridPage source, PdfBounds outerBounds, PdfBounds innerBounds, XColor backgroundColor, XColor lineColor, double spacing = 6, double lineWidth = 0.5)
 		{
-			source.Graphics.Save();
+			//
+			// Save the current graphics state to restore it later.
+			//
+			XGraphicsState state = source.Graphics.Save();
 
-			//
-			// Create the outer rectangle.
-			//
-			XRect outerRect = new(
-				source.Grid.Left(outerBounds.LeftColumn),
-				source.Grid.Top(outerBounds.TopRow),
-				source.Grid.Right(outerBounds.RightColumn) - source.Grid.Left(outerBounds.LeftColumn),
-				source.Grid.Bottom(outerBounds.BottomRow) - source.Grid.Top(outerBounds.TopRow));
-
-			//
-			// Create the inner rectangle.
-			//
-			XRect innerRect = new(
-				source.Grid.Left(innerBounds.LeftColumn),
-				source.Grid.Top(innerBounds.TopRow),
-				source.Grid.Right(innerBounds.RightColumn) - source.Grid.Left(innerBounds.LeftColumn),
-				source.Grid.Bottom(innerBounds.BottomRow) - source.Grid.Top(innerBounds.TopRow));
-
-			//
-			// Create a clipping path where the outer rectangle is included and the inner rectangle is excluded.
-			//
-			XGraphicsPath clipPath = new();
-			clipPath.AddRectangle(outerRect);
-			clipPath.AddRectangle(innerRect);
-
-			//
-			// Use Alternate fill mode so the second rectangle becomes a hole in the clipping region.
-			//
-			source.Graphics.IntersectClip(clipPath);
-			clipPath.FillMode = XFillMode.Alternate;
-
-			//
-			// Fill only the outer ring area with the background color.
-			//
-			XBrush backgroundBrush = new XSolidBrush(backgroundColor);
-			source.Graphics.DrawRectangle(backgroundBrush, outerRect);
-
-			//
-			// Draw diagonal lines across the outer rectangle. The clipping path prevents them
-			// from drawing inside the inner rectangle.
-			//
-			XPen patternPen = new(lineColor, lineWidth);
-
-			double height = outerRect.Height;
-			double startX = outerRect.Left - height;
-			double endX = outerRect.Right;
-
-			for (double x = startX; x <= endX; x += spacing)
+			try
 			{
-				XPoint point1 = new(x, outerRect.Bottom);
-				XPoint point2 = new(x + height, outerRect.Top);
+				//
+				// Create the outer rectangle.
+				//
+				XRect outerRect = new(
+					source.Grid.Left(outerBounds.LeftColumn),
+					source.Grid.Top(outerBounds.TopRow),
+					source.Grid.Right(outerBounds.RightColumn) - source.Grid.Left(outerBounds.LeftColumn),
+					source.Grid.Bottom(outerBounds.BottomRow) - source.Grid.Top(outerBounds.TopRow));
 
-				source.Graphics.DrawLine(patternPen, point1, point2);
+				//
+				// Create the inner rectangle.
+				//
+				XRect innerRect = new(
+					source.Grid.Left(innerBounds.LeftColumn),
+					source.Grid.Top(innerBounds.TopRow),
+					source.Grid.Right(innerBounds.RightColumn) - source.Grid.Left(innerBounds.LeftColumn),
+					source.Grid.Bottom(innerBounds.BottomRow) - source.Grid.Top(innerBounds.TopRow));
+
+				//
+				// Create a clipping path where the outer rectangle is included and the inner rectangle is excluded.
+				//
+				XGraphicsPath clipPath = new();
+				clipPath.AddRectangle(outerRect);
+				clipPath.AddRectangle(innerRect);
+
+				//
+				// Use Alternate fill mode so the second rectangle becomes a hole in the clipping region.
+				//
+				clipPath.FillMode = XFillMode.Alternate;
+
+				//
+				// Set the clipping region to the combined path, ensuring that drawing operations only
+				// affect the area between the outer and inner rectangles.
+				//
+				source.Graphics.IntersectClip(clipPath);
+				
+				//
+				// Fill only the outer ring area with the background color.
+				//
+				XBrush backgroundBrush = new XSolidBrush(backgroundColor);
+				source.Graphics.DrawRectangle(backgroundBrush, outerRect);
+
+				//
+				// Draw diagonal lines across the outer rectangle. The clipping path prevents them
+				// from drawing inside the inner rectangle.
+				//
+				XPen patternPen = new(lineColor, lineWidth);
+
+				double height = outerRect.Height;
+				double startX = outerRect.Left - height;
+				double endX = outerRect.Right;
+
+				for (double x = startX; x <= endX; x += spacing)
+				{
+					XPoint point1 = new(x, outerRect.Bottom);
+					XPoint point2 = new(x + height, outerRect.Top);
+
+					source.Graphics.DrawLine(patternPen, point1, point2);
+				}
 			}
-
-			source.Graphics.Restore();
+			finally
+			{
+				source.Graphics.Restore(state);
+			}
 		}
 
 		/// <summary>
@@ -249,11 +277,11 @@ namespace PdfDocuments
 		/// <param name="columnEdge">Specifies whether the line is drawn at the left or right edge of the column.</param>
 		/// <param name="weight">The thickness of the line, in points. Must be greater than zero.</param>
 		/// <param name="color">The color of the line.</param>
-		public static void DrawVerticalLine(this PdfGridPage source, int column, int startRow, int endRow, ColumnEdge columnEdge, double weight, XColor color)
+		public static void DrawVerticalLine(this PdfGridPage source, int column, int startRow, int endRow, PdfColumnEdge columnEdge, double weight, XColor color)
 		{
 			XPen linePen = new(color, weight);
-			XPoint p1 = new(columnEdge == ColumnEdge.Right ? source.Grid.Right(column) : source.Grid.Left(column), source.Grid.Top(startRow));
-			XPoint p2 = new(columnEdge == ColumnEdge.Right ? source.Grid.Right(column) : source.Grid.Left(column), source.Grid.Bottom(endRow));
+			XPoint p1 = new(columnEdge == PdfColumnEdge.Right ? source.Grid.Right(column) : source.Grid.Left(column), source.Grid.Top(startRow));
+			XPoint p2 = new(columnEdge == PdfColumnEdge.Right ? source.Grid.Right(column) : source.Grid.Left(column), source.Grid.Bottom(endRow));
 			source.Graphics.DrawLine(linePen, p1, p2);
 		}
 
@@ -269,11 +297,11 @@ namespace PdfDocuments
 		/// <param name="rowEdge">Specifies whether the line is drawn at the top or bottom edge of the row.</param>
 		/// <param name="weight">The thickness of the line, in points.</param>
 		/// <param name="color">The color of the line.</param>
-		public static void DrawHorizontalLine(this PdfGridPage source, int row, int startColumn, int endColumn, RowEdge rowEdge, double weight, XColor color)
+		public static void DrawHorizontalLine(this PdfGridPage source, int row, int startColumn, int endColumn, PdfRowEdge rowEdge, double weight, XColor color)
 		{
 			XPen linePen = new(color, weight);
-			XPoint p1 = new(source.Grid.Left(startColumn), rowEdge == RowEdge.Top ? source.Grid.Top(row) : source.Grid.Bottom(row));
-			XPoint p2 = new(source.Grid.Right(endColumn), rowEdge == RowEdge.Top ? source.Grid.Top(row) : source.Grid.Bottom(row));
+			XPoint p1 = new(source.Grid.Left(startColumn), rowEdge == PdfRowEdge.Top ? source.Grid.Top(row) : source.Grid.Bottom(row));
+			XPoint p2 = new(source.Grid.Right(endColumn), rowEdge == PdfRowEdge.Top ? source.Grid.Top(row) : source.Grid.Bottom(row));
 			source.Graphics.DrawLine(linePen, p1, p2);
 		}
 
@@ -290,17 +318,17 @@ namespace PdfDocuments
 		{
 			for (int row = 1; row <= source.Grid.Rows; row++)
 			{
-				source.DrawHorizontalLine(row, 1, source.Grid.Columns, RowEdge.Top, weight, color);
+				source.DrawHorizontalLine(row, 1, source.Grid.Columns, PdfRowEdge.Top, weight, color);
 			}
 
-			source.DrawHorizontalLine(source.Grid.Rows, 1, source.Grid.Columns, RowEdge.Bottom, weight, color);
+			source.DrawHorizontalLine(source.Grid.Rows, 1, source.Grid.Columns, PdfRowEdge.Bottom, weight, color);
 
 			for (int column = 1; column <= source.Grid.Columns; column++)
 			{
-				source.DrawVerticalLine(column, 1, source.Grid.Rows, ColumnEdge.Left, weight, color);
+				source.DrawVerticalLine(column, 1, source.Grid.Rows, PdfColumnEdge.Left, weight, color);
 			}
 
-			source.DrawVerticalLine(source.Grid.Columns, 1, source.Grid.Rows, ColumnEdge.Right, weight, color);
+			source.DrawVerticalLine(source.Grid.Columns, 1, source.Grid.Rows, PdfColumnEdge.Right, weight, color);
 		}
 
 		/// <summary>
@@ -315,15 +343,7 @@ namespace PdfDocuments
 		/// width and height of 1 if the calculated size is zero or negative.</returns>
 		public static XRect GetRect(this PdfGridPage source, PdfBounds bounds)
 		{
-			//
-			// Create the rectangle.
-			//
-			double x = source.Grid.Left(bounds.LeftColumn);
-			double y = source.Grid.Top(bounds.TopRow);
-			double w = source.Grid.ColumnsWidth(bounds.Columns) > 0 ? source.Grid.ColumnsWidth(bounds.Columns) : 1;
-			double h = source.Grid.RowsHeight(bounds.Rows) > 0 ? source.Grid.RowsHeight(bounds.Rows) : 1;
-
-			return new XRect(x, y, w, h);
+			return source.Grid.GetRect(bounds);
 		}
 
 		/// <summary>
@@ -343,15 +363,7 @@ namespace PdfDocuments
 		/// and height of 1 if the calculated size is less than or equal to zero.</returns>
 		public static XRect GetRect(this PdfGridPage source, int leftColumn, int topRow, int rightColumn, int bottomRow)
 		{
-			//
-			// Create the rectangle.
-			//
-			double x = source.Grid.Left(leftColumn);
-			double y = source.Grid.Top(topRow);
-			double w = source.Grid.Right(rightColumn) - x > 0 ? source.Grid.Right(rightColumn) - x : 1;
-			double h = source.Grid.Bottom(bottomRow) - y > 0 ? source.Grid.Bottom(bottomRow) - y : 1;
-
-			return new XRect(x, y, w, h);
+			return source.Grid.GetRect(leftColumn, topRow, rightColumn, bottomRow);
 		}
 	}
 }

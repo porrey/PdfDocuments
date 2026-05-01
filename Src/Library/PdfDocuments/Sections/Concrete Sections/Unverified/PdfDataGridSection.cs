@@ -182,7 +182,7 @@ namespace PdfDocuments
 				PdfTextElement<TModel> headerElement = new(column.ColumnHeader.Resolve(g, m));
 				PdfStyle<TModel> headerStyle = this.StyleManager.GetStyle(column.HeaderStyleName.Resolve(g, m));
 				PdfSize headerSize = await headerElement.MeasureAsync(g, m, headerStyle);
-				PdfBounds headerBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], headerSize.Rows).SubtractBounds(g, m, headerStyle.Margin.Resolve(g, m));
+				PdfBounds headerBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], headerSize.Rows).SubtractSpacing(g, m, headerStyle.Margin.Resolve(g, m));
 				this.OnRenderHeaderColumn(g, m, headerBounds, headerStyle, headerElement);
 				leftColumn += columnWidth[i];
 				currentRowHeight = headerSize.Rows;
@@ -217,7 +217,7 @@ namespace PdfDocuments
 						PdfTextElement<TModel> dataElement = new(this.FormattedValue(g, m, column, item));
 						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
 						PdfSize dataSize = await dataElement.MeasureAsync(g, m, dataStyle);
-						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[j], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
+						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[j], dataSize.Rows).SubtractSpacing(g, m, dataStyle.Margin.Resolve(g, m));
 
 						if (dataBounds.Rows > rowHeight)
 						{
@@ -241,7 +241,7 @@ namespace PdfDocuments
 						PdfTextElement<TModel> dataElement = new(this.FormattedValue(g, m, column, item));
 						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
 						PdfSize dataSize = await dataElement.MeasureAsync(g, m, dataStyle);
-						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[k], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
+						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[k], dataSize.Rows).SubtractSpacing(g, m, dataStyle.Margin.Resolve(g, m));
 						this.OnRenderDataColumn(g, m, dataBounds, dataStyle, dataElement, item);
 						leftColumn += columnWidth[k];
 						currentRowHeight = dataSize.Rows;

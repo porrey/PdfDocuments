@@ -56,10 +56,10 @@ namespace PdfDocuments.Tests.Services
 		{
 			ServiceCollection services = new();
 
-			services.AddPdfStyleManager<NullModel>();
+			services.AddPdfStyleManager<PdfNullModel>();
 
 			ServiceProvider provider = services.BuildServiceProvider();
-			IPdfStyleManager<NullModel> styleManager = provider.GetRequiredService<IPdfStyleManager<NullModel>>();
+			IPdfStyleManager<PdfNullModel> styleManager = provider.GetRequiredService<IPdfStyleManager<PdfNullModel>>();
 			Assert.NotNull(styleManager);
 		}
 
@@ -68,7 +68,7 @@ namespace PdfDocuments.Tests.Services
 		{
 			ServiceCollection services = new();
 
-			IServiceCollection result = services.AddPdfStyleManager<NullModel>();
+			IServiceCollection result = services.AddPdfStyleManager<PdfNullModel>();
 
 			Assert.Same(services, result);
 		}
@@ -77,12 +77,12 @@ namespace PdfDocuments.Tests.Services
 		public void AddPdfStyleManager_WithInstance_RegistersProvidedInstance()
 		{
 			ServiceCollection services = new();
-			PdfStyleManager<NullModel> customManager = new();
+			PdfStyleManager<PdfNullModel> customManager = new();
 
 			services.AddPdfStyleManager(customManager);
 
 			ServiceProvider provider = services.BuildServiceProvider();
-			IPdfStyleManager<NullModel> resolved = provider.GetRequiredService<IPdfStyleManager<NullModel>>();
+			IPdfStyleManager<PdfNullModel> resolved = provider.GetRequiredService<IPdfStyleManager<PdfNullModel>>();
 			Assert.Same(customManager, resolved);
 		}
 
@@ -90,7 +90,7 @@ namespace PdfDocuments.Tests.Services
 		public void AddPdfStyleManager_WithInstance_ReturnsTheSameServiceCollection()
 		{
 			ServiceCollection services = new();
-			PdfStyleManager<NullModel> customManager = new();
+			PdfStyleManager<PdfNullModel> customManager = new();
 
 			IServiceCollection result = services.AddPdfStyleManager(customManager);
 
@@ -114,11 +114,11 @@ namespace PdfDocuments.Tests.Services
 		public void AddPdfStyleManager_IsTransient_CreatesNewInstanceEachTime()
 		{
 			ServiceCollection services = new();
-			services.AddPdfStyleManager<NullModel>();
+			services.AddPdfStyleManager<PdfNullModel>();
 
 			ServiceProvider provider = services.BuildServiceProvider();
-			IPdfStyleManager<NullModel> m1 = provider.GetRequiredService<IPdfStyleManager<NullModel>>();
-			IPdfStyleManager<NullModel> m2 = provider.GetRequiredService<IPdfStyleManager<NullModel>>();
+			IPdfStyleManager<PdfNullModel> m1 = provider.GetRequiredService<IPdfStyleManager<PdfNullModel>>();
+			IPdfStyleManager<PdfNullModel> m2 = provider.GetRequiredService<IPdfStyleManager<PdfNullModel>>();
 
 			Assert.NotSame(m1, m2);
 		}

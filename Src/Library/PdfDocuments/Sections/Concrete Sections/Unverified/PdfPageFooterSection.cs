@@ -78,7 +78,7 @@ namespace PdfDocuments
 			PdfStyle<TModel> style = this.ResolveStyle(0);
 			PdfSpacing padding = style.Padding.Resolve(g, m);
 			XFont font = style.Font.Resolve(g, m);
-			PdfBounds textBounds = bounds.SubtractBounds(g, m, padding);
+			PdfBounds textBounds = bounds.SubtractSpacing(g, m, padding);
 
 			//
 			// Top left.

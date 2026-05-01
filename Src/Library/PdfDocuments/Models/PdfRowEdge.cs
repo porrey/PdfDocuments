@@ -26,7 +26,7 @@ namespace PdfDocuments
 	/// <summary>
 	/// Specifies the vertical edge of a row, such as the top or bottom position, in a layout or hierarchical structure.
 	/// </summary>
-	public enum RowEdge
+	public enum PdfRowEdge
 	{
 		/// <summary>
 		/// Represents the top-level element or object in the hierarchy.

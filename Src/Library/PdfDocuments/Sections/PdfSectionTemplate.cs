@@ -295,13 +295,15 @@ namespace PdfDocuments
 			//
 			// Draw a border around the renderable area and fill the it
 			// with a lighter version of the color using alpha so the
-			// fill does not cover up the rendered section. This fill will
-			// highlight the padded area.
+			// fill does not cover up the rendered section. The background
+			// will have diagonal lines through it. This fill will
+			// highlight the margin area only.
 			//
 			if (this.RenderArea != this.SectionArea)
 			{
 				XColor backgroundColor = color.WithLuminosity(.65).WithAlpha(.15);
-				g.DrawFilledRectangle(this.SectionArea, this.RenderArea, backgroundColor, color);
+				XColor lineColor = color.WithLuminosity(.55).WithAlpha(.15);
+				g.DrawFilledRectangle(this.SectionArea, this.RenderArea, backgroundColor, lineColor);
 			}
 
 			g.DrawRectangle(this.RenderArea, 1.0, color);

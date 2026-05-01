@@ -30,7 +30,7 @@ namespace PdfDocuments.Tests.Models
 		[Fact]
 		public void Id_ReturnsNullString()
 		{
-			NullModel model = new();
+			PdfNullModel model = new();
 
 			Assert.Equal("Null", model.Id);
 		}
@@ -38,7 +38,7 @@ namespace PdfDocuments.Tests.Models
 		[Fact]
 		public void NullModel_ImplementsIPdfModel()
 		{
-			NullModel model = new();
+			PdfNullModel model = new();
 
 			Assert.IsAssignableFrom<IPdfModel>(model);
 		}

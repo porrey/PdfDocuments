@@ -82,7 +82,7 @@ namespace PdfDocuments
 			// Draw the signature line.
 			//
 			int top = bounds.BottomRow - (2 * padding.Bottom);
-			g.DrawHorizontalLine(top, bounds.LeftColumn, bounds.RightColumn, RowEdge.Bottom, style.BorderWidth.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
+			g.DrawHorizontalLine(top, bounds.LeftColumn, bounds.RightColumn, PdfRowEdge.Bottom, style.BorderWidth.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
 
 			//
 			// Get the relative width of the sections.

@@ -200,7 +200,7 @@ namespace PdfDocuments
 						PdfTextElement<TModel> dataElement = new(this.FormattedValue(g, m, column, item));
 						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
 						PdfSize dataSize = await dataElement.MeasureAsync(g, m, dataStyle);
-						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
+						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[i], dataSize.Rows).SubtractSpacing(g, m, dataStyle.Margin.Resolve(g, m));
 
 						if (dataBounds.Rows > rowHeight)
 						{
@@ -224,7 +224,7 @@ namespace PdfDocuments
 						PdfTextElement<TModel> dataElement = new(this.FormattedValue(g, m, column, item));
 						PdfStyle<TModel> dataStyle = this.StyleManager.GetStyle(column.DataStyleName.Resolve(g, m));
 						PdfSize dataSize = await dataElement.MeasureAsync(g, m, dataStyle);
-						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[j], dataSize.Rows).SubtractBounds(g, m, dataStyle.Margin.Resolve(g, m));
+						PdfBounds dataBounds = new PdfBounds(leftColumn, topRow, columnWidth[j], dataSize.Rows).SubtractSpacing(g, m, dataStyle.Margin.Resolve(g, m));
 						dataBounds.Rows = rowHeight;
 						this.OnRenderDataColumn(g, m, dataBounds, dataStyle, dataElement, item);
 						leftColumn += columnWidth[j];

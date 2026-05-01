@@ -157,7 +157,7 @@ namespace PdfDocuments
 		/// <param name="m">The PDF model instance used for grid calculations.</param>
 		/// <param name="spacing">The spacing to subtract from the outer bounds. Specifies the amount to remove from each side.</param>
 		/// <returns>A PdfBounds instance representing the adjusted bounds after subtracting the specified inner spacing.</returns>
-		public static PdfBounds SubtractBounds<TModel>(this PdfBounds outerBounds, PdfGridPage g, TModel m, PdfSpacing spacing)
+		public static PdfBounds SubtractSpacing<TModel>(this PdfBounds outerBounds, PdfGridPage g, TModel m, PdfSpacing spacing)
 			where TModel : IPdfModel
 		{
 			PdfBounds returnValue = outerBounds;
@@ -181,7 +181,7 @@ namespace PdfDocuments
 		/// <param name="m">The model instance associated with the PDF grid page.</param>
 		/// <param name="spacing">The spacing values to apply to each side of the outer bounds when expanding.</param>
 		/// <returns>A new PdfBounds instance representing the expanded bounds after applying the specified inner spacing.</returns>
-		public static PdfBounds AddBounds<TModel>(this PdfBounds outerBounds, PdfGridPage g, TModel m, PdfSpacing spacing)
+		public static PdfBounds AddSpacing<TModel>(this PdfBounds outerBounds, PdfGridPage g, TModel m, PdfSpacing spacing)
 			where TModel : IPdfModel
 		{
 			PdfBounds returnValue = outerBounds;

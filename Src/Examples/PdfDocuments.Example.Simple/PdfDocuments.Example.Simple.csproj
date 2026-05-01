@@ -11,6 +11,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="watermark-logo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Images\watermark.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\Library\PdfDocuments.FontResolver.Windows\PdfDocuments.FontResolver.Windows.csproj" />
 		<ProjectReference Include="..\PdfDocuments.Example.Shared\PdfDocuments.Example.Shared.csproj" />
 	</ItemGroup>

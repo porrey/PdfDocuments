@@ -50,7 +50,7 @@ namespace PdfDocuments
 		public static void DrawImageWithFixedWidth(this PdfGridPage source, string imageFile, int leftColumn, int topRow, int columns)
 		{
 			//
-			// Draw the logo.
+			// Draw the image.
 			//
 			using (XImage image = XImage.FromFile(imageFile))
 			{
@@ -142,11 +142,32 @@ namespace PdfDocuments
 		/// <param name="bounds">The rectangular area, in PDF coordinates, where the image will be placed.</param>
 		/// <param name="horizontalAlignment">Specifies how the image is aligned horizontally within the bounds.</param>
 		/// <param name="verticalAlignment">Specifies how the image is aligned vertically within the bounds.</param>
-		public static void DrawImage(this PdfGridPage source, string imageFile, PdfBounds bounds, PdfHorizontalAlignment horizontalAlignment, PdfVerticalAlignment verticalAlignment)
+		/// <param name="clipDrawing">Indicates whether the drawing should be clipped to the specified bounds.</param>
+		public static void DrawImage(this PdfGridPage source, string imageFile, PdfBounds bounds, PdfHorizontalAlignment horizontalAlignment, PdfVerticalAlignment verticalAlignment, bool clipDrawing)
 		{
-			using (XImage image = XImage.FromFile(imageFile))
+			//
+			// Save the current graphics state to restore it later.
+			//
+			XGraphicsState state = source.Graphics.Save();
+
+			try
 			{
-				source.DrawImage(image, bounds, horizontalAlignment, verticalAlignment);
+				//
+				// If clipping is enabled, set a clipping region to restrict drawing to the specified bounds.
+				//
+				if (clipDrawing)
+				{
+					source.ClipDrawing(bounds);
+				}
+
+				using (XImage image = XImage.FromFile(imageFile))
+				{
+					source.DrawImage(image, bounds, horizontalAlignment, verticalAlignment);
+				}
+			}
+			finally
+			{
+				source.Graphics.Restore(state);
 			}
 		}
 
@@ -161,20 +182,39 @@ namespace PdfDocuments
 		/// <param name="bounds">The bounds within the grid page that define the area for image placement and alignment.</param>
 		/// <param name="horizontalAlignment">Specifies how the image is aligned horizontally within the provided bounds.</param>
 		/// <param name="verticalAlignment">Specifies how the image is aligned vertically within the provided bounds.</param>
-		public static void DrawImage(this PdfGridPage source, XImage image, PdfBounds bounds, PdfHorizontalAlignment horizontalAlignment, PdfVerticalAlignment verticalAlignment)
+		/// <param name="scale">An optional scaling factor to apply to the image size. Default is 1.0 (no scaling).</param>
+		public static void DrawImage(this PdfGridPage source, XImage image, PdfBounds bounds, PdfHorizontalAlignment horizontalAlignment, PdfVerticalAlignment verticalAlignment, float scale = 1.0f, bool clipDrawing = true)
 		{
-			PdfBounds imageBounds = new(0, 0, (int)(image.PointWidth / source.Grid.ColumnWidth), (int)(image.PointHeight / source.Grid.RowHeight));
-			PdfPoint hPoint = bounds.AlignHorizontally(imageBounds, horizontalAlignment);
-			PdfPoint vPoint = bounds.AlignVertically(imageBounds, verticalAlignment);
+			//
+			// Save the current graphics state to restore it later.
+			//
+			XGraphicsState state = source.Graphics.Save();
 
-			imageBounds.LeftColumn = hPoint.Column;
-			imageBounds.TopRow = vPoint.Row;
+			try
+			{
+				int imageWidthInColumns = (int)((image.PointWidth * scale) / source.Grid.ColumnWidth);
+				int imageHeightInRows = (int)((image.PointHeight * scale) / source.Grid.RowHeight);
 
-			double x = source.Grid.Left(hPoint.Column);
-			double y = source.Grid.Top(vPoint.Row);
-			XPoint xp = new() { X = x, Y = y };
+				PdfBounds imageBounds = new(bounds.LeftColumn, bounds.TopRow, imageWidthInColumns, imageHeightInRows);
 
-			source.Graphics.DrawImage(image, xp);
+				//
+				// If clipping is enabled, set a clipping region to restrict drawing to the specified bounds.
+				//
+				if (clipDrawing)
+				{
+					source.ClipDrawing(imageBounds);
+				}
+
+				PdfPoint hPoint = bounds.AlignHorizontally(imageBounds, horizontalAlignment);
+				PdfPoint vPoint = bounds.AlignVertically(imageBounds, verticalAlignment);
+				XPoint xp = source.Grid.GetXPoint(hPoint.Column, vPoint.Row);
+
+				source.Graphics.DrawImage(image, xp.X, xp.Y, image.PointWidth * scale, image.PointHeight * scale);
+			}
+			finally
+			{
+				source.Graphics.Restore(state);
+			}
 		}
 	}
 }

@@ -31,17 +31,17 @@
 		<PackageTags>pdf;document;barcode</PackageTags>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<DocumentationFile>Xml\PdfDocuments.FontResolver.Folder.xml</DocumentationFile>
+		<DocumentationFile>XmlDocs\PdfDocuments.FontResolver.Folder.xml</DocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="Xml\PdfDocuments.FontResolver.Folder.xml">
+		<Content Include="XmlDocs\PdfDocuments.FontResolver.Folder.xml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.7" />
 		<PackageReference Include="PDFsharp" Version="6.2.4" />
 	</ItemGroup>
 

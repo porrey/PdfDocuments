@@ -94,41 +94,62 @@ namespace PdfDocuments
 		/// <param name="color">The color used to render the text.</param>
 		/// <param name="forceNoDebug">If set to <see langword="true"/>, disables debug overlays such as font details and outline regardless of the
 		/// page's debug mode.</param>
+		/// <param name="clipDrawing">true to restrict drawing to the specified grid area; otherwise, false.</param>
 		/// <returns>A <see cref="PdfSize"/> representing the measured size of the rendered text.</returns>
-		public static PdfSize DrawText(this PdfGridPage source, string text, XFont font, PdfBounds bounds, XStringFormat formats, XColor color, bool forceNoDebug = false)
+		public static PdfSize DrawText(this PdfGridPage source, string text, XFont font, PdfBounds bounds, XStringFormat formats, XColor color, bool clipDrawing = false, bool forceNoDebug = false)
 		{
 			PdfSize returnValue = source.MeasureText(font, text);
 
 			//
-			// Draw the text.
+			// Save the current graphics state to restore it later.
 			//
-			source.Graphics.DrawString(text ?? string.Empty, font, new XSolidBrush(color), source.GetRect(bounds), formats);
+			XGraphicsState state = source.Graphics.Save();
 
-			//
-			// Draw the name of the font over the text.
-			//
-			if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.RevealFontDetails))
+			try
 			{
-				XFont debugFont = new(GlobalPdfDocumentsSettings.DefaultFontName, 8, XFontStyleEx.Regular);
-				PdfSize textSize = source.MeasureText(debugFont, font.FontFamily.Name);
-				PdfBounds labelBounds = new(bounds.LeftColumn + (int)((bounds.Columns - textSize.Columns) / 2.0), bounds.TopRow + (int)((bounds.Rows - textSize.Rows) / 2.0), textSize.Columns + 2, textSize.Rows + 2);
-				source.DrawFilledRectangle(labelBounds, XColors.Black);
-				XRect labelLayout = source.GetRect(labelBounds);
-				XBrush labelBrush = new XSolidBrush(XColors.Wheat);
-				source.Graphics.DrawString(font.FontFamily.Name, debugFont, labelBrush, labelLayout, XStringFormats.Center);
-			}
-
-			//
-			// Draw a dotted line around the area used to draw the text.
-			//
-			if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.OutlineText))
-			{
-				XPen pen = new(XColors.HotPink, .5)
+				//
+				// If clipping is enabled, set a clipping region to restrict drawing to the specified bounds.
+				//
+				if (clipDrawing)
 				{
-					DashStyle = XDashStyle.Dot
-				};
+					source.ClipDrawing(bounds);
+				}
 
-				source.DrawRectangle(bounds, pen);
+				//
+				// Draw the text.
+				//
+				source.Graphics.DrawString(text ?? string.Empty, font, new XSolidBrush(color), source.GetRect(bounds), formats);
+
+				//
+				// Draw the name of the font over the text.
+				//
+				if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.RevealFontDetails))
+				{
+					XFont debugFont = new(GlobalPdfDocumentsSettings.DefaultFontName, 8, XFontStyleEx.Regular);
+					PdfSize textSize = source.MeasureText(debugFont, font.FontFamily.Name);
+					PdfBounds labelBounds = new(bounds.LeftColumn + (int)((bounds.Columns - textSize.Columns) / 2.0), bounds.TopRow + (int)((bounds.Rows - textSize.Rows) / 2.0), textSize.Columns + 2, textSize.Rows + 2);
+					source.DrawFilledRectangle(labelBounds, XColors.Black);
+					XRect labelLayout = source.GetRect(labelBounds);
+					XBrush labelBrush = new XSolidBrush(XColors.Wheat);
+					source.Graphics.DrawString(font.FontFamily.Name, debugFont, labelBrush, labelLayout, XStringFormats.Center);
+				}
+
+				//
+				// Draw a dotted line around the area used to draw the text.
+				//
+				if (!forceNoDebug && source.DebugMode.HasFlag(DebugMode.OutlineText))
+				{
+					XPen pen = new(XColors.HotPink, .5)
+					{
+						DashStyle = XDashStyle.Dot
+					};
+
+					source.DrawRectangle(bounds, pen);
+				}
+			}
+			finally
+			{
+				source.Graphics.Restore(state);
 			}
 
 			return returnValue;
@@ -146,33 +167,34 @@ namespace PdfDocuments
 		/// <param name="bounds">The rectangular area, in PDF coordinates, within which the text will be drawn.</param>
 		/// <param name="formats">The string formatting options that determine text alignment and layout within the bounds.</param>
 		/// <param name="color">The color used to render the text.</param>
+		/// <param name="clipDrawing">true to restrict drawing to the specified grid area; otherwise, false.</param>
 		/// <returns>A PdfSize structure representing the size of the rendered text within the specified bounds.</returns>
-		public static PdfSize DrawText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyleEx style, PdfBounds bounds, XStringFormat formats, XColor color)
+		public static PdfSize DrawText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyleEx style, PdfBounds bounds, XStringFormat formats, XColor color, bool clipDrawing = false)
 		{
 			XFont font = new(familyName, emSize, style);
-			return source.DrawText(text, font, bounds, formats, color);
+			return source.DrawText(text, font, bounds, formats, color, clipDrawing);
 		}
 
 		/// <summary>
-		/// Draws the specified text within a defined grid area on the PDF page using the given font, style, formatting, and
-		/// color.
+		/// Draws the specified text within the defined grid area on the PDF page using the given font and formatting options.
 		/// </summary>
-		/// <param name="source">The PDF grid page on which the text will be drawn.</param>
-		/// <param name="text">The text string to render within the grid area.</param>
+		/// <param name="source">The PDF grid page on which to draw the text.</param>
+		/// <param name="text">The text to be drawn.</param>
 		/// <param name="familyName">The name of the font family to use for rendering the text.</param>
-		/// <param name="emSize">The font size, in points, used to render the text.</param>
+		/// <param name="emSize">The font size, in points, to use for the text.</param>
 		/// <param name="style">The font style to apply, such as bold or italic.</param>
-		/// <param name="leftColumn">The index of the leftmost column in the grid area where the text will be drawn.</param>
-		/// <param name="topRow">The index of the topmost row in the grid area where the text will be drawn.</param>
-		/// <param name="columns">The number of columns spanning the grid area for the text.</param>
-		/// <param name="rows">The number of rows spanning the grid area for the text.</param>
-		/// <param name="formats">The string formatting options that control text alignment and layout.</param>
-		/// <param name="color">The color used to render the text.</param>
-		/// <returns>A PdfSize object representing the size of the rendered text within the specified grid area.</returns>
-		public static PdfSize DrawText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyleEx style, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color)
+		/// <param name="leftColumn">The zero-based index of the leftmost column of the grid area where the text will be drawn.</param>
+		/// <param name="topRow">The zero-based index of the topmost row of the grid area where the text will be drawn.</param>
+		/// <param name="columns">The number of columns spanning the area in which to draw the text. Must be greater than zero.</param>
+		/// <param name="rows">The number of rows spanning the area in which to draw the text. Must be greater than zero.</param>
+		/// <param name="formats">The string formatting options to apply when drawing the text.</param>
+		/// <param name="color">The color to use for the text.</param>
+		/// <param name="clipDrawing">true to clip the text to the bounds of the specified grid area; otherwise, false.</param>
+		/// <returns>A PdfSize structure representing the size of the area occupied by the drawn text.</returns>
+		public static PdfSize DrawText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyleEx style, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, bool clipDrawing)
 		{
 			PdfBounds bounds = new(leftColumn, topRow, columns, rows);
-			return source.DrawText(text, familyName, emSize, style, bounds, formats, color);
+			return source.DrawText(text, familyName, emSize, style, bounds, formats, color, clipDrawing);
 		}
 
 		/// <summary>
@@ -187,11 +209,12 @@ namespace PdfDocuments
 		/// <param name="rows">The number of rows spanned by the grid area.</param>
 		/// <param name="formats">The string formatting options to apply when rendering the text.</param>
 		/// <param name="color">The color to use for the text.</param>
+		/// <param name="clipDrawing">true to restrict drawing to the specified grid area; otherwise, false.</param>
 		/// <returns>A PdfSize object representing the size of the drawn text within the specified grid area.</returns>
-		public static PdfSize DrawText(this PdfGridPage source, string text, XFont font, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color)
+		public static PdfSize DrawText(this PdfGridPage source, string text, XFont font, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, bool clipDrawing = false)
 		{
 			PdfBounds bounds = new(leftColumn, topRow, columns, rows);
-			return source.DrawText(text, font, bounds, formats, color);
+			return source.DrawText(text, font, bounds, formats, color, clipDrawing);
 		}
 
 		/// <summary>
@@ -208,17 +231,52 @@ namespace PdfDocuments
 		/// <param name="color">The color used to draw the text.</param>
 		/// <param name="paragraphAlignment">The paragraph alignment to apply to the text. Defaults to <see cref="XParagraphAlignment.Default"/> if not
 		/// specified.</param>
-		public static void DrawWrappingText(this PdfGridPage source, string text, XFont font, PdfBounds bounds, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
+		/// <param name="clipDrawing">true to restrict drawing to the specified grid area; otherwise, false.</param>
+		public static void DrawWrappingText(this PdfGridPage source, string text, XFont font, PdfBounds bounds, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default, bool clipDrawing = false)
 		{
-			XRect layout = new(source.Grid.Left(bounds.LeftColumn), source.Grid.Top(bounds.TopRow), source.Grid.ColumnsWidth(bounds.Columns), source.Grid.RowsHeight(bounds.Rows));
+			//
+			// Save the current graphics state to restore it later.
+			//
+			XGraphicsState state = source.Graphics.Save();
 
-			XTextFormatter formatter = new(source.Graphics)
+			try
 			{
-				Alignment = paragraphAlignment
-			};
+				//
+				// If clipping is enabled, set a clipping region to restrict drawing to the specified bounds.
+				//
+				XRect layout = new(source.Grid.Left(bounds.LeftColumn), source.Grid.Top(bounds.TopRow), source.Grid.ColumnsWidth(bounds.Columns), source.Grid.RowsHeight(bounds.Rows));
 
-			XBrush brush = new XSolidBrush(color);
-			formatter.DrawString(text, font, brush, layout, formats);
+				//
+				// Create a text formatter with the specified paragraph alignment.
+				//
+				XTextFormatter formatter = new(source.Graphics)
+				{
+					Alignment = paragraphAlignment
+				};
+
+				//
+				// Create a brush with the specified color for drawing the text.
+				//
+				XBrush brush = new XSolidBrush(color);
+
+				//
+				// If clipping is enabled, set a clipping region to restrict drawing to the specified bounds.
+				//
+				if (clipDrawing)
+				{
+					source.ClipDrawing(bounds);
+				}
+
+				//
+				// Draw the text using the formatter, which will handle wrapping and alignment within the
+				// specified layout rectangle.
+				//
+				formatter.DrawString(text, font, brush, layout, formats);
+			}
+			finally
+			{
+				source.Graphics.Restore(state);
+			}
 		}
 
 		/// <summary>
@@ -241,32 +299,87 @@ namespace PdfDocuments
 		/// <param name="color">The color used to render the text.</param>
 		/// <param name="paragraphAlignment">The paragraph alignment applied to the text. Defaults to <see cref="XParagraphAlignment.Default"/> if not
 		/// specified.</param>
-		public static void DrawWrappingText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyleEx style, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
+		/// <param name="clipDrawing">true to restrict drawing to the specified grid area; otherwise, false.</param>
+		public static void DrawWrappingText(this PdfGridPage source, string text, string familyName, double emSize, XFontStyleEx style, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default, bool clipDrawing = false)
 		{
 			PdfBounds bounds = new(leftColumn, topRow, columns, rows);
 			XFont font = new(familyName, emSize, style);
-			source.DrawWrappingText(text, font, bounds, formats, color, paragraphAlignment);
+			source.DrawWrappingText(text, font, bounds, formats, color, paragraphAlignment, clipDrawing);
 		}
 
 		/// <summary>
-		/// Draws text within a specified grid area on the PDF page, automatically wrapping lines to fit the defined columns
-		/// and rows.
+		/// Draws the specified text within a rectangular grid area on the PDF page, automatically wrapping the text across
+		/// multiple lines as needed.
 		/// </summary>
-		/// <param name="source">The PDF grid page on which the text will be drawn.</param>
-		/// <param name="text">The text to render within the grid area. Can include line breaks.</param>
-		/// <param name="font">The font used to render the text.</param>
-		/// <param name="leftColumn">The index of the leftmost column where the text drawing begins. Must be within the grid's valid column range.</param>
-		/// <param name="topRow">The index of the topmost row where the text drawing begins. Must be within the grid's valid row range.</param>
-		/// <param name="columns">The number of columns spanned by the text area. Must be positive.</param>
-		/// <param name="rows">The number of rows spanned by the text area. Must be positive.</param>
-		/// <param name="formats">The string formatting options applied to the text, such as alignment and line spacing.</param>
-		/// <param name="color">The color used to render the text.</param>
-		/// <param name="paragraphAlignment">The paragraph alignment applied to the text. Defaults to <see cref="XParagraphAlignment.Default"/> if not
-		/// specified.</param>
-		public static void DrawWrappingText(this PdfGridPage source, string text, XFont font, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default)
+		/// <remarks>If clipDrawing is set to true, text that exceeds the bounds of the specified grid area will be
+		/// clipped. The method preserves and restores the graphics state of the page during drawing.</remarks>
+		/// <param name="source">The PDF grid page on which to draw the text.</param>
+		/// <param name="text">The text to be drawn and wrapped within the specified grid area.</param>
+		/// <param name="font">The font to use when rendering the text.</param>
+		/// <param name="leftColumn">The zero-based index of the leftmost column of the grid area where the text will be drawn.</param>
+		/// <param name="topRow">The zero-based index of the topmost row of the grid area where the text will be drawn.</param>
+		/// <param name="columns">The number of columns spanning the grid area for the text.</param>
+		/// <param name="rows">The number of rows spanning the grid area for the text.</param>
+		/// <param name="formats">The string formatting options to apply when drawing the text.</param>
+		/// <param name="color">The color to use for the rendered text.</param>
+		/// <param name="paragraphAlignment">The paragraph alignment to apply to the text. The default is XParagraphAlignment.Default.</param>
+		/// <param name="clipDrawing">true to restrict drawing to the specified grid area; otherwise, false.</param>
+		public static void DrawWrappingText(this PdfGridPage source, string text, XFont font, int leftColumn, int topRow, int columns, int rows, XStringFormat formats, XColor color, XParagraphAlignment paragraphAlignment = XParagraphAlignment.Default, bool clipDrawing = false)
 		{
-			PdfBounds bounds = new(leftColumn, topRow, columns, rows);
-			source.DrawWrappingText(text, font, bounds, formats, color, paragraphAlignment);
+			//
+			// Save the current graphics state to restore it later.
+			//
+			XGraphicsState state = source.Graphics.Save();
+
+			try
+			{
+				//
+				// Calculate the bounds for the text based on the specified grid area.
+				//
+				PdfBounds bounds = new(leftColumn, topRow, columns, rows);
+
+				//
+				// If clipping is enabled, set a clipping region to restrict drawing to the specified bounds.
+				//
+				if (clipDrawing)
+				{
+					source.ClipDrawing(bounds);
+				}
+
+				source.DrawWrappingText(text, font, bounds, formats, color, paragraphAlignment);
+			}
+			finally
+			{
+				source.Graphics.Restore(state);
+			}
+		}
+
+		/// <summary>
+		/// Sets a clipping region on the PDF page so that subsequent drawing operations are restricted to the specified
+		/// bounds.
+		/// </summary>
+		/// <remarks>This method modifies the graphics state of the page. Drawing outside the specified bounds will
+		/// not appear until the clipping region is reset or changed.</remarks>
+		/// <param name="source">The PDF grid page on which to set the clipping region.</param>
+		/// <param name="bounds">The bounds that define the rectangular area to which drawing will be clipped.</param>
+		public static void ClipDrawing(this PdfGridPage source, PdfBounds bounds)
+		{
+			//
+			// Get the rectangle area corresponding to the grid bounds for drawing the text.
+			//
+			XRect rect = source.GetRect(bounds);
+
+			//
+			// Create a clipping path.
+			//
+			XGraphicsPath clipPath = new();
+			clipPath.AddRectangle(rect);
+
+			//
+			// Set the clipping region to the combined path, ensuring that drawing operations only
+			// affect the area between the outer and inner rectangles.
+			//
+			source.Graphics.IntersectClip(clipPath);
 		}
 	}
 }

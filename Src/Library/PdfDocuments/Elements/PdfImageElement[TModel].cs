@@ -88,7 +88,42 @@ namespace PdfDocuments
 		{
 			if (!string.IsNullOrWhiteSpace(this.Path) && File.Exists(this.Path))
 			{
-				g.DrawImage(this.Path, bounds, PdfHorizontalAlignment.Center, PdfVerticalAlignment.Center);
+				//
+				// Determine the horizontal and vertical alignment for the image based on
+				// the style settings, resolving any bindings
+				//
+				PdfHorizontalAlignment horizontalAlignment = style.HorizontalImageAlignment.Resolve(g, m);
+				PdfVerticalAlignment verticalAlignment = style.VerticalImageAlignment.Resolve(g, m);
+
+				//
+				// Get the image opacity.
+				//
+				float opacity = style.ImageOpacity.Resolve(g, m);
+
+				//
+				// Add the cell padding
+				//
+				PdfSpacing cellPaddng = style.CellPadding.Resolve(g, m);
+				PdfBounds imageBounds = bounds.SubtractSpacing(g, m, cellPaddng);
+
+				//
+				// Get the image scale factor based on the style settings, resolving any bindings. This determines how the image
+				// will be scaled during rendering.
+				//
+				float scale = style.ImageScale.Resolve(g, m);
+
+				//
+				//
+				//
+				bool clipDrawing = style.ClipDrawing.Resolve(g, m, state);
+
+				using (PdfTransparentImage image = PdfTransparentImage.FromFile(this.Path, opacity))
+				{
+					//
+					// Draw the image within the calculated bounds, applying the specified alignments.
+					//
+					g.DrawImage(image.XImage, imageBounds, horizontalAlignment, verticalAlignment, scale, clipDrawing);
+				}
 			}
 
 			return Task.CompletedTask;

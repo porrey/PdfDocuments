@@ -68,10 +68,19 @@ namespace PdfDocuments.Example.Simple
 						.UseTextWrapping(true)
 						.UseParagraphAlignment(XParagraphAlignment.Right)
 						.UseMargin(4, 4, 4, 4)
+						.UseClipDrawing(true)
 						//.UseFixedHeight(75)
 						//.UseFixedWidths(75)
 						//.UseRelativeHeight(.5)
-						//.UseRelativeWidths(.5)
+						//.UseRelativeWidths(.3)
+						.Build());
+
+			this.StyleManager.Add("Watermark", Style.Create<Message>()
+						.UseHorizontalImageAlignment(PdfHorizontalAlignment.Right)
+						.UseVerticalImageAlignment(PdfVerticalAlignment.Bottom)
+						.UsePadding(0, 0, 0, 0)
+						.UseImageOpacity(.15f)
+						.UseImageScale(.75f)
 						.Build());
 
 			return Task.CompletedTask;
@@ -88,7 +97,7 @@ namespace PdfDocuments.Example.Simple
 			// Add a basic text block using the style that was created.
 			//
 			return Task.FromResult(
-				Pdf.VerticalStackSection(
+				Pdf.OverlayStackSection(
 					Pdf.TextBlockSection<Message>()
 						.WithText((g, m) => m.Text)
 						.WithStyles("HelloWorld.Text")
@@ -97,11 +106,13 @@ namespace PdfDocuments.Example.Simple
 						.WithText((g, m) => m.Text)
 						.WithStyles("HelloWorld.Text")
 						.WithKey("HelloWorld.TextBlock"),
-						Pdf.TextBlockSection<Message>()
+					Pdf.TextBlockSection<Message>()
 						.WithText((g, m) => m.Text)
 						.WithStyles("HelloWorld.Text")
 						.WithKey("HelloWorld.TextBlock")
 				).WithStyleManager(this.StyleManager)
+				 .WithStyles("Watermark")
+				 .WithWatermark("Images/watermark.png")
 			);
 		}
 	}

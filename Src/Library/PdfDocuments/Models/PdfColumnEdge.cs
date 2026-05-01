@@ -29,7 +29,7 @@ namespace PdfDocuments
 	/// <remarks>Use this enumeration to indicate which side of a column is being referenced when performing layout
 	/// calculations or alignment. This can be useful in scenarios where columns are manipulated or rendered based on their
 	/// edges.</remarks>
-	public enum ColumnEdge
+	public enum PdfColumnEdge
 	{
 		/// <summary>
 		/// Gets or sets the left coordinate of the section.

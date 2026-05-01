@@ -31,30 +31,30 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void DefaultConstructor_AddsTwoDefaultStyles()
 		{
-			PdfStyleManager<NullModel> manager = [];
+			PdfStyleManager<PdfNullModel> manager = [];
 
-			Assert.True(manager.ContainsKey(PdfStyleManager<NullModel>.Default));
-			Assert.True(manager.ContainsKey(PdfStyleManager<NullModel>.Debug));
+			Assert.True(manager.ContainsKey(PdfStyleManager<PdfNullModel>.Default));
+			Assert.True(manager.ContainsKey(PdfStyleManager<PdfNullModel>.Debug));
 			Assert.Equal(2, manager.Count);
 		}
 
 		[Fact]
 		public void ParameterizedConstructor_AddsTwoStyles()
 		{
-			PdfStyleManager<NullModel> manager = new("Arial", 10);
+			PdfStyleManager<PdfNullModel> manager = new("Arial", 10);
 
-			Assert.True(manager.ContainsKey(PdfStyleManager<NullModel>.Default));
-			Assert.True(manager.ContainsKey(PdfStyleManager<NullModel>.Debug));
+			Assert.True(manager.ContainsKey(PdfStyleManager<PdfNullModel>.Default));
+			Assert.True(manager.ContainsKey(PdfStyleManager<PdfNullModel>.Debug));
 		}
 
 		[Fact]
 		public void GetStyle_ExistingKey_ReturnsStyle()
 		{
-			PdfStyleManager<NullModel> manager = [];
-			PdfStyle<NullModel> customStyle = new();
+			PdfStyleManager<PdfNullModel> manager = [];
+			PdfStyle<PdfNullModel> customStyle = new();
 			manager.Add("Custom", customStyle);
 
-			PdfStyle<NullModel> result = manager.GetStyle("Custom");
+			PdfStyle<PdfNullModel> result = manager.GetStyle("Custom");
 
 			Assert.Same(customStyle, result);
 		}
@@ -62,10 +62,10 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void GetStyle_NonExistingKey_ReturnsDefaultStyle()
 		{
-			PdfStyleManager<NullModel> manager = [];
-			PdfStyle<NullModel> defaultStyle = manager[PdfStyleManager<NullModel>.Default];
+			PdfStyleManager<PdfNullModel> manager = [];
+			PdfStyle<PdfNullModel> defaultStyle = manager[PdfStyleManager<PdfNullModel>.Default];
 
-			PdfStyle<NullModel> result = manager.GetStyle("NonExistent");
+			PdfStyle<PdfNullModel> result = manager.GetStyle("NonExistent");
 
 			Assert.Same(defaultStyle, result);
 		}
@@ -73,9 +73,9 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void GetStyle_DefaultKey_ReturnsDefaultStyle()
 		{
-			PdfStyleManager<NullModel> manager = [];
+			PdfStyleManager<PdfNullModel> manager = [];
 
-			PdfStyle<NullModel> result = manager.GetStyle(PdfStyleManager<NullModel>.Default);
+			PdfStyle<PdfNullModel> result = manager.GetStyle(PdfStyleManager<PdfNullModel>.Default);
 
 			Assert.NotNull(result);
 		}
@@ -83,9 +83,9 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void GetStyle_DebugKey_ReturnsDebugStyle()
 		{
-			PdfStyleManager<NullModel> manager = [];
+			PdfStyleManager<PdfNullModel> manager = [];
 
-			PdfStyle<NullModel> result = manager.GetStyle(PdfStyleManager<NullModel>.Debug);
+			PdfStyle<PdfNullModel> result = manager.GetStyle(PdfStyleManager<PdfNullModel>.Debug);
 
 			Assert.NotNull(result);
 		}
@@ -93,20 +93,20 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void Replace_ExistingKey_ReplacesStyle()
 		{
-			PdfStyleManager<NullModel> manager = [];
-			PdfStyle<NullModel> newDefaultStyle = new();
+			PdfStyleManager<PdfNullModel> manager = [];
+			PdfStyle<PdfNullModel> newDefaultStyle = new();
 
-			manager.Replace(PdfStyleManager<NullModel>.Default, newDefaultStyle);
+			manager.Replace(PdfStyleManager<PdfNullModel>.Default, newDefaultStyle);
 
-			Assert.Same(newDefaultStyle, manager[PdfStyleManager<NullModel>.Default]);
+			Assert.Same(newDefaultStyle, manager[PdfStyleManager<PdfNullModel>.Default]);
 			Assert.Equal(2, manager.Count);
 		}
 
 		[Fact]
 		public void Replace_NonExistingKey_AddsNewStyle()
 		{
-			PdfStyleManager<NullModel> manager = [];
-			PdfStyle<NullModel> newStyle = new();
+			PdfStyleManager<PdfNullModel> manager = [];
+			PdfStyle<PdfNullModel> newStyle = new();
 			int countBefore = manager.Count;
 
 			manager.Replace("NewStyle", newStyle);
@@ -118,13 +118,13 @@ namespace PdfDocuments.Tests.Services
 		[Fact]
 		public void DefaultConstantValue_IsDefault()
 		{
-			Assert.Equal("Default", PdfStyleManager<NullModel>.Default);
+			Assert.Equal("Default", PdfStyleManager<PdfNullModel>.Default);
 		}
 
 		[Fact]
 		public void DebugConstantValue_IsDebug()
 		{
-			Assert.Equal("Debug", PdfStyleManager<NullModel>.Debug);
+			Assert.Equal("Debug", PdfStyleManager<PdfNullModel>.Debug);
 		}
 	}
 }

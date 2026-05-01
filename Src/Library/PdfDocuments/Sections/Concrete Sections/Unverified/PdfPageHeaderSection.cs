@@ -85,7 +85,7 @@ namespace PdfDocuments
 			if (this.Title != null)
 			{
 				string title = this.Title.Resolve(g, m);
-				PdfBounds textBounds = bounds.SubtractBounds(g, m, padding);
+				PdfBounds textBounds = bounds.SubtractSpacing(g, m, padding);
 				g.DrawText(title, style.Font.Resolve(g, m), textBounds, style.TextAlignment.Resolve(g, m), style.ForegroundColor.Resolve(g, m));
 			}
 

@@ -29,7 +29,7 @@ namespace PdfDocuments
 	/// </summary>
 	/// <remarks>Use this type when you need to create a PDF data grid column without binding it to a specific data
 	/// model. This is useful for scenarios where columns are defined independently of data source types.</remarks>
-	public class PdfDataGridColumn : PdfDataGridColumn<NullModel>
+	public class PdfDataGridColumn : PdfDataGridColumn<PdfNullModel>
 	{
 	}
 }

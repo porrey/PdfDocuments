@@ -220,7 +220,7 @@ namespace PdfDocuments.Tests.Decorators
 			PdfBounds outer = new(leftColumn: 5, topRow: 5, columns: 20, rows: 10);
 			PdfSpacing spacing = new(left: 2, top: 1, right: 2, bottom: 1);
 
-			PdfBounds result = outer.SubtractBounds<NullModel>(g: null!, m: null!, spacing);
+			PdfBounds result = outer.SubtractSpacing<PdfNullModel>(g: null!, m: null!, spacing);
 
 			// left = 5 + 2 = 7
 			// top = 5 + 1 = 6
@@ -238,7 +238,7 @@ namespace PdfDocuments.Tests.Decorators
 			PdfBounds outer = new(leftColumn: 5, topRow: 5, columns: 20, rows: 10);
 			PdfSpacing spacing = new(left: 0, top: 0, right: 0, bottom: 0);
 
-			PdfBounds result = outer.SubtractBounds<NullModel>(g: null!, m: null!, spacing);
+			PdfBounds result = outer.SubtractSpacing<PdfNullModel>(g: null!, m: null!, spacing);
 
 			Assert.Equal(5, result.LeftColumn);
 			Assert.Equal(5, result.TopRow);
@@ -254,7 +254,7 @@ namespace PdfDocuments.Tests.Decorators
 			PdfBounds outer = new(leftColumn: 5, topRow: 5, columns: 20, rows: 10);
 			PdfSpacing spacing = new(left: 2, top: 1, right: 2, bottom: 1);
 
-			PdfBounds result = outer.AddBounds<NullModel>(g: null!, m: null!, spacing);
+			PdfBounds result = outer.AddSpacing<PdfNullModel>(g: null!, m: null!, spacing);
 
 			// left = 5 - 2 = 3
 			// top = 5 - 1 = 4
@@ -272,7 +272,7 @@ namespace PdfDocuments.Tests.Decorators
 			PdfBounds outer = new(leftColumn: 5, topRow: 5, columns: 20, rows: 10);
 			PdfSpacing spacing = new(left: 0, top: 0, right: 0, bottom: 0);
 
-			PdfBounds result = outer.AddBounds<NullModel>(g: null!, m: null!, spacing);
+			PdfBounds result = outer.AddSpacing<PdfNullModel>(g: null!, m: null!, spacing);
 
 			Assert.Equal(5, result.LeftColumn);
 			Assert.Equal(5, result.TopRow);
