@@ -36,7 +36,23 @@ namespace PdfDocuments
 		/// </summary>
 		public PdfEmptySection()
 		{
-			this.ShouldRender = false;
+		}
+
+		/// <summary>
+		/// Performs asynchronous initialization logic for the grid page using the specified model and bounds.
+		/// </summary>
+		/// <param name="g">The grid page to initialize.</param>
+		/// <param name="m">The model containing data or state used for initialization.</param>
+		/// <param name="bounds">The bounds within which the grid page should be initialized.</param>
+		/// <returns>A task that represents the asynchronous initialization operation.</returns>
+		protected override Task OnInitializeAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			if (this.Children.Count != 0)
+			{
+				this.Children.Clear();
+			}
+
+			return Task.CompletedTask;
 		}
 	}
 }

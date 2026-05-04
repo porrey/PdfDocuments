@@ -38,7 +38,6 @@ namespace PdfDocuments
 		/// </summary>
 		public PdfVerticalStackSection()
 		{
-			this.SectionLayoutMode = PdfSectionsLayoutMode.VerticalStacking;
 		}
 
 		/// <summary>
@@ -52,7 +51,23 @@ namespace PdfDocuments
 		public PdfVerticalStackSection(params IPdfSection<TModel>[] children)
 			: base(children)
 		{
-			this.SectionLayoutMode = PdfSectionsLayoutMode.VerticalStacking;
+		}
+
+		/// <summary>
+		/// Gets or sets the layout mode used for arranging sections within the PDF document.
+		/// </summary>
+		/// <remarks>The layout mode determines how sections are visually organized when rendering the document.
+		/// Setting this property may have no effect if the implementation does not support changing the layout
+		/// mode.</remarks>
+		public override PdfSectionsLayoutMode SectionLayoutMode
+		{
+			get
+			{
+				return PdfSectionsLayoutMode.VerticalStacking;
+			}
+			set
+			{
+			}
 		}
 	}
 }

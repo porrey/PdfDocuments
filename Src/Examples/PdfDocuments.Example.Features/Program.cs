@@ -25,7 +25,7 @@
 using System.Text;
 using PdfSharp.Fonts;
 
-namespace PdfDocuments.Example.Simple
+namespace PdfDocuments.Example.Features
 {
 	/// <summary>
 	/// The main program.
@@ -64,22 +64,22 @@ namespace PdfDocuments.Example.Simple
 			//
 			// Create an instance of the PDF generator.
 			//
-			HelloWorldPdf helloWorld = new(styleManager);
+			FeaturesPdf helloWorld = new(styleManager);
 
 			//
 			// Set debug flags.
 			//
 			helloWorld.DebugMode = helloWorld.DebugMode
 									.SetFlag(DebugMode.RevealGrid, true)
-									.SetFlag(DebugMode.RevealLayout, true)
+									.SetFlag(DebugMode.RevealLayout, false)
 									.SetFlag(DebugMode.HideDetails, false)
-									.SetFlag(DebugMode.RevealFontDetails, true)
-									.SetFlag(DebugMode.OutlineText, true);
+									.SetFlag(DebugMode.RevealFontDetails, false)
+									.SetFlag(DebugMode.OutlineText, false);
 
 			//
 			// Create an instance of the model.
 			//
-			Message model = new() { Id = "12345", Text = "Hello World" };
+			Message model = new() { Text = "Hello World" };
 
 			//
 			// Create, save and open the PDF.

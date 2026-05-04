@@ -43,7 +43,6 @@ namespace PdfDocuments
 		/// side. This section can be added to a PDF document to group sections in a horizontal layout.</remarks>
 		public PdfHorizontalStackSection()
 		{
-			this.SectionLayoutMode = PdfSectionsLayoutMode.HorizontalStacking;
 		}
 
 		/// <summary>
@@ -56,7 +55,23 @@ namespace PdfDocuments
 		public PdfHorizontalStackSection(params IPdfSection<TModel>[] children)
 			: base(children)
 		{
-			this.SectionLayoutMode = PdfSectionsLayoutMode.HorizontalStacking;
+		}
+
+		/// <summary>
+		/// Gets or sets the layout mode used for arranging sections within the PDF document.
+		/// </summary>
+		/// <remarks>The layout mode determines how sections are visually organized when rendering the document.
+		/// Setting this property may have no effect if the implementation does not support changing the layout
+		/// mode.</remarks>
+		public override PdfSectionsLayoutMode SectionLayoutMode
+		{
+			get
+			{
+				return PdfSectionsLayoutMode.HorizontalStacking;
+			}
+			set
+			{
+			}
 		}
 	}
 }

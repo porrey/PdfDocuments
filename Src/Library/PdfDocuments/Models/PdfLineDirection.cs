@@ -24,18 +24,19 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Represents a section of PDF content that is rendered using a model of type <typeparamref name="TModel"/>.
+	/// Specifies the possible directions for a line in a PDF document.
 	/// </summary>
-	/// <typeparam name="TModel">The type of model used to provide data for rendering the PDF content section. Must implement <see
-	/// cref="IPdfModel"/>.</typeparam>
-	public class PdfContentSection<TModel> : PdfSectionTemplate<TModel>
-		where TModel : IPdfModel
+	/// <remarks>Use this enumeration to indicate whether a line should be rendered horizontally or vertically
+	/// within a PDF layout.</remarks>
+	public enum PdfLineDirection
 	{
 		/// <summary>
-		/// Initializes a new instance of the PdfContentSection class.
+		/// Specifies that the orientation is horizontal.
 		/// </summary>
-		public PdfContentSection()
-		{
-		}
+		Horizontal,
+		/// <summary>
+		/// Represents a vertical orientation.
+		/// </summary>
+		Vertical
 	}
 }

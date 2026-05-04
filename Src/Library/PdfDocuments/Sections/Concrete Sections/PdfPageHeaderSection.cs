@@ -24,14 +24,15 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Represents a PDF section that renders text with automatic word wrapping within the specified bounds.
+	/// Represents a page header section template for a PDF page, allowing customizable text content in each corner of the
+	/// header.
 	/// </summary>
-	/// <remarks>This section uses the resolved style and padding to determine how text is wrapped and positioned.
-	/// It is useful for displaying paragraphs or blocks of text that need to fit within a constrained area of a PDF
-	/// page.</remarks>
-	/// <typeparam name="TModel">The type of model used to provide data for rendering the PDF section. Must implement the IPdfModel interface.</typeparam>
-	[Obsolete("Use PdfTextSection with appropriate styling instead. This class is retained for backward compatibility but may be removed in future versions.")]
-	public class PdfWrappingTextSection<TModel> : PdfSectionTemplate<TModel>
+	/// <remarks>Use this class to define header content for PDF pages, with support for binding text to the
+	/// top-left, top-right, bottom-left, and bottom-right corners. Header content and styles can be dynamically resolved
+	/// based on the provided model. This section is typically rendered at the top of each PDF page and can be
+	/// customized for different document layouts.</remarks>
+	/// <typeparam name="TModel">The model type used to bind header content and styles. Must implement the IPdfModel interface.</typeparam>
+	public class PdfPageHeaderSection<TModel> : PdfPageFooterSection<TModel>
 		where TModel : IPdfModel
 	{
 	}

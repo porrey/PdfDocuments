@@ -275,9 +275,9 @@ namespace PdfDocuments.Example.Invoice
 			return Task.FromResult(Pdf.VerticalStackSection<Invoice>
 			(
 				//
-				// Page header - shows on every page.
+				// Page header.
 				//
-				Pdf.PageHeaderSection<Invoice>()
+				Pdf.ReportHeaderSection<Invoice>()
 				   .WithTitle("INVOICE")
 				   .WithLogo("./Images/logo.jpg")
 				   .WithStyles("PageHeader.Section"),
@@ -306,23 +306,26 @@ namespace PdfDocuments.Example.Invoice
 					Pdf.HeaderContentSection<Invoice>()
 						.WithText("Payment Method")
 						.WithStyles("Reference.Header.1")
-						.WithContentSection(Pdf.TextBlockSection<Invoice>()
-											   .WithText((g, m) => m.PaymentMethod)
-											   .WithStyles("Reference.Body")),
+						.WithContentSection(
+							Pdf.TextBlockSection<Invoice>()
+								.WithText((g, m) => m.PaymentMethod)
+								.WithStyles("Reference.Body")),
 
 					Pdf.HeaderContentSection<Invoice>()
 						.WithText("Check Number")
 						.WithStyles("Reference.Header.2")
-						.WithContentSection(Pdf.TextBlockSection<Invoice>()
-											   .WithText((g, m) => m.CheckNumber)
-											   .WithStyles("Reference.Body")),
+						.WithContentSection(
+							Pdf.TextBlockSection<Invoice>()
+								.WithText((g, m) => m.CheckNumber)
+								.WithStyles("Reference.Body")),
 
 					Pdf.HeaderContentSection<Invoice>()
 						.WithText("Job Number")
 						.WithStyles("Reference.Header.3")
-						.WithContentSection(Pdf.TextBlockSection<Invoice>()
-											   .WithText((g, m) => m.JobNumber)
-											   .WithStyles("Reference.Body"))
+						.WithContentSection(
+							Pdf.TextBlockSection<Invoice>()
+								.WithText((g, m) => m.JobNumber)
+								.WithStyles("Reference.Body"))
 				).WithStyles("Reference.Section"),
 
 				//
@@ -397,7 +400,7 @@ namespace PdfDocuments.Example.Invoice
 					.WithText("Approved by")
 					.WithRenderCondition((g, m) => g.PageNumber == g.Document.PageCount)
 					.WithStyles("Signature.Section")
-					.WithOptions(new SignatureOptions<Invoice>()
+					.WithSignatureOptions(new SignatureOptions<Invoice>()
 					{
 						SignatureText = "Approved By",
 						SignatureImage = "./Images/signature.jpg",

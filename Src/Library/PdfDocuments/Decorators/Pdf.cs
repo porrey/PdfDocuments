@@ -149,6 +149,17 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
+		/// Creates a section that renders a horizontal line in a PDF document.
+		/// </summary>
+		/// <typeparam name="TModel">The type of the PDF model associated with the section. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <returns>An <see cref="IPdfSection{TModel}"/> instance that represents a horizontal line section.</returns>
+		public static IPdfSection<TModel> HorizontalLineSection<TModel>()
+			where TModel : IPdfModel
+		{
+			return new PdfHorizontalLineSection<TModel>();
+		}
+
+		/// <summary>
 		/// Creates a new content section and adds the specified child section to it.
 		/// </summary>
 		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="IPdfModel"/>.</typeparam>
@@ -217,17 +228,14 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
-		/// Creates a section that wraps text within a PDF document for the specified model type.
+		/// Creates a new report header section for use in a PDF document.
 		/// </summary>
-		/// <remarks>Use this method to add text content to a PDF section with automatic line wrapping. The returned
-		/// section can be customized and added to a PDF document as needed.</remarks>
-		/// <typeparam name="TModel">The type of model used to generate the PDF section. Must implement the IPdfModel interface.</typeparam>
-		/// <returns>An IPdfSection<![CDATA[<TModel>]]> instance that wraps text for the given model type.</returns>
-		[Obsolete("The WrappingTextSection method is deprecated. Use TextBlockSection instead, which provides improved text rendering and layout capabilities.")]
-		public static IPdfSection<TModel> WrappingTextSection<TModel>()
+		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <returns>An <see cref="IPdfSection{TModel}"/> representing the report header section.</returns>
+		public static IPdfSection<TModel> ReportHeaderSection<TModel>()
 			where TModel : IPdfModel
 		{
-			return new PdfWrappingTextSection<TModel>();
+			return new PdfReportHeaderSection<TModel>();
 		}
 
 		/// <summary>
@@ -235,6 +243,7 @@ namespace PdfDocuments
 		/// </summary>
 		/// <typeparam name="TModel">The type of the PDF model associated with the section. Must implement the IPdfModel interface.</typeparam>
 		/// <returns>An IPdfSection<![CDATA[<TModel>]]> instance representing the page header section for the specified PDF model type.</returns>
+
 		public static IPdfSection<TModel> PageHeaderSection<TModel>()
 			where TModel : IPdfModel
 		{

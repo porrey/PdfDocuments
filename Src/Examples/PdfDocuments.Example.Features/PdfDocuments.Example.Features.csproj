@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+		<Version>10.2.2</Version>
+		<FileVersion>10.2.2</FileVersion>
+		<AssemblyVersion>10.2.2</AssemblyVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Copyright>Copyright © Daniel Porrey 2021-2026. All Rights Reserved.</Copyright>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="watermark-logo.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Images\watermark.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Library\PdfDocuments.FontResolver.Windows\PdfDocuments.FontResolver.Windows.csproj" />
+		<ProjectReference Include="..\PdfDocuments.Example.Shared\PdfDocuments.Example.Shared.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -299,7 +299,7 @@ namespace PdfDocuments
 			//
 			// Get a pen for the border around the text area.
 			//
-			XPen pen = new(outlineColor, outlineWidth)
+			XPen pen = new(outlineColor.WithAlpha(.65), outlineWidth)
 			{
 				DashStyle = XDashStyle.Dot
 			};

@@ -65,6 +65,22 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
+		/// Sets the layout mode for sections within the specified PDF section.
+		/// </summary>
+		/// <remarks>This method enables fluent configuration of the section's layout mode. The original section
+		/// instance is returned to allow method chaining.</remarks>
+		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="section">The PDF section whose sections layout mode will be set.</param>
+		/// <param name="sectionsLayoutMode">The layout mode to apply to the section's child sections.</param>
+		/// <returns>The same <see cref="IPdfSection{TModel}"/> instance with the updated sections layout mode.</returns>
+		public static IPdfSection<TModel> WithSectionsLayoutMode<TModel>(this IPdfSection<TModel> section, PdfSectionsLayoutMode sectionsLayoutMode)
+			where TModel : IPdfModel
+		{
+			section.SectionLayoutMode = sectionsLayoutMode;
+			return section;
+		}
+
+		/// <summary>
 		/// Calculates the bounds of a PDF section after applying the specified margins.
 		/// </summary>
 		/// <typeparam name="TModel">The type of the model used by the PDF section. Must implement IPdfModel.</typeparam>
@@ -347,7 +363,7 @@ namespace PdfDocuments
 		public static IPdfSection<TModel> WithTitle<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
 			where TModel : IPdfModel
 		{
-			if (section is PdfPageHeaderSection<TModel> headerSection)
+			if (section is PdfReportHeaderSection<TModel> headerSection)
 			{
 				headerSection.Title = value;
 			}
@@ -367,7 +383,7 @@ namespace PdfDocuments
 		public static IPdfSection<TModel> WithTitle<TModel>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> value)
 			where TModel : IPdfModel
 		{
-			if (section is PdfPageHeaderSection<TModel> headerSection)
+			if (section is PdfReportHeaderSection<TModel> headerSection)
 			{
 				headerSection.Title = value;
 			}
@@ -387,7 +403,29 @@ namespace PdfDocuments
 		public static IPdfSection<TModel> WithLogo<TModel>(this IPdfSection<TModel> section, BindProperty<string, TModel> value)
 			where TModel : IPdfModel
 		{
-			if (section is PdfPageHeaderSection<TModel> headerSection)
+			if (section is PdfReportHeaderSection<TModel> headerSection)
+			{
+				headerSection.Logo = value;
+			}
+
+			return section;
+		}
+
+		/// <summary>
+		/// Assigns a logo to the page header section of a PDF document using the specified binding action.
+		/// </summary>
+		/// <remarks>This method only affects sections of type PdfPageHeaderSection<![CDATA[<TModel>]]>. Other section types are
+		/// returned unchanged. Use this method to add branding or identification to PDF headers.</remarks>
+		/// <typeparam name="TModel">The type of the model used for PDF section binding. Must implement the IPdfModel interface.</typeparam>
+		/// <param name="section">The PDF section to which the logo will be assigned. If the section is a page header, the logo will be set;
+		/// otherwise, the section remains unchanged.</param>
+		/// <param name="value">A binding action that provides the logo value for the section. The action defines how the logo string is obtained
+		/// from the model.</param>
+		/// <returns>The original PDF section instance, with the logo assigned if applicable.</returns>
+		public static IPdfSection<TModel> WithLogo<TModel>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfReportHeaderSection<TModel> headerSection)
 			{
 				headerSection.Logo = value;
 			}
@@ -425,34 +463,12 @@ namespace PdfDocuments
 		/// <param name="value">The binding property containing signature options to set for the section. Can be null if no options are to be
 		/// applied.</param>
 		/// <returns>The original PDF section instance, with signature options set if applicable.</returns>
-		public static IPdfSection<TModel> WithOptions<TModel>(this IPdfSection<TModel> section, BindProperty<SignatureOptions<TModel>, TModel> value)
+		public static IPdfSection<TModel> WithSignatureOptions<TModel>(this IPdfSection<TModel> section, BindProperty<SignatureOptions<TModel>, TModel> value)
 			where TModel : IPdfModel
 		{
 			if (section is PdfSignatureSection<TModel> imageSection)
 			{
 				imageSection.SignatureOptions = value;
-			}
-
-			return section;
-		}
-
-		/// <summary>
-		/// Assigns a logo to the page header section of a PDF document using the specified binding action.
-		/// </summary>
-		/// <remarks>This method only affects sections of type PdfPageHeaderSection<![CDATA[<TModel>]]>. Other section types are
-		/// returned unchanged. Use this method to add branding or identification to PDF headers.</remarks>
-		/// <typeparam name="TModel">The type of the model used for PDF section binding. Must implement the IPdfModel interface.</typeparam>
-		/// <param name="section">The PDF section to which the logo will be assigned. If the section is a page header, the logo will be set;
-		/// otherwise, the section remains unchanged.</param>
-		/// <param name="value">A binding action that provides the logo value for the section. The action defines how the logo string is obtained
-		/// from the model.</param>
-		/// <returns>The original PDF section instance, with the logo assigned if applicable.</returns>
-		public static IPdfSection<TModel> WithLogo<TModel>(this IPdfSection<TModel> section, BindPropertyAction<string, TModel> value)
-			where TModel : IPdfModel
-		{
-			if (section is PdfPageHeaderSection<TModel> headerSection)
-			{
-				headerSection.Logo = value;
 			}
 
 			return section;
@@ -467,7 +483,7 @@ namespace PdfDocuments
 		/// <param name="section">The PDF section to which the parent section will be assigned.</param>
 		/// <param name="value">The parent section to assign to the specified PDF section. Can be null if the section has no parent.</param>
 		/// <returns>The PDF section with its parent section set to the specified value.</returns>
-		public static IPdfSection<TModel> AssignParentSection<TModel>(this IPdfSection<TModel> section, IPdfSection<TModel> value)
+		public static IPdfSection<TModel> WithParentSection<TModel>(this IPdfSection<TModel> section, IPdfSection<TModel> value)
 			where TModel : IPdfModel
 		{
 			section.ParentSection = value;
@@ -543,17 +559,17 @@ namespace PdfDocuments
 			return section;
 		}
 
-		/// <summary>
-		/// Returns the parent section of the specified PDF section.
-		/// </summary>
-		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement IPdfModel.</typeparam>
-		/// <param name="section">The PDF section for which to retrieve the parent section. Cannot be null.</param>
-		/// <returns>The parent section of the specified PDF section, or null if the section has no parent.</returns>
-		public static IPdfSection<TModel> WithParent<TModel>(this IPdfSection<TModel> section)
-			where TModel : IPdfModel
-		{
-			return section.ParentSection;
-		}
+		///// <summary>
+		///// Returns the parent section of the specified PDF section.
+		///// </summary>
+		///// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement IPdfModel.</typeparam>
+		///// <param name="section">The PDF section for which to retrieve the parent section. Cannot be null.</param>
+		///// <returns>The parent section of the specified PDF section, or null if the section has no parent.</returns>
+		//public static IPdfSection<TModel> WithParent<TModel>(this IPdfSection<TModel> section)
+		//	where TModel : IPdfModel
+		//{
+		//	return section.ParentSection;
+		//}
 
 		/// <summary>
 		/// Sets a render condition for the PDF section, determining whether the section should be rendered based on the
@@ -845,6 +861,48 @@ namespace PdfDocuments
 		{
 			section.StyleOverridden = true;
 			section.Style.FixedHeight = value;
+			return section;
+		}
+
+		/// <summary>
+		/// Sets the row edge binding for a horizontal line section within a PDF section.
+		/// </summary>
+		/// <remarks>If the section is not a horizontal line section, this method has no effect. This method is
+		/// intended for use with fluent configuration patterns.</remarks>
+		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="section">The PDF section to configure. Must implement <see cref="IPdfSection{TModel}"/>.</param>
+		/// <param name="value">The binding that specifies the row edge for the section. This determines how the row edge is rendered or
+		/// processed.</param>
+		/// <returns>The same <see cref="IPdfSection{TModel}"/> instance, allowing for method chaining.</returns>
+		public static IPdfSection<TModel> WithRowEdge<TModel>(this IPdfSection<TModel> section, BindProperty<PdfRowEdge, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfHorizontalLineSection<TModel> pdfHorizontalLineSection)
+			{
+				pdfHorizontalLineSection.RowEdge = value;
+			}
+
+			return section;
+		}
+
+		/// <summary>
+		/// Sets the row edge binding for a horizontal line section within a PDF section.
+		/// </summary>
+		/// <remarks>If the specified section is a horizontal line section, this method sets its row edge binding. For
+		/// other section types, this method has no effect.</remarks>
+		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="section">The PDF section to configure. Must implement <see cref="IPdfSection{TModel}"/>.</param>
+		/// <param name="value">The binding action to apply to the row edge. This action determines how the <see cref="PdfRowEdge"/> is set based
+		/// on the model.</param>
+		/// <returns>The original PDF section instance, allowing for method chaining.</returns>
+		public static IPdfSection<TModel> WithRowEdge<TModel>(this IPdfSection<TModel> section, BindPropertyAction<PdfRowEdge, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfHorizontalLineSection<TModel> pdfHorizontalLineSection)
+			{
+				pdfHorizontalLineSection.RowEdge = value;
+			}
+
 			return section;
 		}
 	}

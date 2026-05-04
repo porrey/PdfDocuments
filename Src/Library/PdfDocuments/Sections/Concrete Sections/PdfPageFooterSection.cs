@@ -21,8 +21,6 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using PdfSharp.Drawing;
-
 namespace PdfDocuments
 {
 	/// <summary>
@@ -58,49 +56,47 @@ namespace PdfDocuments
 		public virtual BindProperty<string, TModel> BottomRightText { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Renders text content in each corner of the specified PDF grid page using the provided model and bounds.
+		/// Performs asynchronous initialization logic for the grid element before rendering.
 		/// </summary>
-		/// <remarks>Text is rendered in the top-left, top-right, bottom-left, and bottom-right corners of the
-		/// specified bounds. The style and padding are resolved from the model and applied to the rendering
-		/// operation.</remarks>
-		/// <param name="g">The PDF grid page on which the text will be rendered.</param>
-		/// <param name="m">The model containing data used to resolve text and style information for rendering.</param>
-		/// <param name="bounds">The bounds within which the text will be rendered on the page.</param>
-		/// <returns>A task that represents the asynchronous render operation. The task result is <see langword="true"/> if rendering
-		/// was successful; otherwise, <see langword="false"/>.</returns>
-		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		/// <param name="g">The PDF grid page on which the element will be rendered.</param>
+		/// <param name="m">The model containing data relevant to the grid element.</param>
+		/// <param name="bounds">The bounds within which the element should be rendered.</param>
+		/// <returns>A task that represents the asynchronous initialization operation.</returns>
+		protected override Task OnInitializeAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
-			bool returnValue = true;
+			if (this.Children.Count == 0)
+			{
+				int i = 1;
+				string topLeftSyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : this.StyleNames.Last();
+				string topRightSyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : this.StyleNames.Last();
+				string bottomLeftSyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : this.StyleNames.Last();
+				string bottomRightSyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : this.StyleNames.Last();
 
-			//
-			// Get style.
-			//
-			PdfStyle<TModel> style = this.ResolveStyle(0);
-			PdfSpacing padding = style.Padding.Resolve(g, m);
-			XFont font = style.Font.Resolve(g, m);
-			PdfBounds textBounds = bounds.SubtractSpacing(g, m, padding);
+				this.AddChildren
+				(
+					Pdf.VerticalStackSection<TModel>
+					(
+						Pdf.HorizontalStackSection<TModel>(
+							Pdf.TextBlockSection<TModel>()
+								.WithText(this.TopLeftText)
+								.WithStyles(topLeftSyle),
+							Pdf.TextBlockSection<TModel>()
+								.WithText(this.TopRightText)
+								.WithStyles(topRightSyle)
+						),
+						Pdf.HorizontalStackSection<TModel>(
+							Pdf.TextBlockSection<TModel>()
+								.WithText(this.BottomLeftText)
+								.WithStyles(bottomLeftSyle),
+							Pdf.TextBlockSection<TModel>()
+								.WithText(this.BottomRightText)
+								.WithStyles(bottomRightSyle)
+						)
+					)
+				);
+			}
 
-			//
-			// Top left.
-			//
-			g.DrawText(this.TopLeftText.Resolve(g, m), font, textBounds, XStringFormats.TopLeft, style.ForegroundColor.Resolve(g, m));
-
-			//
-			// Top right.
-			//
-			g.DrawText(this.TopRightText.Resolve(g, m), font, textBounds, XStringFormats.TopRight, style.ForegroundColor.Resolve(g, m));
-
-			//
-			// Bottom left
-			//
-			g.DrawText(this.BottomLeftText.Resolve(g, m), font, textBounds, XStringFormats.BottomLeft, style.ForegroundColor.Resolve(g, m));
-
-			//
-			// Bottom right.
-			//
-			g.DrawText(this.BottomRightText.Resolve(g, m), font, textBounds, XStringFormats.BottomRight, style.ForegroundColor.Resolve(g, m));
-
-			return Task.FromResult(returnValue);
+			return Task.CompletedTask;
 		}
 	}
 }

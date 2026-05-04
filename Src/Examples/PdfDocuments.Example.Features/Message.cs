@@ -21,21 +21,21 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-namespace PdfDocuments
+namespace PdfDocuments.Example.Features
 {
 	/// <summary>
-	/// Represents a section of PDF content that is rendered using a model of type <typeparamref name="TModel"/>.
+	/// Represents a message with an identifier and associated text content.
 	/// </summary>
-	/// <typeparam name="TModel">The type of model used to provide data for rendering the PDF content section. Must implement <see
-	/// cref="IPdfModel"/>.</typeparam>
-	public class PdfContentSection<TModel> : PdfSectionTemplate<TModel>
-		where TModel : IPdfModel
+	public class Message : IPdfModel
 	{
 		/// <summary>
-		/// Initializes a new instance of the PdfContentSection class.
+		/// Gets or sets the unique identifier for the entity.
 		/// </summary>
-		public PdfContentSection()
-		{
-		}
+		public string Id { get; set; }
+
+		/// <summary>
+		/// Gets or sets the text content.
+		/// </summary>
+		public string Text { get; set; }
 	}
 }

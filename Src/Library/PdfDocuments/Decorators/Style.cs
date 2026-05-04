@@ -849,7 +849,70 @@ namespace PdfDocuments
 			return styleBuilder;
 		}
 
+		/// <summary>
+		/// Sets the horizontal alignment for lines in the PDF style builder.
+		/// </summary>
+		/// <remarks>Use this method to specify how lines are horizontally aligned within the PDF output. This setting
+		/// affects the rendering of lines in the generated document.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A delegate that binds the horizontal alignment value to the model. Cannot be null.</param>
+		/// <returns>The same style builder instance with the horizontal line alignment configured.</returns>
+		public static IStyleBuilder<TModel> UseHorizontalLineAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<PdfHorizontalAlignment, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).HorizontalLineAlignment = value;
+			return styleBuilder;
+		}
 
+		/// <summary>
+		/// Sets the horizontal alignment for lines in the PDF style builder.
+		/// </summary>
+		/// <remarks>This method enables fluent configuration of horizontal line alignment when building PDF
+		/// styles.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the style builder. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A bindable property specifying the horizontal alignment to apply to lines.</param>
+		/// <returns>The same <see cref="IStyleBuilder{TModel}"/> instance to allow for method chaining.</returns>
+		public static IStyleBuilder<TModel> UseHorizontalLineAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<PdfHorizontalAlignment, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).HorizontalLineAlignment = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Configures the vertical alignment for lines in the PDF style builder.
+		/// </summary>
+		/// <remarks>This method enables fluent configuration of vertical line alignment when building PDF
+		/// styles.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A delegate that binds a <see cref="PdfVerticalAlignment"/> value to the model. Determines the vertical alignment
+		/// for lines.</param>
+		/// <returns>The same <see cref="IStyleBuilder{TModel}"/> instance to allow for method chaining.</returns>
+		public static IStyleBuilder<TModel> UseVerticalLineAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindPropertyAction<PdfVerticalAlignment, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).VerticalLineAlignment = value;
+			return styleBuilder;
+		}
+
+		/// <summary>
+		/// Sets the vertical alignment for lines within the style builder configuration.
+		/// </summary>
+		/// <remarks>Use this method to control how lines are vertically aligned in the generated PDF output. This
+		/// setting affects the rendering of lines relative to their containing elements.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="styleBuilder">The style builder instance to configure.</param>
+		/// <param name="value">A bindable property specifying the vertical alignment to apply to lines.</param>
+		/// <returns>The same <see cref="IStyleBuilder{TModel}"/> instance to allow for method chaining.</returns>
+		public static IStyleBuilder<TModel> UseVerticalLineAlignment<TModel>(this IStyleBuilder<TModel> styleBuilder, BindProperty<PdfVerticalAlignment, TModel> value)
+			where TModel : IPdfModel
+		{
+			((PdfStyle<TModel>)styleBuilder).VerticalLineAlignment = value;
+			return styleBuilder;
+		}
 
 		/// <summary>
 		/// Creates a strongly-typed PDF style from the specified style builder.

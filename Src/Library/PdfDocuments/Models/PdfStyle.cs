@@ -166,5 +166,19 @@ namespace PdfDocuments
 		/// clipped and not rendered. Set this property to <see langword="false"/> to allow drawing outside the control's
 		/// bounds, which may be useful for custom rendering scenarios.</remarks>
 		public virtual BindProperty<bool, TModel> ClipDrawing { get; set; } = true;
+
+		/// <summary>
+		/// Gets or sets the horizontal alignment for the line within the PDF document.
+		/// </summary>
+		public virtual BindProperty<PdfHorizontalAlignment, TModel> HorizontalLineAlignment { get; set; } = PdfHorizontalAlignment.Left;
+
+		/// <summary>
+		/// Gets or sets the vertical alignment for lines within the PDF content.
+		/// </summary>
+		/// <remarks>Use this property to control how lines are positioned vertically relative to their containing
+		/// area. The default alignment is top. This property is typically used when customizing the layout of PDF elements
+		/// that support vertical alignment.</remarks>
+		public virtual BindProperty<PdfVerticalAlignment, TModel> VerticalLineAlignment { get; set; } = PdfVerticalAlignment.Top;
+
 	}
 }

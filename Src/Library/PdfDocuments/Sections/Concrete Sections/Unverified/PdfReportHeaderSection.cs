@@ -24,14 +24,14 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Represents a header section for a PDF page, supporting customizable logo and title rendering using a model-driven
+	/// Represents a header section for a PDF, supporting customizable logo and title rendering using a model-driven
 	/// template.
 	/// </summary>
-	/// <remarks>Use this class to define and render a page header in a PDF document, with support for binding logo
+	/// <remarks>Use this class to define and render a report header in a PDF document, with support for binding logo
 	/// and title values from the provided model. The header section can be styled and positioned according to template
 	/// settings. This class is typically used as part of a larger PDF generation workflow.</remarks>
 	/// <typeparam name="TModel">The type of model used to bind data for the header section. Must implement the IPdfModel interface.</typeparam>
-	public class PdfPageHeaderSection<TModel> : PdfSectionTemplate<TModel>
+	public class PdfReportHeaderSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
 		/// <summary>

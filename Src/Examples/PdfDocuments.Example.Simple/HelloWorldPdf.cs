@@ -22,7 +22,6 @@
  *	SOFTWARE.
  */
 using PdfSharp.Drawing;
-using PdfSharp.Drawing.Layout;
 
 namespace PdfDocuments.Example.Simple
 {
@@ -59,28 +58,8 @@ namespace PdfDocuments.Example.Simple
 			this.StyleManager.Add("HelloWorld.Text", Style.Create<Message>()
 						.UseFont("Arial", 48)
 						.UseForegroundColor(XColors.Purple)
-						.UseBackgroundColor(XColors.LightPink)
-						.UseBorderWidth(1)
-						.UseBorderColor(XColors.Red)
-						.UseCellPadding(5, 5, 5, 0)
-						.UseTextAlignment(XStringFormats.TopLeft)
-						.UsePadding(2, 2, 2, 2)
-						.UseTextWrapping(true)
-						.UseParagraphAlignment(XParagraphAlignment.Right)
-						.UseMargin(4, 4, 4, 4)
-						.UseClipDrawing(true)
-						//.UseFixedHeight(75)
-						//.UseFixedWidths(75)
-						//.UseRelativeHeight(.5)
-						//.UseRelativeWidths(.3)
-						.Build());
-
-			this.StyleManager.Add("Watermark", Style.Create<Message>()
-						.UseHorizontalImageAlignment(PdfHorizontalAlignment.Right)
-						.UseVerticalImageAlignment(PdfVerticalAlignment.Bottom)
-						.UsePadding(0, 0, 0, 0)
-						.UseImageOpacity(.15f)
-						.UseImageScale(.75f)
+						.UseTextAlignment(XStringFormats.Center)
+						.UsePadding(10, 10, 10, 10)
 						.Build());
 
 			return Task.CompletedTask;
@@ -97,22 +76,11 @@ namespace PdfDocuments.Example.Simple
 			// Add a basic text block using the style that was created.
 			//
 			return Task.FromResult(
-				Pdf.VerticalStackSection(
-					Pdf.TextBlockSection<Message>()
-						.WithText((g, m) => m.Text)
-						.WithStyles("HelloWorld.Text")
-						.WithKey("HelloWorld.TextBlock"),
-					Pdf.TextBlockSection<Message>()
-						.WithText((g, m) => m.Text)
-						.WithStyles("HelloWorld.Text")
-						.WithKey("HelloWorld.TextBlock"),
-					Pdf.TextBlockSection<Message>()
-						.WithText((g, m) => m.Text)
-						.WithStyles("HelloWorld.Text")
-						.WithKey("HelloWorld.TextBlock")
-				).WithStyleManager(this.StyleManager)
-				 .WithStyles("Watermark")
-				 .WithWatermark("Images/watermark.png")
+				Pdf.TextBlockSection<Message>()
+					.WithText((g, m) => m.Text)
+					.WithStyles("HelloWorld.Text")
+					.WithKey("HelloWorld.TextBlock")
+					.WithStyleManager(this.StyleManager)
 			);
 		}
 	}

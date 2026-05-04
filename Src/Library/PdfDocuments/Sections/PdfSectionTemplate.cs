@@ -78,7 +78,7 @@ namespace PdfDocuments
 		/// <remarks>Use this property to control how child sections are positioned and displayed within the parent
 		/// container. The selected layout mode determines the arrangement behavior for all immediate child
 		/// sections.</remarks>
-		public PdfSectionsLayoutMode SectionLayoutMode { get; set; }
+		public virtual PdfSectionsLayoutMode SectionLayoutMode { get; set; } = PdfSectionsLayoutMode.VerticalStacking;
 
 		/// <summary>
 		/// Gets or sets the text value associated with the model.
@@ -195,6 +195,20 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
+		/// Performs asynchronous initialization logic for a grid page before rendering.
+		/// </summary>
+		/// <remarks>Override this method to implement custom initialization logic. The default implementation
+		/// performs no action.</remarks>
+		/// <param name="g">The grid page to initialize.</param>
+		/// <param name="m">The model containing data for the grid page.</param>
+		/// <param name="bounds">The bounds within which the grid page will be rendered.</param>
+		/// <returns>A task that represents the asynchronous initialization operation.</returns>
+		protected virtual Task OnInitializeAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		{
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
 		/// Determines whether the background should be drawn for the current section.
 		/// </summary>
 		/// <returns>true if the background should be drawn; otherwise, false.</returns>
@@ -231,6 +245,11 @@ namespace PdfDocuments
 			//
 			if (this.ShouldRender.Resolve(g, m))
 			{
+				//
+				// Perform any necessary initialization before rendering the section.
+				//
+				await this.OnInitializeAsync(g, m, bounds);
+
 				//
 				// The first style is always used for the base section style.
 				//

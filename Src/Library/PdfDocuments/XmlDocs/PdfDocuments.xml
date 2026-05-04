@@ -148,6 +148,13 @@
             <typeparam name="TModel">The type of model associated with the PDF section. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
             <returns>An <see cref="T:PdfDocuments.IPdfSection`1"/> instance representing an empty section for the given model type.</returns>
         </member>
+        <member name="M:PdfDocuments.Pdf.HorizontalLineSection``1">
+            <summary>
+            Creates a section that renders a horizontal line in a PDF document.
+            </summary>
+            <typeparam name="TModel">The type of the PDF model associated with the section. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
+            <returns>An <see cref="T:PdfDocuments.IPdfSection`1"/> instance that represents a horizontal line section.</returns>
+        </member>
         <member name="M:PdfDocuments.Pdf.ContentSection``1(PdfDocuments.IPdfSection{``0})">
             <summary>
             Creates a new content section and adds the specified child section to it.
@@ -196,14 +203,12 @@
             <typeparam name="TModel">The type of model used to provide data for the text block section. Must implement the IPdfModel interface.</typeparam>
             <returns>An IPdfSection<![CDATA[<TModel>]]> instance representing a text block section configured for the specified model type.</returns>
         </member>
-        <member name="M:PdfDocuments.Pdf.WrappingTextSection``1">
+        <member name="M:PdfDocuments.Pdf.ReportHeaderSection``1">
             <summary>
-            Creates a section that wraps text within a PDF document for the specified model type.
+            Creates a new report header section for use in a PDF document.
             </summary>
-            <remarks>Use this method to add text content to a PDF section with automatic line wrapping. The returned
-            section can be customized and added to a PDF document as needed.</remarks>
-            <typeparam name="TModel">The type of model used to generate the PDF section. Must implement the IPdfModel interface.</typeparam>
-            <returns>An IPdfSection<![CDATA[<TModel>]]> instance that wraps text for the given model type.</returns>
+            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
+            <returns>An <see cref="T:PdfDocuments.IPdfSection`1"/> representing the report header section.</returns>
         </member>
         <member name="M:PdfDocuments.Pdf.PageHeaderSection``1">
             <summary>
@@ -492,6 +497,92 @@
             such as colored highlights and labels, onto PDF grid pages. They are typically used in debug builds or diagnostic
             scenarios to inspect layout boundaries, section sizes, and font usage. The extensions do not affect the final
             output in production and are safe to use for non-destructive visual feedback.</remarks>
+        </member>
+        <member name="M:PdfDocuments.PdfGridPageDebugExtensions.GetDebugColorsAsync``1(PdfDocuments.PdfGridPage)">
+            <summary>
+            Asynchronously generates a random color and determines an appropriate contrasting label color for use in PDF grid
+            debugging scenarios.
+            </summary>
+            <remarks>The label color is selected to provide sufficient contrast against the generated color, ensuring
+            readability when used as a label or overlay.</remarks>
+            <typeparam name="TModel">The type of the PDF model associated with the grid page. Must implement the IPdfModel interface.</typeparam>
+            <param name="source">The PdfGridPage instance for which to generate debug colors.</param>
+            <returns>A task that represents the asynchronous operation. The task result contains a tuple with the generated random
+            color and its corresponding contrasting label color.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfGridPageDebugExtensions.HighlightMarginBackgroundAsync``1(PdfDocuments.PdfGridPage,PdfDocuments.IPdfSection{``0},PdfSharp.Drawing.XColor,System.Double)">
+            <summary>
+            Highlights the margin area of the specified PDF section by drawing a colored border and a semi-transparent,
+            diagonally-lined background within the margin.
+            </summary>
+            <remarks>The highlight is applied only if the section's render area does not cover the entire section
+            area. The background fill uses a lighter, semi-transparent version of the specified color and includes diagonal
+            lines to visually distinguish the margin. This method does not block and completes synchronously.</remarks>
+            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement IPdfModel.</typeparam>
+            <param name="source">The PdfGridPage on which to draw the highlighted margin background.</param>
+            <param name="section">The section whose margin area will be highlighted. The section must provide render and section area information.</param>
+            <param name="color">The base color used for the border and background highlight.</param>
+            <param name="outlineWidth">The width, in points, of the border outline. The default is 1.5.</param>
+            <returns>A completed task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfGridPageDebugExtensions.HighlightSectionAreaAsync``1(PdfDocuments.PdfGridPage,PdfDocuments.IPdfSection{``0},PdfSharp.Drawing.XColor,System.Double)">
+            <summary>
+            Draws a dashed rectangular highlight around the specified section area on the PDF page asynchronously.
+            </summary>
+            <remarks>The highlight is rendered as a dashed border around the section's area. This method does not
+            modify the section content, only its visual outline.</remarks>
+            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement IPdfModel.</typeparam>
+            <param name="source">The PDF page on which to draw the highlighted section area.</param>
+            <param name="section">The section whose area will be highlighted. Must not be null.</param>
+            <param name="color">The color to use for the highlight border.</param>
+            <param name="outlineWidth">The width, in points, of the highlight border. The default is 1.0.</param>
+            <returns>A completed task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfGridPageDebugExtensions.DrawSizeLabelAsync``1(PdfDocuments.PdfGridPage,``0,PdfDocuments.IPdfSection{``0},PdfSharp.Drawing.XColor,PdfSharp.Drawing.XColor)">
+            <summary>
+            Draws a debug label displaying the section key and render area size in the upper-left corner of the specified
+            section on the PDF grid page.
+            </summary>
+            <remarks>This method is intended for debugging and visualization purposes. The label includes the section
+            key and the coordinates and dimensions of the render area. The operation completes synchronously.</remarks>
+            <typeparam name="TModel">The type of the PDF model associated with the section.</typeparam>
+            <param name="source">The PDF grid page on which to draw the size label.</param>
+            <param name="model">The model instance providing context for rendering and style resolution.</param>
+            <param name="section">The PDF section whose key and render area size will be displayed in the label.</param>
+            <param name="color">The background color to use for the label rectangle.</param>
+            <param name="labelColor">The color to use for the label text.</param>
+            <returns>A completed task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfGridPageDebugExtensions.DrawFontLabelAsync``1(PdfDocuments.PdfGridPage,``0,PdfDocuments.IPdfSection{``0},PdfSharp.Drawing.XColor,PdfSharp.Drawing.XColor)">
+            <summary>
+            Draws a label displaying the font family name in the upper right corner of the specified section on the PDF page,
+            using the provided font and outline colors.
+            </summary>
+            <remarks>This method is typically used for debugging or visualization purposes to indicate the font family
+            applied to a section. The label is rendered with a background for visibility and is centered within its designated
+            area.</remarks>
+            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement IPdfModel.</typeparam>
+            <param name="source">The PDF grid page on which to draw the font label.</param>
+            <param name="model">The model instance providing data for the section.</param>
+            <param name="section">The PDF section for which the font label is drawn.</param>
+            <param name="fontColor">The color to use for the font label text.</param>
+            <param name="outlineColor">The color to use for the label's background rectangle.</param>
+            <returns>A completed task that represents the asynchronous operation.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfGridPageDebugExtensions.HighlightFontAreaAsync``1(PdfDocuments.PdfGridPage,``0,PdfDocuments.IPdfSection{``0},PdfSharp.Drawing.XColor,System.Double)">
+            <summary>
+            Draws a dotted outline around the text area of the specified PDF section on the page.
+            </summary>
+            <remarks>The outline is drawn using a dotted line style and reflects the section's resolved padding and
+            cell padding. This method does not modify the content of the section; it only draws a visual border for
+            highlighting purposes.</remarks>
+            <typeparam name="TModel">The type of the PDF model associated with the section.</typeparam>
+            <param name="source">The PDF grid page on which to draw the outline.</param>
+            <param name="model">The model instance providing data for the section.</param>
+            <param name="section">The PDF section whose text area will be outlined.</param>
+            <param name="outlineColor">The color of the outline to draw around the text area.</param>
+            <param name="outlineWidth">The width, in points, of the outline. The default is 0.3.</param>
+            <returns>A task that represents the asynchronous operation.</returns>
         </member>
         <member name="T:PdfDocuments.PdfGridPageImageExtensions">
             <summary>
@@ -951,6 +1042,17 @@
             <typeparam name="TModel">The model type associated with the PDF section. Must implement the IPdfModel interface.</typeparam>
             <param name="section">The PDF section whose key will be set. Cannot be null.</param>
         </member>
+        <member name="M:PdfDocuments.PdfSectionExtensions.WithSectionsLayoutMode``1(PdfDocuments.IPdfSection{``0},PdfDocuments.PdfSectionsLayoutMode)">
+            <summary>
+            Sets the layout mode for sections within the specified PDF section.
+            </summary>
+            <remarks>This method enables fluent configuration of the section's layout mode. The original section
+            instance is returned to allow method chaining.</remarks>
+            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
+            <param name="section">The PDF section whose sections layout mode will be set.</param>
+            <param name="sectionsLayoutMode">The layout mode to apply to the section's child sections.</param>
+            <returns>The same <see cref="T:PdfDocuments.IPdfSection`1"/> instance with the updated sections layout mode.</returns>
+        </member>
         <member name="M:PdfDocuments.PdfSectionExtensions.ApplyPadding``1(PdfDocuments.IPdfSection{``0},PdfDocuments.PdfGridPage,``0,PdfDocuments.PdfSpacing)">
             <summary>
             Calculates the bounds of a PDF section after applying the specified margins.
@@ -1135,29 +1237,6 @@
             <param name="value">The binding representing the logo image source for the section. Cannot be null.</param>
             <returns>The original PDF section instance, with the logo binding applied if applicable.</returns>
         </member>
-        <member name="M:PdfDocuments.PdfSectionExtensions.WithImage``1(PdfDocuments.IPdfSection{``0},PdfDocuments.BindProperty{System.String,``0})">
-            <summary>
-            Sets the image property of the section if it is an image section.
-            </summary>
-            <remarks>This method only modifies sections that are image sections. Other section types are
-            unaffected.</remarks>
-            <typeparam name="TModel">The model type associated with the PDF section. Must implement IPdfModel.</typeparam>
-            <param name="section">The PDF section to modify. If the section is an image section, its image property will be set.</param>
-            <param name="value">The binding representing the image source to assign to the section.</param>
-            <returns>The original section instance, with the image property set if applicable.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfSectionExtensions.WithOptions``1(PdfDocuments.IPdfSection{``0},PdfDocuments.BindProperty{PdfDocuments.SignatureOptions{``0},``0})">
-            <summary>
-            Sets the signature options for a PDF section if it supports signatures.
-            </summary>
-            <remarks>If the section does not support signatures, this method has no effect. Use this method to
-            configure signature-related options for sections that implement signature functionality.</remarks>
-            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement IPdfModel.</typeparam>
-            <param name="section">The PDF section to which signature options may be applied.</param>
-            <param name="value">The binding property containing signature options to set for the section. Can be null if no options are to be
-            applied.</param>
-            <returns>The original PDF section instance, with signature options set if applicable.</returns>
-        </member>
         <member name="M:PdfDocuments.PdfSectionExtensions.WithLogo``1(PdfDocuments.IPdfSection{``0},PdfDocuments.BindPropertyAction{System.String,``0})">
             <summary>
             Assigns a logo to the page header section of a PDF document using the specified binding action.
@@ -1171,7 +1250,30 @@
             from the model.</param>
             <returns>The original PDF section instance, with the logo assigned if applicable.</returns>
         </member>
-        <member name="M:PdfDocuments.PdfSectionExtensions.AssignParentSection``1(PdfDocuments.IPdfSection{``0},PdfDocuments.IPdfSection{``0})">
+        <member name="M:PdfDocuments.PdfSectionExtensions.WithImage``1(PdfDocuments.IPdfSection{``0},PdfDocuments.BindProperty{System.String,``0})">
+            <summary>
+            Sets the image property of the section if it is an image section.
+            </summary>
+            <remarks>This method only modifies sections that are image sections. Other section types are
+            unaffected.</remarks>
+            <typeparam name="TModel">The model type associated with the PDF section. Must implement IPdfModel.</typeparam>
+            <param name="section">The PDF section to modify. If the section is an image section, its image property will be set.</param>
+            <param name="value">The binding representing the image source to assign to the section.</param>
+            <returns>The original section instance, with the image property set if applicable.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfSectionExtensions.WithSignatureOptions``1(PdfDocuments.IPdfSection{``0},PdfDocuments.BindProperty{PdfDocuments.SignatureOptions{``0},``0})">
+            <summary>
+            Sets the signature options for a PDF section if it supports signatures.
+            </summary>
+            <remarks>If the section does not support signatures, this method has no effect. Use this method to
+            configure signature-related options for sections that implement signature functionality.</remarks>
+            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement IPdfModel.</typeparam>
+            <param name="section">The PDF section to which signature options may be applied.</param>
+            <param name="value">The binding property containing signature options to set for the section. Can be null if no options are to be
+            applied.</param>
+            <returns>The original PDF section instance, with signature options set if applicable.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfSectionExtensions.WithParentSection``1(PdfDocuments.IPdfSection{``0},PdfDocuments.IPdfSection{``0})">
             <summary>
             Assigns the specified parent section to the given PDF section and returns the updated section.
             </summary>
@@ -1214,14 +1316,6 @@
             <param name="section">The parent section to which the child sections will be added.</param>
             <param name="values">The child sections to add to the parent section. Can be empty.</param>
             <returns>The parent section with the added child sections.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfSectionExtensions.WithParent``1(PdfDocuments.IPdfSection{``0})">
-            <summary>
-            Returns the parent section of the specified PDF section.
-            </summary>
-            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement IPdfModel.</typeparam>
-            <param name="section">The PDF section for which to retrieve the parent section. Cannot be null.</param>
-            <returns>The parent section of the specified PDF section, or null if the section has no parent.</returns>
         </member>
         <member name="M:PdfDocuments.PdfSectionExtensions.WithRenderCondition``1(PdfDocuments.IPdfSection{``0},PdfDocuments.BindPropertyAction{System.Boolean,``0})">
             <summary>
@@ -1391,6 +1485,30 @@
             <param name="value">A binding action that provides the fixed height, in points, for the section. The value can be null to indicate no
             fixed height.</param>
             <returns>The same section instance with the fixed height style applied.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfSectionExtensions.WithRowEdge``1(PdfDocuments.IPdfSection{``0},PdfDocuments.BindProperty{PdfDocuments.PdfRowEdge,``0})">
+            <summary>
+            Sets the row edge binding for a horizontal line section within a PDF section.
+            </summary>
+            <remarks>If the section is not a horizontal line section, this method has no effect. This method is
+            intended for use with fluent configuration patterns.</remarks>
+            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
+            <param name="section">The PDF section to configure. Must implement <see cref="T:PdfDocuments.IPdfSection`1"/>.</param>
+            <param name="value">The binding that specifies the row edge for the section. This determines how the row edge is rendered or
+            processed.</param>
+            <returns>The same <see cref="T:PdfDocuments.IPdfSection`1"/> instance, allowing for method chaining.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfSectionExtensions.WithRowEdge``1(PdfDocuments.IPdfSection{``0},PdfDocuments.BindPropertyAction{PdfDocuments.PdfRowEdge,``0})">
+            <summary>
+            Sets the row edge binding for a horizontal line section within a PDF section.
+            </summary>
+            <remarks>If the specified section is a horizontal line section, this method sets its row edge binding. For
+            other section types, this method has no effect.</remarks>
+            <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
+            <param name="section">The PDF section to configure. Must implement <see cref="T:PdfDocuments.IPdfSection`1"/>.</param>
+            <param name="value">The binding action to apply to the row edge. This action determines how the <see cref="T:PdfDocuments.PdfRowEdge"/> is set based
+            on the model.</param>
+            <returns>The original PDF section instance, allowing for method chaining.</returns>
         </member>
         <member name="T:PdfDocuments.ServiceCollectionExtensions">
             <summary>
@@ -1992,6 +2110,51 @@
             <param name="value">A binding that determines whether drawing operations are clipped. The value is applied to the style builder.</param>
             <returns>The same style builder instance with the clip drawing setting applied.</returns>
         </member>
+        <member name="M:PdfDocuments.Style.UseHorizontalLineAlignment``1(PdfDocuments.IStyleBuilder{``0},PdfDocuments.BindPropertyAction{PdfDocuments.PdfHorizontalAlignment,``0})">
+            <summary>
+            Sets the horizontal alignment for lines in the PDF style builder.
+            </summary>
+            <remarks>Use this method to specify how lines are horizontally aligned within the PDF output. This setting
+            affects the rendering of lines in the generated document.</remarks>
+            <typeparam name="TModel">The type of the PDF model to which the style is applied.</typeparam>
+            <param name="styleBuilder">The style builder instance to configure.</param>
+            <param name="value">A delegate that binds the horizontal alignment value to the model. Cannot be null.</param>
+            <returns>The same style builder instance with the horizontal line alignment configured.</returns>
+        </member>
+        <member name="M:PdfDocuments.Style.UseHorizontalLineAlignment``1(PdfDocuments.IStyleBuilder{``0},PdfDocuments.BindProperty{PdfDocuments.PdfHorizontalAlignment,``0})">
+            <summary>
+            Sets the horizontal alignment for lines in the PDF style builder.
+            </summary>
+            <remarks>This method enables fluent configuration of horizontal line alignment when building PDF
+            styles.</remarks>
+            <typeparam name="TModel">The type of the PDF model associated with the style builder. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
+            <param name="styleBuilder">The style builder instance to configure.</param>
+            <param name="value">A bindable property specifying the horizontal alignment to apply to lines.</param>
+            <returns>The same <see cref="T:PdfDocuments.IStyleBuilder`1"/> instance to allow for method chaining.</returns>
+        </member>
+        <member name="M:PdfDocuments.Style.UseVerticalLineAlignment``1(PdfDocuments.IStyleBuilder{``0},PdfDocuments.BindPropertyAction{PdfDocuments.PdfVerticalAlignment,``0})">
+            <summary>
+            Configures the vertical alignment for lines in the PDF style builder.
+            </summary>
+            <remarks>This method enables fluent configuration of vertical line alignment when building PDF
+            styles.</remarks>
+            <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
+            <param name="styleBuilder">The style builder instance to configure.</param>
+            <param name="value">A delegate that binds a <see cref="T:PdfDocuments.PdfVerticalAlignment"/> value to the model. Determines the vertical alignment
+            for lines.</param>
+            <returns>The same <see cref="T:PdfDocuments.IStyleBuilder`1"/> instance to allow for method chaining.</returns>
+        </member>
+        <member name="M:PdfDocuments.Style.UseVerticalLineAlignment``1(PdfDocuments.IStyleBuilder{``0},PdfDocuments.BindProperty{PdfDocuments.PdfVerticalAlignment,``0})">
+            <summary>
+            Sets the vertical alignment for lines within the style builder configuration.
+            </summary>
+            <remarks>Use this method to control how lines are vertically aligned in the generated PDF output. This
+            setting affects the rendering of lines relative to their containing elements.</remarks>
+            <typeparam name="TModel">The type of the PDF model to which the style is applied. Must implement <see cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
+            <param name="styleBuilder">The style builder instance to configure.</param>
+            <param name="value">A bindable property specifying the vertical alignment to apply to lines.</param>
+            <returns>The same <see cref="T:PdfDocuments.IStyleBuilder`1"/> instance to allow for method chaining.</returns>
+        </member>
         <member name="M:PdfDocuments.Style.Build``1(PdfDocuments.IStyleBuilder{``0})">
             <summary>
             Creates a strongly-typed PDF style from the specified style builder.
@@ -2178,6 +2341,69 @@
             <param name="style">The style information to apply when rendering the image.</param>
             <param name="state">An optional user-defined object that contains state information for the rendering operation. May be null.</param>
             <returns>A task that represents the asynchronous rendering operation.</returns>
+        </member>
+        <member name="T:PdfDocuments.PdfLineElement`1">
+            <summary>
+            Represents a line element within a PDF grid, positioned by row or column edge, and supporting customizable line
+            direction and style.
+            </summary>
+            <remarks>Use PdfLineElement to draw horizontal or vertical lines at specific row or column edges within a
+            PDF grid. The line's appearance and position can be customized using the LineDirection, RowEdge, and ColumnEdge
+            properties, as well as style settings resolved from the model. This element is typically used to visually separate
+            or highlight sections within a PDF table or grid layout.</remarks>
+            <typeparam name="TModel">The type of the model providing context for style resolution and content. Must implement IPdfModel.</typeparam>
+        </member>
+        <member name="M:PdfDocuments.PdfLineElement`1.#ctor(PdfDocuments.PdfRowEdge)">
+            <summary>
+            Initializes a new instance of the PdfLineElement class with the specified row edge.
+            </summary>
+            <param name="rowEdge">The row edge to which this line element is associated.</param>
+        </member>
+        <member name="M:PdfDocuments.PdfLineElement`1.#ctor(PdfDocuments.PdfColumnEdge)">
+            <summary>
+            Initializes a new instance of the PdfLineElement class with the specified column edge.
+            </summary>
+            <param name="columnEdge">The column edge that defines the alignment or position of the line element within the PDF layout.</param>
+        </member>
+        <member name="P:PdfDocuments.PdfLineElement`1.LineDirection">
+            <summary>
+            Gets or sets the direction in which lines are drawn in the PDF document.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.PdfLineElement`1.RowEdge">
+            <summary>
+            Gets or sets the edge of the row to which this property applies.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.PdfLineElement`1.ColumnEdge">
+            <summary>
+            Gets or sets the edge of the column used for alignment or positioning operations.
+            </summary>
+        </member>
+        <member name="M:PdfDocuments.PdfLineElement`1.MeasureAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfStyle{`0})">
+            <summary>
+            Calculates the size required to render the text, including font, margin, padding, and cell padding, for the
+            specified model and style on the given PDF grid page.
+            </summary>
+            <remarks>The returned size accounts for the text measurement as well as all resolved margin, padding, and
+            cell padding values. Use this method to determine layout requirements before rendering content.</remarks>
+            <param name="g">The PDF grid page used to measure the text and resolve style properties.</param>
+            <param name="m">The model instance providing context for style resolution and text content.</param>
+            <param name="style">The style applied to the model, including font, margin, padding, and cell padding settings.</param>
+            <returns>A PdfSize representing the total width and height needed to render the text with all style adjustments applied.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfLineElement`1.RenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds,PdfDocuments.PdfStyle{`0},System.Object)">
+            <summary>
+            Renders the grid cell content within the specified bounds using the provided style and model data.
+            </summary>
+            <remarks>The rendering process applies margin, background, border, padding, and cell padding before
+            drawing the text. The method does not draw content in the margin area. The style parameters are resolved using the
+            provided model and state, allowing for dynamic customization.</remarks>
+            <param name="g">The PDF grid page on which the cell content will be rendered.</param>
+            <param name="m">The model data used to resolve style and content for rendering.</param>
+            <param name="bounds">The bounds that define the area in which the cell content will be rendered.</param>
+            <param name="style">The style settings that determine appearance aspects such as margin, padding, font, colors, and alignment.</param>
+            <param name="state">An optional state object that can be used to resolve dynamic style or content values. May be null.</param>
         </member>
         <member name="T:PdfDocuments.PdfTextElement`1">
             <summary>
@@ -3436,6 +3662,23 @@
             Gets the value indicating the right position or direction.
             </summary>
         </member>
+        <member name="T:PdfDocuments.PdfLineDirection">
+            <summary>
+            Specifies the possible directions for a line in a PDF document.
+            </summary>
+            <remarks>Use this enumeration to indicate whether a line should be rendered horizontally or vertically
+            within a PDF layout.</remarks>
+        </member>
+        <member name="F:PdfDocuments.PdfLineDirection.Horizontal">
+            <summary>
+            Specifies that the orientation is horizontal.
+            </summary>
+        </member>
+        <member name="F:PdfDocuments.PdfLineDirection.Vertical">
+            <summary>
+            Represents a vertical orientation.
+            </summary>
+        </member>
         <member name="T:PdfDocuments.PdfNullModel">
             <summary>
             Represents a placeholder PDF model that indicates the absence of a valid model.
@@ -3735,6 +3978,19 @@
             clipped and not rendered. Set this property to <see langword="false"/> to allow drawing outside the control's
             bounds, which may be useful for custom rendering scenarios.</remarks>
         </member>
+        <member name="P:PdfDocuments.PdfStyle`1.HorizontalLineAlignment">
+            <summary>
+            Gets or sets the horizontal alignment for the line within the PDF document.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.PdfStyle`1.VerticalLineAlignment">
+            <summary>
+            Gets or sets the vertical alignment for lines within the PDF content.
+            </summary>
+            <remarks>Use this property to control how lines are positioned vertically relative to their containing
+            area. The default alignment is top. This property is typically used when customizing the layout of PDF elements
+            that support vertical alignment.</remarks>
+        </member>
         <member name="T:PdfDocuments.PdfStyleManager`1">
             <summary>
             Manages a collection of named PDF styles for a specific model type, providing access and customization of font and
@@ -3872,6 +4128,52 @@
             Initializes a new instance of the PdfEmptySection class with rendering disabled.
             </summary>
         </member>
+        <member name="M:PdfDocuments.PdfEmptySection`1.OnInitializeAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Performs asynchronous initialization logic for the grid page using the specified model and bounds.
+            </summary>
+            <param name="g">The grid page to initialize.</param>
+            <param name="m">The model containing data or state used for initialization.</param>
+            <param name="bounds">The bounds within which the grid page should be initialized.</param>
+            <returns>A task that represents the asynchronous initialization operation.</returns>
+        </member>
+        <member name="T:PdfDocuments.PdfHorizontalLineSection`1">
+            <summary>
+            Represents a PDF section that renders a horizontal line, with support for model-based customization and binding to
+            a specific row edge in a PDF table.
+            </summary>
+            <remarks>Use this section to insert a horizontal line into a PDF document, typically as a visual separator
+            within a table or layout. The section allows customization of the line's position by binding to a specific row
+            edge, and supports asynchronous rendering and initialization. Inherit from this class to further customize
+            rendering behavior or integrate with additional PDF generation features.</remarks>
+            <typeparam name="TModel">The type of the model associated with the section. Must implement the IPdfModel interface.</typeparam>
+        </member>
+        <member name="P:PdfDocuments.PdfHorizontalLineSection`1.RowEdge">
+            <summary>
+            Gets or sets the binding for the row edge of the PDF table associated with the model.
+            </summary>
+            <remarks>Use this property to specify or retrieve how the row edge is determined for each model instance
+            when generating a PDF table. The binding defines which edge of the row (such as top or bottom) is targeted during
+            rendering or processing.</remarks>
+        </member>
+        <member name="M:PdfDocuments.PdfHorizontalLineSection`1.OnInitializeAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Performs asynchronous initialization logic for the grid page using the specified model and bounds.
+            </summary>
+            <param name="g">The grid page to initialize.</param>
+            <param name="m">The model containing data or state used for initialization.</param>
+            <param name="bounds">The bounds within which the grid page should be initialized.</param>
+            <returns>A task that represents the asynchronous initialization operation.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfHorizontalLineSection`1.OnRenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Asynchronously renders content for the specified model within the given bounds on the provided PDF grid page.
+            </summary>
+            <param name="g">The PDF grid page on which to render the content.</param>
+            <param name="m">The model containing the data to be rendered.</param>
+            <param name="bounds">The bounds within which the content should be rendered on the page.</param>
+            <returns>A task that represents the asynchronous render operation.</returns>
+        </member>
         <member name="T:PdfDocuments.PdfHorizontalStackSection`1">
             <summary>
             Represents a section in a PDF document that arranges its child sections horizontally, distributing available space
@@ -3900,6 +4202,14 @@
             <param name="children">An array of child sections to be arranged horizontally within this section. Cannot be null or contain null
             sections.</param>
         </member>
+        <member name="P:PdfDocuments.PdfHorizontalStackSection`1.SectionLayoutMode">
+            <summary>
+            Gets or sets the layout mode used for arranging sections within the PDF document.
+            </summary>
+            <remarks>The layout mode determines how sections are visually organized when rendering the document.
+            Setting this property may have no effect if the implementation does not support changing the layout
+            mode.</remarks>
+        </member>
         <member name="T:PdfDocuments.PdfOverlayStackSection`1">
             <summary>
             Represents a PDF section that overlays multiple child sections in a stack, rendering them within the same bounds on
@@ -3922,6 +4232,97 @@
             </summary>
             <param name="children">An array of child sections to be included in the overlay stack. Cannot be null; may be empty if no child sections
             are required.</param>
+        </member>
+        <member name="P:PdfDocuments.PdfOverlayStackSection`1.SectionLayoutMode">
+            <summary>
+            Gets or sets the layout mode used for arranging sections within the PDF document.
+            </summary>
+            <remarks>The layout mode determines how sections are visually organized when rendering the document.
+            Setting this property may have no effect if the implementation does not support changing the layout
+            mode.</remarks>
+        </member>
+        <member name="T:PdfDocuments.PdfPageFooterSection`1">
+            <summary>
+            Represents a footer section template for a PDF page, allowing customizable text content in each corner of the
+            footer.
+            </summary>
+            <remarks>Use this class to define footer content for PDF pages, with support for binding text to the
+            top-left, top-right, bottom-left, and bottom-right corners. Footer content and styles can be dynamically resolved
+            based on the provided model. This section is typically rendered at the bottom of each PDF page and can be
+            customized for different document layouts.</remarks>
+            <typeparam name="TModel">The model type used to bind footer content and styles. Must implement the IPdfModel interface.</typeparam>
+        </member>
+        <member name="P:PdfDocuments.PdfPageFooterSection`1.TopLeftText">
+            <summary>
+            Gets or sets the text displayed in the top-left area of the control.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.PdfPageFooterSection`1.TopRightText">
+            <summary>
+            Gets or sets the text displayed in the top-right corner of the control.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.PdfPageFooterSection`1.BottomLeftText">
+            <summary>
+            Gets or sets the text displayed in the bottom-left area of the control.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.PdfPageFooterSection`1.BottomRightText">
+            <summary>
+            Gets or sets the text displayed in the bottom-right corner of the control.
+            </summary>
+        </member>
+        <member name="M:PdfDocuments.PdfPageFooterSection`1.OnInitializeAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Performs asynchronous initialization logic for the grid element before rendering.
+            </summary>
+            <param name="g">The PDF grid page on which the element will be rendered.</param>
+            <param name="m">The model containing data relevant to the grid element.</param>
+            <param name="bounds">The bounds within which the element should be rendered.</param>
+            <returns>A task that represents the asynchronous initialization operation.</returns>
+        </member>
+        <member name="T:PdfDocuments.PdfPageHeaderSection`1">
+            <summary>
+            Represents a page header section template for a PDF page, allowing customizable text content in each corner of the
+            header.
+            </summary>
+            <remarks>Use this class to define header content for PDF pages, with support for binding text to the
+            top-left, top-right, bottom-left, and bottom-right corners. Header content and styles can be dynamically resolved
+            based on the provided model. This section is typically rendered at the top of each PDF page and can be
+            customized for different document layouts.</remarks>
+            <typeparam name="TModel">The model type used to bind header content and styles. Must implement the IPdfModel interface.</typeparam>
+        </member>
+        <member name="T:PdfDocuments.PdfStackedTextSection`1">
+            <summary>
+            Represents a PDF section that renders a collection of text items stacked vertically, using customizable styles and
+            bindings to a model.
+            </summary>
+            <remarks>This section allows each text item to be bound to a property of the model and rendered with
+            distinct styles. The first item and subsequent items can use different font and alignment settings. Items with null
+            or whitespace values are not rendered. Use this class to display multiple lines of text in a stacked layout within
+            a PDF grid page.</remarks>
+            <typeparam name="TModel">The type of the model used for binding text items. Must implement the IPdfModel interface.</typeparam>
+        </member>
+        <member name="M:PdfDocuments.PdfStackedTextSection`1.#ctor">
+            <summary>
+            Initializes a new instance of the PdfStackedTextSection class.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.PdfStackedTextSection`1.StackedItems">
+            <summary>
+            Gets or sets the collection of stacked items bound to the model.
+            </summary>
+            <remarks>Each item in the collection represents a binding between a string identifier and a model
+            instance. The order of items in the collection may affect how they are processed or displayed.</remarks>
+        </member>
+        <member name="M:PdfDocuments.PdfStackedTextSection`1.OnInitializeAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Performs asynchronous initialization logic for the grid page using the specified model and bounds.
+            </summary>
+            <param name="g">The grid page to initialize.</param>
+            <param name="m">The model containing data or state used for initialization.</param>
+            <param name="bounds">The bounds within which the grid page should be initialized.</param>
+            <returns>A task that represents the asynchronous initialization operation.</returns>
         </member>
         <member name="T:PdfDocuments.PdfTextBlockSection`1">
             <summary>
@@ -3956,14 +4357,13 @@
             <param name="children">An array of child sections to be stacked vertically within this section. Cannot be null; may be empty to create an
             empty stack.</param>
         </member>
-        <member name="T:PdfDocuments.PdfWrappingTextSection`1">
+        <member name="P:PdfDocuments.PdfVerticalStackSection`1.SectionLayoutMode">
             <summary>
-            Represents a PDF section that renders text with automatic word wrapping within the specified bounds.
+            Gets or sets the layout mode used for arranging sections within the PDF document.
             </summary>
-            <remarks>This section uses the resolved style and padding to determine how text is wrapped and positioned.
-            It is useful for displaying paragraphs or blocks of text that need to fit within a constrained area of a PDF
-            page.</remarks>
-            <typeparam name="TModel">The type of model used to provide data for rendering the PDF section. Must implement the IPdfModel interface.</typeparam>
+            <remarks>The layout mode determines how sections are visually organized when rendering the document.
+            Setting this property may have no effect if the implementation does not support changing the layout
+            mode.</remarks>
         </member>
         <member name="T:PdfDocuments.PdfDataGridSection`2">
             <summary>
@@ -4335,51 +4735,7 @@
             <returns>A task that represents the asynchronous rendering operation. The task result is <see langword="true"/> if
             rendering completes successfully.</returns>
         </member>
-        <member name="T:PdfDocuments.PdfPageFooterSection`1">
-            <summary>
-            Represents a footer section template for a PDF page, allowing customizable text content in each corner of the
-            footer.
-            </summary>
-            <remarks>Use this class to define footer content for PDF pages, with support for binding text to the
-            top-left, top-right, bottom-left, and bottom-right corners. Footer content and styles can be dynamically resolved
-            based on the provided model. This section is typically rendered at the bottom of each PDF page and can be
-            customized for different document layouts.</remarks>
-            <typeparam name="TModel">The model type used to bind footer content and styles. Must implement the IPdfModel interface.</typeparam>
-        </member>
-        <member name="P:PdfDocuments.PdfPageFooterSection`1.TopLeftText">
-            <summary>
-            Gets or sets the text displayed in the top-left area of the control.
-            </summary>
-        </member>
-        <member name="P:PdfDocuments.PdfPageFooterSection`1.TopRightText">
-            <summary>
-            Gets or sets the text displayed in the top-right corner of the control.
-            </summary>
-        </member>
-        <member name="P:PdfDocuments.PdfPageFooterSection`1.BottomLeftText">
-            <summary>
-            Gets or sets the text displayed in the bottom-left area of the control.
-            </summary>
-        </member>
-        <member name="P:PdfDocuments.PdfPageFooterSection`1.BottomRightText">
-            <summary>
-            Gets or sets the text displayed in the bottom-right corner of the control.
-            </summary>
-        </member>
-        <member name="M:PdfDocuments.PdfPageFooterSection`1.OnRenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
-            <summary>
-            Renders text content in each corner of the specified PDF grid page using the provided model and bounds.
-            </summary>
-            <remarks>Text is rendered in the top-left, top-right, bottom-left, and bottom-right corners of the
-            specified bounds. The style and padding are resolved from the model and applied to the rendering
-            operation.</remarks>
-            <param name="g">The PDF grid page on which the text will be rendered.</param>
-            <param name="m">The model containing data used to resolve text and style information for rendering.</param>
-            <param name="bounds">The bounds within which the text will be rendered on the page.</param>
-            <returns>A task that represents the asynchronous render operation. The task result is <see langword="true"/> if rendering
-            was successful; otherwise, <see langword="false"/>.</returns>
-        </member>
-        <member name="T:PdfDocuments.PdfPageHeaderSection`1">
+        <member name="T:PdfDocuments.PdfReportHeaderSection`1">
             <summary>
             Represents a header section for a PDF page, supporting customizable logo and title rendering using a model-driven
             template.
@@ -4389,17 +4745,17 @@
             settings. This class is typically used as part of a larger PDF generation workflow.</remarks>
             <typeparam name="TModel">The type of model used to bind data for the header section. Must implement the IPdfModel interface.</typeparam>
         </member>
-        <member name="P:PdfDocuments.PdfPageHeaderSection`1.Logo">
+        <member name="P:PdfDocuments.PdfReportHeaderSection`1.Logo">
             <summary>
             Gets or sets the logo text associated with the model.
             </summary>
         </member>
-        <member name="P:PdfDocuments.PdfPageHeaderSection`1.Title">
+        <member name="P:PdfDocuments.PdfReportHeaderSection`1.Title">
             <summary>
             Gets or sets the title associated with the model.
             </summary>
         </member>
-        <member name="M:PdfDocuments.PdfPageHeaderSection`1.OnRenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+        <member name="M:PdfDocuments.PdfReportHeaderSection`1.OnRenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
             <summary>
             Renders the header section of the PDF grid page asynchronously, including the logo image and title text if
             available.
@@ -4441,37 +4797,6 @@
             <param name="g">The PDF grid page on which the signature section will be rendered.</param>
             <param name="m">The data model containing values used to resolve signature options, style, and content for rendering.</param>
             <param name="bounds">The layout bounds within the grid page that define the area for rendering the signature section.</param>
-            <returns>A task that represents the asynchronous rendering operation. The result is <see langword="true"/> if rendering was
-            successful; otherwise, <see langword="false"/>.</returns>
-        </member>
-        <member name="T:PdfDocuments.PdfStackedTextSection`1">
-            <summary>
-            Represents a PDF section that renders a collection of text items stacked vertically, using customizable styles and
-            bindings to a model.
-            </summary>
-            <remarks>This section allows each text item to be bound to a property of the model and rendered with
-            distinct styles. The first item and subsequent items can use different font and alignment settings. Items with null
-            or whitespace values are not rendered. Use this class to display multiple lines of text in a stacked layout within
-            a PDF grid page.</remarks>
-            <typeparam name="TModel">The type of the model used for binding text items. Must implement the IPdfModel interface.</typeparam>
-        </member>
-        <member name="P:PdfDocuments.PdfStackedTextSection`1.StackedItems">
-            <summary>
-            Gets or sets the collection of stacked items bound to the model.
-            </summary>
-            <remarks>Each item in the collection represents a binding between a string identifier and a model
-            instance. The order of items in the collection may affect how they are processed or displayed.</remarks>
-        </member>
-        <member name="M:PdfDocuments.PdfStackedTextSection`1.OnRenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
-            <summary>
-            Renders stacked text items onto the specified PDF grid page using the provided model and layout bounds.
-            </summary>
-            <remarks>The rendering process applies different styles to the first and subsequent items in the stack.
-            Items with null or whitespace text are not rendered. Padding and alignment are determined by the resolved styles
-            for each item.</remarks>
-            <param name="g">The PDF grid page on which the items will be rendered.</param>
-            <param name="m">The data model used to resolve item values and styles during rendering.</param>
-            <param name="bounds">The layout bounds that define the area and positioning for rendering the items.</param>
             <returns>A task that represents the asynchronous rendering operation. The result is <see langword="true"/> if rendering was
             successful; otherwise, <see langword="false"/>.</returns>
         </member>
@@ -4606,6 +4931,17 @@
             <param name="bounds">The bounds within which the grid page should be rendered.</param>
             <returns>A task that represents the asynchronous operation. The task result is <see langword="true"/> if all debug overlays
             were rendered successfully; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfSectionTemplate`1.OnInitializeAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Performs asynchronous initialization logic for a grid page before rendering.
+            </summary>
+            <remarks>Override this method to implement custom initialization logic. The default implementation
+            performs no action.</remarks>
+            <param name="g">The grid page to initialize.</param>
+            <param name="m">The model containing data for the grid page.</param>
+            <param name="bounds">The bounds within which the grid page will be rendered.</param>
+            <returns>A task that represents the asynchronous initialization operation.</returns>
         </member>
         <member name="M:PdfDocuments.PdfSectionTemplate`1.OnShouldDrawBackground">
             <summary>
