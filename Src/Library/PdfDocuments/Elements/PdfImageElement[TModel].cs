@@ -113,7 +113,7 @@ namespace PdfDocuments
 				float scale = style.ImageScale.Resolve(g, m);
 
 				//
-				//
+				//Determine if the image should be clipped.
 				//
 				bool clipDrawing = style.ClipDrawing.Resolve(g, m, state);
 

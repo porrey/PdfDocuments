@@ -70,7 +70,7 @@ namespace PdfDocuments.Example.Features
 			// Set debug flags.
 			//
 			helloWorld.DebugMode = helloWorld.DebugMode
-									.SetFlag(DebugMode.RevealGrid, true)
+									.SetFlag(DebugMode.RevealGrid, false)
 									.SetFlag(DebugMode.RevealLayout, false)
 									.SetFlag(DebugMode.HideDetails, false)
 									.SetFlag(DebugMode.RevealFontDetails, false)

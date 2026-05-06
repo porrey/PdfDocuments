@@ -24,15 +24,29 @@
 namespace PdfDocuments
 {
 	/// <summary>
-	/// Represents a footer section template for a PDF page, allowing customizable text content in each corner of the
-	/// footer.
+	/// Specifies the horizontal alignment options for displaying a logo.
 	/// </summary>
-	/// <remarks>Use this class to define footer content for PDF pages, with support for binding text to the
-	/// top-left, top-right, bottom-left, and bottom-right corners. Footer content and styles can be dynamically resolved
-	/// based on the provided model. This section is typically rendered at the bottom of each PDF page and can be
-	/// customized for different document layouts.</remarks>
-	/// <typeparam name="TModel">The model type used to bind footer content and styles. Must implement the IPdfModel interface.</typeparam>
-	public class PdfPageFooterSection<TModel> : PdfSectionTemplate<TModel>
+	public enum PdfLogoPosition
+	{
+		/// <summary>
+		/// Gets or sets the left coordinate of the element.
+		/// </summary>
+		Left,
+		/// <summary>
+		/// Represents the right direction or alignment.
+		/// </summary>
+		Right
+	}
+
+	/// <summary>
+	/// Represents a header section for a PDF, supporting customizable logo and title rendering using a model-driven
+	/// template.
+	/// </summary>
+	/// <remarks>Use this class to define and render a report header in a PDF document, with support for binding logo
+	/// and title values from the provided model. The header section can be styled and positioned according to template
+	/// settings. This class is typically used as part of a larger PDF generation workflow.</remarks>
+	/// <typeparam name="TModel">The type of model used to bind data for the header section. Must implement the IPdfModel interface.</typeparam>
+	public class PdfReportHeaderSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
 		/// <summary>
@@ -41,24 +55,19 @@ namespace PdfDocuments
 		protected virtual bool IsInitialized { get; set; }
 
 		/// <summary>
-		/// Gets or sets the text displayed in the top-left area of the control.
+		/// Gets or sets the logo text associated with the model.
 		/// </summary>
-		public virtual BindProperty<string, TModel> TopLeftText { get; set; } = string.Empty;
+		public virtual BindProperty<string, TModel> Logo { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Gets or sets the text displayed in the top-right corner of the control.
+		/// Gets or sets the title associated with the model.
 		/// </summary>
-		public virtual BindProperty<string, TModel> TopRightText { get; set; } = string.Empty;
+		public virtual BindProperty<string, TModel> Title { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Gets or sets the text displayed in the bottom-left area of the control.
+		/// Gets or sets the title associated with the model.
 		/// </summary>
-		public virtual BindProperty<string, TModel> BottomLeftText { get; set; } = string.Empty;
-
-		/// <summary>
-		/// Gets or sets the text displayed in the bottom-right corner of the control.
-		/// </summary>
-		public virtual BindProperty<string, TModel> BottomRightText { get; set; } = string.Empty;
+		public virtual BindProperty<PdfLogoPosition, TModel> LogoPosition { get; set; } = PdfLogoPosition.Left;
 
 		/// <summary>
 		/// Performs asynchronous initialization logic for the grid element before rendering.
@@ -73,41 +82,46 @@ namespace PdfDocuments
 			{
 				int i = 0;
 				string controlStyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : PdfStyleManager<TModel>.Default;
-				string topLeftSyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : PdfStyleManager<TModel>.Default;
-				string topRightSyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : PdfStyleManager<TModel>.Default;
-				string bottomLeftSyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : PdfStyleManager<TModel>.Default;
-				string bottomRightSyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : PdfStyleManager<TModel>.Default;
+				string logoStyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : PdfStyleManager<TModel>.Default;
+				string titleStyle = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : PdfStyleManager<TModel>.Default;
 
 				this.StyleNames = [controlStyle];
 
-				IPdfSection<TModel>[] innerItems =
-				[
-					Pdf.HorizontalStackSection<TModel>(
-						Pdf.TextBlockSection<TModel>()
-							.WithText(this.TopLeftText)
-							.WithStyles(topLeftSyle)
-							.WithZOrder(4)
-							.WithParentSection(this),
-						Pdf.TextBlockSection<TModel>()
-							.WithText(this.TopRightText)
-							.WithStyles(topRightSyle)
-							.WithZOrder(3)
-							.WithParentSection(this)
-					).WithParentSection(this).WithZOrder(2),
-					Pdf.HorizontalStackSection<TModel>(
-						Pdf.TextBlockSection<TModel>()
-							.WithText(this.BottomLeftText)
-							.WithStyles(bottomLeftSyle)
+				IPdfSection<TModel>[] innerItems = [];
+
+				if (this.LogoPosition.Resolve(g,m) == PdfLogoPosition.Left)
+				{
+					innerItems =
+					[
+						Pdf.ImageSection<TModel>()
+							.WithImage(this.Logo)
+							.WithStyles(logoStyle)
 							.WithZOrder(2)
 							.WithParentSection(this),
 						Pdf.TextBlockSection<TModel>()
-							.WithText(this.BottomRightText)
-							.WithStyles(bottomRightSyle)
+							.WithText(this.Title)
+							.WithStyles(titleStyle)
 							.WithZOrder(1)
 							.WithParentSection(this)
-					).WithParentSection(this).WithZOrder(1)
-				];
-
+					];
+				}
+				else
+				{
+					innerItems =
+					[
+						Pdf.TextBlockSection<TModel>()
+							.WithText(this.Title)
+							.WithStyles(titleStyle)
+							.WithZOrder(1)
+							.WithParentSection(this),
+						Pdf.ImageSection<TModel>()
+							.WithImage(this.Logo)
+							.WithStyles(logoStyle)
+							.WithZOrder(2)
+							.WithParentSection(this)
+					];
+				}
+				
 				this.Children = innerItems;
 				this.Text = string.Empty;
 
@@ -127,7 +141,7 @@ namespace PdfDocuments
 		{
 			get
 			{
-				return PdfSectionsLayoutMode.VerticalStacking;
+				return PdfSectionsLayoutMode.HorizontalStacking;
 			}
 			set
 			{

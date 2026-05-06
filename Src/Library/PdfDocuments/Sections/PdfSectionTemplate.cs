@@ -81,6 +81,13 @@ namespace PdfDocuments
 		public virtual PdfSectionsLayoutMode SectionLayoutMode { get; set; } = PdfSectionsLayoutMode.VerticalStacking;
 
 		/// <summary>
+		/// Gets or sets the z-order position of the element within its parent container.
+		/// </summary>
+		/// <remarks>A higher z-order value places the element in front of elements with lower values. This property
+		/// is typically used to control the visual stacking order in graphical user interfaces.</remarks>
+		public int ZOrder { get; set; }
+
+		/// <summary>
 		/// Gets or sets the text value associated with the model.
 		/// </summary>
 		public virtual BindProperty<string, TModel> Text { get; set; } = string.Empty;
@@ -98,7 +105,7 @@ namespace PdfDocuments
 		/// <remarks>The returned collection provides access to all immediate child sections. Modifications to the
 		/// collection may affect the structure of the document. The collection is read-only; to add or remove child sections,
 		/// use the appropriate methods provided by the containing class, if available.</remarks>
-		public virtual IList<IPdfSection<TModel>> Children { get; } = [];
+		public virtual IList<IPdfSection<TModel>> Children { get; protected set; } = [];
 
 		/// <summary>
 		/// Gets or sets the actual bounding rectangle of the section in PDF coordinates.
@@ -267,11 +274,6 @@ namespace PdfDocuments
 				await this.OnRenderBackgroundAsync(g, m, paddedBounds);
 
 				//
-				// Render the border with padding.
-				//
-				await this.OnRenderBorderAsync(g, m, paddedBounds);
-
-				//
 				// Render the text.
 				//
 				await this.OnRenderTextAsync(g, m, paddedBounds);
@@ -280,6 +282,11 @@ namespace PdfDocuments
 				// Render the child sections.
 				//
 				await this.OnRenderChildrenAsync(g, m, paddedBounds);
+
+				//
+				// Render the border with padding.
+				//
+				await this.OnRenderBorderAsync(g, m, paddedBounds);
 
 				//
 				// Render the watermark on top of all other sections.
@@ -517,7 +524,7 @@ namespace PdfDocuments
 				//
 				// Render each child section.
 				//
-				foreach (IPdfSection<TModel> section in sections)
+				foreach (IPdfSection<TModel> section in sections.OrderBy(t => t.ZOrder))
 				{
 					//
 					// Render the child section.

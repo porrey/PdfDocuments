@@ -72,6 +72,13 @@ namespace PdfDocuments
 		IEnumerable<string> StyleNames { get; set; }
 
 		/// <summary>
+		/// Gets or sets the z-order position of the element within its parent container.
+		/// </summary>
+		/// <remarks>A higher z-order value places the element in front of elements with lower values. Z-order
+		/// determines the visual stacking order when elements overlap.</remarks>
+		int ZOrder { get; set; }
+
+		/// <summary>
 		/// Gets or sets the layout mode used for arranging child sections.
 		/// </summary>
 		/// <remarks>Use this property to control how child sections are positioned and displayed within the parent

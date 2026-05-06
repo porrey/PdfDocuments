@@ -203,7 +203,7 @@ namespace PdfDocuments
 				//
 				if (clipDrawing)
 				{
-					source.ClipDrawing(imageBounds);
+					source.ClipDrawing(bounds);
 				}
 
 				PdfPoint hPoint = bounds.AlignHorizontally(imageBounds, horizontalAlignment);

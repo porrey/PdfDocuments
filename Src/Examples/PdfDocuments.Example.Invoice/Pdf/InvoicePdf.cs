@@ -397,7 +397,6 @@ namespace PdfDocuments.Example.Invoice
 				// Signature section will display only on the last page.
 				//
 				Pdf.SignatureSection<Invoice>()
-					.WithText("Approved by")
 					.WithRenderCondition((g, m) => g.PageNumber == g.Document.PageCount)
 					.WithStyles("Signature.Section")
 					.WithSignatureOptions(new SignatureOptions<Invoice>()

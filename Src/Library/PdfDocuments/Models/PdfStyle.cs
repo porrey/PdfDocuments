@@ -165,7 +165,7 @@ namespace PdfDocuments
 		/// <remarks>When set to <see langword="true"/>, any drawing that exceeds the control's boundaries will be
 		/// clipped and not rendered. Set this property to <see langword="false"/> to allow drawing outside the control's
 		/// bounds, which may be useful for custom rendering scenarios.</remarks>
-		public virtual BindProperty<bool, TModel> ClipDrawing { get; set; } = true;
+		public virtual BindProperty<bool, TModel> ClipDrawing { get; set; } = false;
 
 		/// <summary>
 		/// Gets or sets the horizontal alignment for the line within the PDF document.

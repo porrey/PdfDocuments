@@ -31,11 +31,5 @@ namespace PdfDocuments
 	public class PdfContentSection<TModel> : PdfSectionTemplate<TModel>
 		where TModel : IPdfModel
 	{
-		/// <summary>
-		/// Initializes a new instance of the PdfContentSection class.
-		/// </summary>
-		public PdfContentSection()
-		{
-		}
 	}
 }

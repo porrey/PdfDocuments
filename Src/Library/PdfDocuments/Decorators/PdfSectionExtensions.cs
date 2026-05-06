@@ -434,6 +434,46 @@ namespace PdfDocuments
 		}
 
 		/// <summary>
+		/// Sets the logo position for a PDF section using the specified binding.
+		/// </summary>
+		/// <remarks>If the section is a report header, the logo position is set; otherwise, this method has no
+		/// effect.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the section.</typeparam>
+		/// <param name="section">The PDF section to configure.</param>
+		/// <param name="value">A binding that specifies the logo position style to apply to the section.</param>
+		/// <returns>The same PDF section instance with the logo position binding applied.</returns>
+		public static IPdfSection<TModel> WithLogoPosition<TModel>(this IPdfSection<TModel> section, BindProperty<PdfLogoPosition, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfReportHeaderSection<TModel> headerSection)
+			{
+				headerSection.LogoPosition = value;
+			}
+
+			return section;
+		}
+
+		/// <summary>
+		/// Sets the logo position style for a PDF section, allowing customization of the logo's placement within the section.
+		/// </summary>
+		/// <remarks>If the section is not a header section, this method has no effect. This method enables fluent
+		/// configuration of logo placement in PDF report headers.</remarks>
+		/// <typeparam name="TModel">The type of the PDF model associated with the section. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="section">The PDF section to configure. Must be a header section to apply the logo position.</param>
+		/// <param name="value">An action that binds the logo position style to the model, specifying how the logo should be positioned.</param>
+		/// <returns>The same PDF section instance with the logo position style applied if supported.</returns>
+		public static IPdfSection<TModel> WithLogoPosition<TModel>(this IPdfSection<TModel> section, BindPropertyAction<PdfLogoPosition, TModel> value)
+			where TModel : IPdfModel
+		{
+			if (section is PdfReportHeaderSection<TModel> headerSection)
+			{
+				headerSection.LogoPosition = value;
+			}
+
+			return section;
+		}
+
+		/// <summary>
 		/// Sets the image property of the section if it is an image section.
 		/// </summary>
 		/// <remarks>This method only modifies sections that are image sections. Other section types are
@@ -903,6 +943,23 @@ namespace PdfDocuments
 				pdfHorizontalLineSection.RowEdge = value;
 			}
 
+			return section;
+		}
+
+		/// <summary>
+		/// Sets the Z-order value for the specified PDF section.
+		/// </summary>
+		/// <remarks>This method enables fluent configuration of the section's Z-order. Modifying the Z-order affects
+		/// the rendering order of overlapping sections.</remarks>
+		/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement <see cref="IPdfModel"/>.</typeparam>
+		/// <param name="section">The PDF section whose Z-order will be set. Cannot be null.</param>
+		/// <param name="value">The Z-order value to assign to the section. Higher values indicate that the section will be rendered above
+		/// sections with lower values.</param>
+		/// <returns>The same <see cref="IPdfSection{TModel}"/> instance with the updated Z-order value.</returns>
+		public static IPdfSection<TModel> WithZOrder<TModel>(this IPdfSection<TModel> section, int value)
+				where TModel : IPdfModel
+		{
+			section.ZOrder = value;
 			return section;
 		}
 	}

@@ -36,11 +36,9 @@ namespace PdfDocuments
 		where TModel : IPdfModel
 	{
 		/// <summary>
-		/// Initializes a new instance of the PdfStackedTextSection class.
+		/// Gets or sets a value indicating whether the object has been initialized.
 		/// </summary>
-		public PdfStackedTextSection()
-		{
-		}
+		protected virtual bool IsInitialized { get; set; }
 
 		/// <summary>
 		/// Gets or sets the collection of stacked items bound to the model.
@@ -58,8 +56,10 @@ namespace PdfDocuments
 		/// <returns>A task that represents the asynchronous initialization operation.</returns>
 		protected override Task OnInitializeAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
-			if (this.Children.Count == 0)
+			if (!this.IsInitialized)
 			{
+				List<IPdfSection<TModel>> innerItems = [];
+
 				int i = 0;
 
 				foreach (BindProperty<string, TModel> item in this.StackedItems)
@@ -70,11 +70,15 @@ namespace PdfDocuments
 					//
 					string styleName = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i) : this.StyleNames.Last();
 
-					this.AddChildren(new PdfTextBlockSection<TModel>
+					PdfTextBlockSection<TModel> section = new()
 					{
 						Text = item,
 						StyleNames = [styleName]
-					});
+					};
+
+					innerItems.Add(section.WithParentSection(this));
+
+					i++;
 				}
 
 				//
@@ -82,6 +86,11 @@ namespace PdfDocuments
 				// allowing the styles to be applied only to the individual text blocks.
 				//
 				this.StyleNames = [PdfStyleManager<TModel>.Default];
+
+				this.Children = innerItems;
+				this.Text = string.Empty;
+
+				this.IsInitialized = true;
 			}
 
 			return Task.CompletedTask;

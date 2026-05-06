@@ -42,40 +42,42 @@ namespace PdfDocuments
 		public virtual BindProperty<string, TModel> Image { get; set; } = string.Empty;
 
 		/// <summary>
-		/// Renders an image onto the specified PDF grid page using the provided model and layout bounds.
+		/// Asynchronously renders the image element as a child of the grid page within the specified bounds.
 		/// </summary>
-		/// <remarks>The image is rendered left-aligned and vertically centered within the specified bounds, using
-		/// padding and style information resolved from the model. If the resolved image path is null, empty, or the file does
-		/// not exist, no image is rendered.</remarks>
-		/// <param name="g">The PDF grid page on which the image will be rendered.</param>
-		/// <param name="m">The data model used to resolve image path and styling information.</param>
-		/// <param name="bounds">The layout bounds that define the area within which the image is rendered.</param>
-		/// <returns>A task that represents the asynchronous render operation. The result is true if rendering was attempted.</returns>
-		protected override Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		/// <param name="g">The PDF grid page on which to render the image element.</param>
+		/// <param name="m">The model providing data for rendering the image element.</param>
+		/// <param name="bounds">The bounds within which the image element is rendered.</param>
+		/// <returns>A task that represents the asynchronous render operation.</returns>
+		protected async override Task OnRenderChildrenAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
-			bool returnValue = true;
+			//
+			// Get the text.
+			//
+			string imagePath = this.Image.Resolve(g, m);
 
-			//
-			// Get the first style for this section
-			//
-			PdfStyle<TModel> style = this.ResolveStyle(0);
-
-			//
-			// Get the default style for this section
-			//
-			PdfSpacing padding = style.Padding.Resolve(g, m);
-
-			//
-			// Draw the image left aligned and vertically centered.
-			//
-			string path = this.Image.Resolve(g, m);
-
-			if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+			if (imagePath != null)
 			{
-				g.DrawImageWithFixedHeight(path, bounds.LeftColumn + padding.Left, bounds.TopRow + padding.Top, bounds.Rows - (padding.Top + padding.Bottom));
-			}
+				//
+				// Get the style.
+				//
+				PdfStyle<TModel> style = this.ResolveStyle(0);
 
-			return Task.FromResult(returnValue);
+				//
+				// Apply padding.
+				//
+				PdfSpacing padding = style.Padding.Resolve(g, m);
+				PdfBounds paddedBounds = this.ApplyPadding(g, m, padding);
+
+				//
+				// Create a new text element.
+				//
+				PdfImageElement<TModel> imageElement = new(imagePath);
+
+				//
+				// Render the text element.
+				//
+				await imageElement.RenderAsync(g, m, paddedBounds, style);
+			}
 		}
 	}
 }

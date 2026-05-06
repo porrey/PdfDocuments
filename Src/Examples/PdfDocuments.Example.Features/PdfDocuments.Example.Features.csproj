@@ -15,6 +15,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="Images\logo.jpg">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="Images\signature.jpg">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
 	  <Content Include="Images\watermark.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>

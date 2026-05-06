@@ -21,31 +21,27 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-namespace PdfDocuments
+using PdfSharp.Drawing;
+
+namespace PdfDocuments.Example.Features
 {
 	/// <summary>
-	/// Represents a PDF section that contains no content. This class can be used to insert an empty section into a PDF
-	/// document template.
+	/// Provides a set of predefined colors for use throughout the application.
 	/// </summary>
-	/// <typeparam name="TModel">The type of the model associated with the PDF section. Must implement the IPdfModel interface.</typeparam>
-	public class PdfEmptySection<TModel> : PdfSectionTemplate<TModel>
-		where TModel : IPdfModel
+	/// <remarks>The colors in this palette are intended to promote consistency in UI design and can be used
+	/// wherever a standard color scheme is required. All colors are defined as static fields for convenient
+	/// access.</remarks>
+	public static class ColorPalette
 	{
-		/// <summary>
-		/// Performs asynchronous initialization logic for the grid page using the specified model and bounds.
-		/// </summary>
-		/// <param name="g">The grid page to initialize.</param>
-		/// <param name="m">The model containing data or state used for initialization.</param>
-		/// <param name="bounds">The bounds within which the grid page should be initialized.</param>
-		/// <returns>A task that represents the asynchronous initialization operation.</returns>
-		protected override Task OnInitializeAsync(PdfGridPage g, TModel m, PdfBounds bounds)
-		{
-			if (this.Children.Count != 0)
-			{
-				this.Children.Clear();
-			}
-
-			return Task.CompletedTask;
-		}
+		public static XColor Transparent = XColors.Transparent;
+		public static XColor White = XColor.FromArgb(255, 255, 255, 255);
+		public static XColor Gray = XColor.FromArgb(255, 99, 99, 99);
+		public static XColor LightGray = XColor.FromArgb(255, 200, 200, 200);
+		public static XColor Blue = XColor.FromArgb(255, 37, 32, 98);
+		public static XColor MediumBlue = XColor.FromArgb(255, 37, 32, 98).WithLuminosity(.95);
+		public static XColor LightBlue = XColor.FromArgb(255, 37, 32, 98).WithLuminosity(.98);
+		public static XColor Red = XColor.FromArgb(255, 215, 35, 44);
+		public static XColor MediumRed = XColor.FromArgb(255, 215, 35, 44).WithLuminosity(.95);
+		public static XColor LightRed = XColor.FromArgb(255, 215, 35, 44).WithLuminosity(.98);
 	}
 }
