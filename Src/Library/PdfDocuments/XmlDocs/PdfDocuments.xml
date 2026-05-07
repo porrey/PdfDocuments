@@ -3703,6 +3703,63 @@
             Gets the value indicating the right position or direction.
             </summary>
         </member>
+        <member name="T:PdfDocuments.PdfKeyValueItem`1">
+            <summary>
+            Represents a key-value pair for PDF data binding, where the value can be a static string or a bindable property
+            associated with a model.
+            </summary>
+            <remarks>Use this class to define key-value pairs for PDF generation scenarios, supporting both static and
+            dynamic values. The value can be bound to a property or action on the model, enabling flexible data extraction for
+            PDF fields.</remarks>
+            <typeparam name="TModel">The type of model associated with the value binding. Must implement the IPdfModel interface.</typeparam>
+        </member>
+        <member name="M:PdfDocuments.PdfKeyValueItem`1.#ctor">
+            <summary>
+            Initializes a new instance of the PdfKeyValueItem class.
+            </summary>
+        </member>
+        <member name="M:PdfDocuments.PdfKeyValueItem`1.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the PdfKeyValueItem class with the specified key and value.
+            </summary>
+            <param name="key">The key associated with the item. Cannot be null.</param>
+            <param name="value">The value associated with the key. Cannot be null.</param>
+        </member>
+        <member name="M:PdfDocuments.PdfKeyValueItem`1.#ctor(PdfDocuments.BindPropertyAction{System.String,`0},PdfDocuments.BindProperty{System.String,`0})">
+            <summary>
+            Initializes a new instance of the PdfKeyValueItem class with the specified key and value binding.
+            </summary>
+            <param name="key">The key associated with the value. Cannot be null.</param>
+            <param name="value">A binding that provides the value associated with the key. Cannot be null.</param>
+        </member>
+        <member name="M:PdfDocuments.PdfKeyValueItem`1.#ctor(System.String,PdfDocuments.BindPropertyAction{System.String,`0})">
+            <summary>
+            Initializes a new instance of the PdfKeyValueItem class with the specified key and value binding action.
+            </summary>
+            <param name="key">The key associated with the item. Cannot be null.</param>
+            <param name="value">A delegate that defines how to bind the value for the specified model. Cannot be null.</param>
+        </member>
+        <member name="M:PdfDocuments.PdfKeyValueItem`1.#ctor(PdfDocuments.BindPropertyAction{System.String,`0},System.String)">
+            <summary>
+            Initializes a new instance of the PdfKeyValueItem class with the specified key binding and value.
+            </summary>
+            <param name="key">A delegate that binds a property representing the key from the model. Cannot be null.</param>
+            <param name="value">The value associated with the key. Can be null or empty.</param>
+        </member>
+        <member name="P:PdfDocuments.PdfKeyValueItem`1.Key">
+            <summary>
+            Gets or sets the key value associated with the model.
+            </summary>
+            <remarks>The key is typically used to uniquely identify the model instance within a collection or data
+            store. Ensure that the key value is unique within its context to avoid conflicts.</remarks>
+        </member>
+        <member name="P:PdfDocuments.PdfKeyValueItem`1.Value">
+            <summary>
+            Gets or sets the bound value for the property, supporting two-way data binding between the view and the model.
+            </summary>
+            <remarks>Use this property to synchronize changes between the UI and the underlying model. The generic
+            parameter specifies the model type associated with the binding.</remarks>
+        </member>
         <member name="T:PdfDocuments.PdfLineDirection">
             <summary>
             Specifies the possible directions for a line in a PDF document.
@@ -4300,6 +4357,52 @@
             <param name="bounds">The bounds within which the image element is rendered.</param>
             <returns>A task that represents the asynchronous render operation.</returns>
         </member>
+        <member name="T:PdfDocuments.PdfKeyValueSection`1">
+            <summary>
+            Represents a PDF section that displays a collection of key-value pairs using a specified model type.
+            </summary>
+            <remarks>Use this class to render structured key-value data within a PDF document. Each item in the section
+            is displayed with its key and corresponding value, formatted according to the resolved styles. The section is
+            suitable for scenarios where labeled values need to be presented, such as metadata, summaries, or property
+            lists.</remarks>
+            <typeparam name="TModel">The type of model used to provide data for the key-value items. Must implement the IPdfModel interface.</typeparam>
+        </member>
+        <member name="P:PdfDocuments.PdfKeyValueSection`1.IsInitialized">
+            <summary>
+            Gets or sets a value indicating whether the object has been initialized.
+            </summary>
+        </member>
+        <member name="M:PdfDocuments.PdfKeyValueSection`1.#ctor(PdfDocuments.PdfKeyValueItem{`0}[])">
+            <summary>
+            Initializes a new instance of the PdfKeyValueSection class with the specified key-value items.
+            </summary>
+            <param name="values">An array of PdfKeyValueItem<![CDATA[<TModel>]]>; objects to include in the section. Can be empty to create an empty section.</param>
+        </member>
+        <member name="P:PdfDocuments.PdfKeyValueSection`1.Items">
+            <summary>
+            Gets the collection of key-value items associated with the current model.
+            </summary>
+            <remarks>The collection is read-only and contains all key-value pairs relevant to the instance.
+            Modifications to the collection itself are not supported; however, individual items within the collection may be
+            modified if their types allow it.</remarks>
+        </member>
+        <member name="M:PdfDocuments.PdfKeyValueSection`1.OnInitializeAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Performs asynchronous initialization logic for the grid page using the specified model and bounds.
+            </summary>
+            <param name="g">The grid page to initialize.</param>
+            <param name="m">The model containing data or state used for initialization.</param>
+            <param name="bounds">The bounds within which the grid page should be initialized.</param>
+            <returns>A task that represents the asynchronous initialization operation.</returns>
+        </member>
+        <member name="P:PdfDocuments.PdfKeyValueSection`1.SectionLayoutMode">
+            <summary>
+            Gets or sets the layout mode used for arranging sections within the PDF document.
+            </summary>
+            <remarks>The layout mode determines how sections are visually organized when rendering the document.
+            Setting this property may have no effect if the implementation does not support changing the layout
+            mode.</remarks>
+        </member>
         <member name="T:PdfDocuments.PdfOverlayStackSection`1">
             <summary>
             Represents a PDF section that overlays multiple child sections in a stack, rendering them within the same bounds on
@@ -4778,89 +4881,6 @@
             <param name="dataStyle">The style to apply when rendering the data column.</param>
             <param name="dataElement">The text element responsible for rendering the content of the data column.</param>
             <param name="item">The item representing the data to be rendered in the column.</param>
-        </member>
-        <member name="T:PdfDocuments.PdfKeyValueItem`1">
-            <summary>
-            Represents a key-value pair for PDF data binding, where the value can be a static string or a bindable property
-            associated with a model.
-            </summary>
-            <remarks>Use this class to define key-value pairs for PDF generation scenarios, supporting both static and
-            dynamic values. The value can be bound to a property or action on the model, enabling flexible data extraction for
-            PDF fields.</remarks>
-            <typeparam name="TModel">The type of model associated with the value binding. Must implement the IPdfModel interface.</typeparam>
-        </member>
-        <member name="M:PdfDocuments.PdfKeyValueItem`1.#ctor">
-            <summary>
-            Initializes a new instance of the PdfKeyValueItem class.
-            </summary>
-        </member>
-        <member name="M:PdfDocuments.PdfKeyValueItem`1.#ctor(System.String,System.String)">
-            <summary>
-            Initializes a new instance of the PdfKeyValueItem class with the specified key and value.
-            </summary>
-            <param name="key">The key associated with the item. Cannot be null.</param>
-            <param name="value">The value associated with the item. Cannot be null.</param>
-        </member>
-        <member name="M:PdfDocuments.PdfKeyValueItem`1.#ctor(System.String,PdfDocuments.BindProperty{System.String,`0})">
-            <summary>
-            Initializes a new instance of the PdfKeyValueItem class with the specified key and value binding.
-            </summary>
-            <param name="key">The key associated with the value. Cannot be null.</param>
-            <param name="value">A binding that provides the value associated with the key. Cannot be null.</param>
-        </member>
-        <member name="M:PdfDocuments.PdfKeyValueItem`1.#ctor(System.String,PdfDocuments.BindPropertyAction{System.String,`0})">
-            <summary>
-            Initializes a new instance of the PdfKeyValueItem class with the specified key and value binding action.
-            </summary>
-            <param name="key">The key associated with the item. Cannot be null.</param>
-            <param name="value">The action that binds a string value to the model. Cannot be null.</param>
-        </member>
-        <member name="P:PdfDocuments.PdfKeyValueItem`1.Key">
-            <summary>
-            Gets or sets the unique identifier associated with this instance.
-            </summary>
-        </member>
-        <member name="P:PdfDocuments.PdfKeyValueItem`1.Value">
-            <summary>
-            Gets or sets the bound value associated with the model.
-            </summary>
-        </member>
-        <member name="T:PdfDocuments.PdfKeyValueSection`1">
-            <summary>
-            Represents a PDF section that displays a collection of key-value pairs using a specified model type.
-            </summary>
-            <remarks>Use this class to render structured key-value data within a PDF document. Each item in the section
-            is displayed with its key and corresponding value, formatted according to the resolved styles. The section is
-            suitable for scenarios where labeled values need to be presented, such as metadata, summaries, or property
-            lists.</remarks>
-            <typeparam name="TModel">The type of model used to provide data for the key-value items. Must implement the IPdfModel interface.</typeparam>
-        </member>
-        <member name="M:PdfDocuments.PdfKeyValueSection`1.#ctor(PdfDocuments.PdfKeyValueItem{`0}[])">
-            <summary>
-            Initializes a new instance of the PdfKeyValueSection class with the specified key-value items.
-            </summary>
-            <param name="values">An array of PdfKeyValueItem<![CDATA[<TModel>]]>; objects to include in the section. Can be empty to create an empty section.</param>
-        </member>
-        <member name="P:PdfDocuments.PdfKeyValueSection`1.Items">
-            <summary>
-            Gets the collection of key-value items associated with the current model.
-            </summary>
-            <remarks>The collection is read-only and contains all key-value pairs relevant to the instance.
-            Modifications to the collection itself are not supported; however, individual items within the collection may be
-            modified if their types allow it.</remarks>
-        </member>
-        <member name="M:PdfDocuments.PdfKeyValueSection`1.OnRenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
-            <summary>
-            Renders key-value items onto the specified PDF grid page asynchronously.
-            </summary>
-            <remarks>This method arranges and renders each key-value pair within the provided bounds, applying styles
-            and layout based on the relative widths. The rendering is performed asynchronously, but the operation completes
-            immediately.</remarks>
-            <param name="g">The PDF grid page on which the key-value items will be rendered.</param>
-            <param name="m">The model providing data and context for rendering the items.</param>
-            <param name="bounds">The bounds within the grid page that define the area for rendering the items.</param>
-            <returns>A task that represents the asynchronous rendering operation. The task result is <see langword="true"/> if
-            rendering completes successfully.</returns>
         </member>
         <member name="T:PdfDocuments.PdfSectionTemplate`1">
             <summary>

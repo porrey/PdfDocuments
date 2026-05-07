@@ -86,26 +86,24 @@ namespace PdfDocuments
 						Pdf.TextBlockSection<TModel>()
 							.WithText(this.TopLeftText)
 							.WithStyles(topLeftSyle)
-							.WithZOrder(4)
-							.WithParentSection(this),
+							.WithZOrder(4),
 						Pdf.TextBlockSection<TModel>()
 							.WithText(this.TopRightText)
 							.WithStyles(topRightSyle)
 							.WithZOrder(3)
-							.WithParentSection(this)
-					).WithParentSection(this).WithZOrder(2),
+					).WithParentSection(this)
+					 .WithZOrder(2),
 					Pdf.HorizontalStackSection<TModel>(
 						Pdf.TextBlockSection<TModel>()
 							.WithText(this.BottomLeftText)
 							.WithStyles(bottomLeftSyle)
-							.WithZOrder(2)
-							.WithParentSection(this),
+							.WithZOrder(2),
 						Pdf.TextBlockSection<TModel>()
 							.WithText(this.BottomRightText)
 							.WithStyles(bottomRightSyle)
 							.WithZOrder(1)
-							.WithParentSection(this)
-					).WithParentSection(this).WithZOrder(1)
+					).WithParentSection(this)
+					 .WithZOrder(1)
 				];
 
 				this.Children = innerItems;

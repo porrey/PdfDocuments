@@ -21,8 +21,6 @@
  *	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *	SOFTWARE.
  */
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using PdfSharp.Drawing;
 
 namespace PdfDocuments.Example.Features
@@ -216,6 +214,27 @@ namespace PdfDocuments.Example.Features
 				.UseRelativeWidths(.35)
 				.Build());
 
+			this.StyleManager.Add("KeyValue", Style.Create<Message>()
+				.UsePadding(0, 0, 0, 0)
+				.UseRelativeHeight(.11)
+				.Build());
+
+			this.StyleManager.Add("KeyValue.Key", Style.Create<Message>()
+				.UseFont("Arial", 11.75, XFontStyleEx.Regular)
+				.UseMargin(1, 1, 1, 1)
+				.UsePadding(0, 0, 0, 0)
+				.UseCellPadding(1, 1, 1, 1)
+				.UseForegroundColor(ColorPalette.Blue)
+				.UseBackgroundColor(ColorPalette.LightRed)
+				.UseTextAlignment(XStringFormats.CenterRight)
+				.UseRelativeWidths(.5)
+				.Build());
+
+			this.StyleManager.Add("KeyValue.Value", Style.Copy(this.StyleManager.GetStyle("KeyValue.Key"))
+				.UseFont("Arial", 11.75, XFontStyleEx.Bold)
+				.UseRelativeWidths(.5)
+				.Build());
+
 			return Task.CompletedTask;
 		}
 
@@ -295,16 +314,27 @@ namespace PdfDocuments.Example.Features
 				//		.WithStyles("Footer", "Footer.TopLeft", "Footer.TopRight", "Footer.BottomLeft", "Footer.BottomRight")
 				//)
 
-				Pdf.SignatureSection<Message>()
-					.WithRenderCondition((g, m) => g.PageNumber == g.Document.PageCount)
-					.WithStyles("Signature.Section", "Signature.Line", "Signature.Text", "Signature.Image", "Signature.Text", "Signature.Date")
-					.WithSignatureOptions(new SignatureOptions<Message>()
-					{
-						SignatureText = "Approved By",
-						SignatureImage = "./Images/signature.jpg",
-						DateLabel = "Approval Date",
-						Date = DateTimeOffset.Now
-					})
+				//Pdf.SignatureSection<Message>()
+				//	.WithRenderCondition((g, m) => g.PageNumber == g.Document.PageCount)
+				//	.WithStyles("Signature.Section", "Signature.Line", "Signature.Text", "Signature.Image", "Signature.Text", "Signature.Date")
+				//	.WithSignatureOptions(new SignatureOptions<Message>()
+				//	{
+				//		SignatureText = "Approved By",
+				//		SignatureImage = "./Images/signature.jpg",
+				//		DateLabel = "Approval Date",
+				//		Date = DateTimeOffset.Now
+				//	})
+
+				//Pdf.HorizontalStackSection<Message>
+				//(
+				//	Pdf.KeyValueSection<Message>
+				//		(
+				//			new PdfKeyValueItem<Message>("Sub Total:", (g, m) => "$82,765.23"),
+				//			new PdfKeyValueItem<Message>("Tax (6.0%):", (g, m) => "$4,965.91"),
+				//			new PdfKeyValueItem<Message>("Total:", (g, m) => "$87,731.14")
+				//		).WithStyles("KeyValue", "KeyValue.Key", "KeyValue.Value"),
+				//	Pdf.EmptySection<Message>()
+				//)
 
 				).WithStyleManager(this.StyleManager)
 			);

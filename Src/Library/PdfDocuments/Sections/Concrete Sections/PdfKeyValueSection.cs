@@ -35,6 +35,11 @@ namespace PdfDocuments
 		where TModel : IPdfModel
 	{
 		/// <summary>
+		/// Gets or sets a value indicating whether the object has been initialized.
+		/// </summary>
+		protected virtual bool IsInitialized { get; set; }
+
+		/// <summary>
 		/// Initializes a new instance of the PdfKeyValueSection class with the specified key-value items.
 		/// </summary>
 		/// <param name="values">An array of PdfKeyValueItem<![CDATA[<TModel>]]>; objects to include in the section. Can be empty to create an empty section.</param>
@@ -55,67 +60,68 @@ namespace PdfDocuments
 		public virtual IList<PdfKeyValueItem<TModel>> Items { get; } = [];
 
 		/// <summary>
-		/// Renders key-value items onto the specified PDF grid page asynchronously.
+		/// Performs asynchronous initialization logic for the grid page using the specified model and bounds.
 		/// </summary>
-		/// <remarks>This method arranges and renders each key-value pair within the provided bounds, applying styles
-		/// and layout based on the relative widths. The rendering is performed asynchronously, but the operation completes
-		/// immediately.</remarks>
-		/// <param name="g">The PDF grid page on which the key-value items will be rendered.</param>
-		/// <param name="m">The model providing data and context for rendering the items.</param>
-		/// <param name="bounds">The bounds within the grid page that define the area for rendering the items.</param>
-		/// <returns>A task that represents the asynchronous rendering operation. The task result is <see langword="true"/> if
-		/// rendering completes successfully.</returns>
-		protected override async Task<bool> OnRenderAsync(PdfGridPage g, TModel m, PdfBounds bounds)
+		/// <param name="g">The grid page to initialize.</param>
+		/// <param name="m">The model containing data or state used for initialization.</param>
+		/// <param name="bounds">The bounds within which the grid page should be initialized.</param>
+		/// <returns>A task that represents the asynchronous initialization operation.</returns>
+		protected override Task OnInitializeAsync(PdfGridPage g, TModel m, PdfBounds bounds)
 		{
-			bool returnValue = true;
-
-			//
-			// Get the styles.
-			//
-			PdfStyle<TModel> keyStyle = this.ResolveStyle(1);
-			PdfStyle<TModel> valueStyle = this.ResolveStyle(2);
-
-			//
-			// Get the relative width of the sections.
-			//
-			double[] widths = keyStyle.RelativeWidths.Resolve(g, m);
-			double relativeWidth = widths.Length > 0 ? widths[0] : .5;
-
-			//
-			// Determine the width
-			//
-			int keyWidth = (int)(bounds.Columns * relativeWidth);
-
-			//
-			// Get the starting point for the top of the text.
-			//
-			int top = bounds.TopRow;
-
-			//
-			// Set the initial top and the left for the name and values.
-			//
-			foreach (PdfKeyValueItem<TModel> item in this.Items)
+			if (!this.IsInitialized)
 			{
-				//
-				// Draw the Key
-				//
-				PdfTextElement<TModel> keyElement = new(item.Key);
-				PdfSize keySize = await keyElement.MeasureAsync(g, m, keyStyle);
-				PdfBounds keyBounds = new(bounds.LeftColumn, top, keyWidth, keySize.Rows);
-				await keyElement.RenderAsync(g, m, keyBounds, keyStyle);
+				List<IPdfSection<TModel>> innerItems = [];
 
-				//
-				// Draw the Value
-				//
-				PdfTextElement<TModel> valueElement = new(item.Value.Resolve(g, m));
-				PdfSize valueSize = await valueElement.MeasureAsync(g, m, valueStyle);
-				PdfBounds valueBounds = new(bounds.LeftColumn + keyWidth, top, bounds.Columns - keyWidth, valueSize.Rows);
-				await valueElement.RenderAsync(g, m, valueBounds, valueStyle);
+				int i = 0;
+				string controlStyleName = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : this.StyleNames.Last();
+				string keyStyleName = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : this.StyleNames.Last();
+				string valueStyleName = i < this.StyleNames.Count() ? this.StyleNames.ElementAt(i++) : this.StyleNames.Last();
 
-				top += (new int[] { keySize.Rows, valueSize.Rows }).Max();
+				this.StyleNames = [controlStyleName];
+
+				int j = 0;
+
+				foreach (PdfKeyValueItem<TModel> item in this.Items)
+				{
+					IPdfSection<TModel> section =
+						Pdf.HorizontalStackSection<TModel>(
+							Pdf.TextBlockSection<TModel>()
+								.WithText(item.Key.Resolve(g, m))
+								.WithStyles(keyStyleName)
+								.WithZOrder(j++),
+							Pdf.TextBlockSection<TModel>()
+								.WithText(item.Value.Resolve(g, m))
+								.WithStyles(valueStyleName)
+								.WithZOrder(j++)
+						).WithParentSection(this);
+
+					innerItems.Add(section.WithParentSection(this));
+				}
+
+				this.Children = innerItems;
+				this.Text = string.Empty;
+
+				this.IsInitialized = true;
 			}
 
-			return returnValue;
+			return Task.CompletedTask;
+		}
+
+		/// <summary>
+		/// Gets or sets the layout mode used for arranging sections within the PDF document.
+		/// </summary>
+		/// <remarks>The layout mode determines how sections are visually organized when rendering the document.
+		/// Setting this property may have no effect if the implementation does not support changing the layout
+		/// mode.</remarks>
+		public override PdfSectionsLayoutMode SectionLayoutMode
+		{
+			get
+			{
+				return PdfSectionsLayoutMode.VerticalStacking;
+			}
+			set
+			{
+			}
 		}
 	}
 }
