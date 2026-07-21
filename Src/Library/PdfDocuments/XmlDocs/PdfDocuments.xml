@@ -216,6 +216,7 @@
             </summary>
             <typeparam name="TModel">The type of the PDF model associated with the section. Must implement the IPdfModel interface.</typeparam>
             <returns>An IPdfSection<![CDATA[<TModel>]]> instance representing the page header section for the specified PDF model type.</returns>
+            <remarks>Use this method to add a page header section to a PDF document when building or customizing document layouts.</remarks>
         </member>
         <member name="M:PdfDocuments.Pdf.PageFooterSection``1">
             <summary>
@@ -240,14 +241,6 @@
             <typeparam name="TModel">The type of the PDF model that defines the document's structure.</typeparam>
             <typeparam name="TItem">The type of the items to be displayed in the data grid.</typeparam>
             <returns>A section instance that renders a data grid for the specified item type within the PDF model.</returns>
-        </member>
-        <member name="M:PdfDocuments.Pdf.DataRowsSection``2">
-            <summary>
-            Creates a new PDF section for rendering a data row based on the specified model and item types.
-            </summary>
-            <typeparam name="TModel">The type of the PDF model. Must implement the IPdfModel interface.</typeparam>
-            <typeparam name="TItem">The type of the data item represented in the row.</typeparam>
-            <returns>An IPdfSection<![CDATA[<TModel>]]> instance configured to render a data row for the specified item type.</returns>
         </member>
         <member name="T:PdfDocuments.PdfBoundsExtensions">
             <summary>
@@ -3498,14 +3491,6 @@
             Gets the value indicating the right direction or position.
             </summary>
         </member>
-        <member name="T:PdfDocuments.PdfDataGridColumn">
-            <summary>
-            Represents a column in a PDF data grid with no associated data model. Provides functionality for defining column
-            properties and layout in a PDF table.
-            </summary>
-            <remarks>Use this type when you need to create a PDF data grid column without binding it to a specific data
-            model. This is useful for scenarios where columns are defined independently of data source types.</remarks>
-        </member>
         <member name="T:PdfDocuments.PdfDataGridColumn`1">
             <summary>
             Represents a column definition for a data grid rendered in a PDF document, supporting binding to model properties
@@ -3530,13 +3515,6 @@
             <summary>
             Gets or sets the column header text for the bound model property.
             </summary>
-        </member>
-        <member name="P:PdfDocuments.PdfDataGridColumn`1.RelativeWidth">
-            <summary>
-            Gets or sets the relative width of the section as a proportion of its container.
-            </summary>
-            <remarks>The value typically ranges from 0.0 to 1.0, where 1.0 represents full width. Setting this
-            property allows dynamic sizing based on container dimensions.</remarks>
         </member>
         <member name="P:PdfDocuments.PdfDataGridColumn`1.StringFormat">
             <summary>
@@ -4209,6 +4187,104 @@
             <typeparam name="TModel">The type of model used to provide data for rendering the PDF content section. Must implement <see
             cref="T:PdfDocuments.IPdfModel"/>.</typeparam>
         </member>
+        <member name="T:PdfDocuments.PdfDataGridSection`2">
+            <summary>
+            Represents a section in a PDF document that displays a data grid with configurable columns and items, supporting
+            dynamic binding and formatting.
+            </summary>
+            <remarks>Use this class to define tabular data layouts within a PDF section. Columns and items can be bound
+            to model properties, and column formatting, styles, and widths are customizable. Supports both static and dynamic
+            binding scenarios for headers, cell values, and styles.</remarks>
+            <typeparam name="TModel">The type of the PDF model used for binding and rendering section content.</typeparam>
+            <typeparam name="TItem">The type of the items displayed in the data grid rows.</typeparam>
+        </member>
+        <member name="P:PdfDocuments.PdfDataGridSection`2.IsInitialized">
+            <summary>
+            Gets or sets a value indicating whether the object has been initialized.
+            </summary>
+        </member>
+        <member name="P:PdfDocuments.PdfDataGridSection`2.DataColumns">
+            <summary>
+            Gets the collection of data columns used to define the structure and content of the grid.
+            </summary>
+            <remarks>Each column in the collection represents a field or property from the model type and controls how
+            data is displayed in the grid. The collection is read-only; to modify the columns, add or remove items from the
+            existing list.</remarks>
+        </member>
+        <member name="P:PdfDocuments.PdfDataGridSection`2.Items">
+            <summary>
+            Gets or sets the collection of items to be bound to the model.
+            </summary>
+            <remarks>Use this property to provide the set of items that will be displayed or processed in the context
+            of the model. The property supports binding scenarios where the items are dynamically updated or retrieved from
+            external sources.</remarks>
+        </member>
+        <member name="M:PdfDocuments.PdfDataGridSection`2.AddDataColumn``1(PdfDocuments.BindProperty{System.String,`0},System.Linq.Expressions.Expression{System.Func{`1,``0}},PdfDocuments.BindProperty{System.Double,`0},PdfDocuments.BindProperty{System.String,`0},PdfDocuments.BindProperty{System.String,`0},PdfDocuments.BindProperty{System.String,`0})">
+            <summary>
+            Adds a new data column to the grid with the specified header, binding expression, relative width, format, and
+            style settings.
+            </summary>
+            <remarks>The column is added to the grid's collection of data columns. Use this method to configure column
+            appearance and data binding in a flexible manner.</remarks>
+            <typeparam name="TProperty">The type of the property to bind to the column's data cells.</typeparam>
+            <param name="columnHeader">A bindable property representing the column header text. The value is displayed as the column's header.</param>
+            <param name="expression">An expression that identifies the property of the data item to bind to the column's cells.</param>
+            <param name="relativeWidth">A bindable property specifying the relative width of the column. The value determines the column's proportional
+            size within the grid.</param>
+            <param name="format">A bindable property specifying the string format to apply to the column's cell values. The format is used when
+            rendering cell content.</param>
+            <param name="headerStyleName">A bindable property specifying the style name to apply to the column header. The style controls the appearance of
+            the header cell.</param>
+            <param name="cellStyleName">A bindable property specifying the style name to apply to the column's data cells. The style controls the
+            appearance of the cell content.</param>
+            <returns>A PdfDataGridColumn<![CDATA[<TModel>]]>; instance representing the newly added data column.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfDataGridSection`2.AddDataColumn``1(PdfDocuments.BindPropertyAction{System.String,`0},System.Linq.Expressions.Expression{System.Func{`1,``0}},PdfDocuments.BindPropertyAction{System.Double,`0},PdfDocuments.BindPropertyAction{System.String,`0},PdfDocuments.BindPropertyAction{System.String,`0},PdfDocuments.BindPropertyAction{System.String,`0})">
+            <summary>
+            Adds a new data column to the grid with the specified header, binding expression, relative width, format, and
+            style settings.
+            </summary>
+            <remarks>Use this method to dynamically configure columns in a data grid, including header text, binding,
+            formatting, and styling. The delegates allow customization based on the model, enabling flexible column
+            definitions.</remarks>
+            <typeparam name="TProperty">The type of the property to bind to the column's data cells.</typeparam>
+            <param name="columnHeader">A delegate that provides the column header text based on the model.</param>
+            <param name="expression">An expression that identifies the property of the item to bind as the column's data source.</param>
+            <param name="relativeWidth">A delegate that determines the relative width of the column based on the model.</param>
+            <param name="format">A delegate that specifies the string format for displaying cell values in the column.</param>
+            <param name="headerStyleName">A delegate that provides the style name to apply to the column header based on the model.</param>
+            <param name="cellStyleName">A delegate that provides the style name to apply to the column's data cells based on the model.</param>
+            <returns>A PdfDataGridColumn<![CDATA[<TModel>]]>; instance representing the newly added data column.</returns>
+        </member>
+        <member name="M:PdfDocuments.PdfDataGridSection`2.OnInitializeAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
+            <summary>
+            Performs asynchronous initialization logic for the grid element before rendering.
+            </summary>
+            <param name="g">The PDF grid page on which the element will be rendered.</param>
+            <param name="m">The model containing data relevant to the grid element.</param>
+            <param name="bounds">The bounds within which the element should be rendered.</param>
+            <returns>A task that represents the asynchronous initialization operation.</returns>
+        </member>
+        <member name="P:PdfDocuments.PdfDataGridSection`2.SectionLayoutMode">
+            <summary>
+            Gets or sets the layout mode used for arranging sections within the PDF document.
+            </summary>
+            <remarks>The layout mode determines how sections are visually organized when rendering the document.
+            Setting this property may have no effect if the implementation does not support changing the layout
+            mode.</remarks>
+        </member>
+        <member name="M:PdfDocuments.PdfDataGridSection`2.FormattedValue(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfDataGridColumn{`0},`1)">
+            <summary>
+            Returns the formatted string representation of the specified property value for a grid cell.
+            </summary>
+            <remarks>If a string format is defined for the column, it is applied to the property value. Otherwise, the
+            value is converted to a string using default formatting.</remarks>
+            <param name="g">The grid page context used for formatting operations.</param>
+            <param name="m">The model instance associated with the current grid row.</param>
+            <param name="column">The column definition containing formatting and member information.</param>
+            <param name="item">The data item from which the property value is retrieved.</param>
+            <returns>A string containing the formatted value of the property for the specified grid cell.</returns>
+        </member>
         <member name="T:PdfDocuments.PdfEmptySection`1">
             <summary>
             Represents a PDF section that contains no content. This class can be used to insert an empty section into a PDF
@@ -4671,216 +4747,6 @@
             <remarks>The layout mode determines how sections are visually organized when rendering the document.
             Setting this property may have no effect if the implementation does not support changing the layout
             mode.</remarks>
-        </member>
-        <member name="T:PdfDocuments.PdfDataGridSection`2">
-            <summary>
-            Represents a section in a PDF document that displays a data grid with configurable columns and items, supporting
-            dynamic binding and formatting.
-            </summary>
-            <remarks>Use this class to define tabular data layouts within a PDF section. Columns and items can be bound
-            to model properties, and column formatting, styles, and widths are customizable. Supports both static and dynamic
-            binding scenarios for headers, cell values, and styles.</remarks>
-            <typeparam name="TModel">The type of the PDF model used for binding and rendering section content.</typeparam>
-            <typeparam name="TItem">The type of the items displayed in the data grid rows.</typeparam>
-        </member>
-        <member name="P:PdfDocuments.PdfDataGridSection`2.DataColumns">
-            <summary>
-            Gets the collection of data columns used to define the structure and content of the grid.
-            </summary>
-            <remarks>Each column in the collection represents a field or property from the model type and controls how
-            data is displayed in the grid. The collection is read-only; to modify the columns, add or remove items from the
-            existing list.</remarks>
-        </member>
-        <member name="P:PdfDocuments.PdfDataGridSection`2.Items">
-            <summary>
-            Gets or sets the collection of items to be bound to the model.
-            </summary>
-            <remarks>Use this property to provide the set of items that will be displayed or processed in the context
-            of the model. The property supports binding scenarios where the items are dynamically updated or retrieved from
-            external sources.</remarks>
-        </member>
-        <member name="M:PdfDocuments.PdfDataGridSection`2.AddDataColumn``1(PdfDocuments.BindProperty{System.String,`0},System.Linq.Expressions.Expression{System.Func{`1,``0}},PdfDocuments.BindProperty{System.Double,`0},PdfDocuments.BindProperty{System.String,`0},PdfDocuments.BindProperty{System.String,`0},PdfDocuments.BindProperty{System.String,`0})">
-            <summary>
-            Adds a new data column to the grid with the specified header, binding expression, relative width, format, and
-            style settings.
-            </summary>
-            <remarks>The column is added to the grid's collection of data columns. Use this method to configure column
-            appearance and data binding in a flexible manner.</remarks>
-            <typeparam name="TProperty">The type of the property to bind to the column's data cells.</typeparam>
-            <param name="columnHeader">A bindable property representing the column header text. The value is displayed as the column's header.</param>
-            <param name="expression">An expression that identifies the property of the data item to bind to the column's cells.</param>
-            <param name="relativeWidth">A bindable property specifying the relative width of the column. The value determines the column's proportional
-            size within the grid.</param>
-            <param name="format">A bindable property specifying the string format to apply to the column's cell values. The format is used when
-            rendering cell content.</param>
-            <param name="headerStyleName">A bindable property specifying the style name to apply to the column header. The style controls the appearance of
-            the header cell.</param>
-            <param name="cellStyleName">A bindable property specifying the style name to apply to the column's data cells. The style controls the
-            appearance of the cell content.</param>
-            <returns>A PdfDataGridColumn<![CDATA[<TModel>]]>; instance representing the newly added data column.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfDataGridSection`2.AddDataColumn``1(PdfDocuments.BindPropertyAction{System.String,`0},System.Linq.Expressions.Expression{System.Func{`1,``0}},PdfDocuments.BindPropertyAction{System.Double,`0},PdfDocuments.BindPropertyAction{System.String,`0},PdfDocuments.BindPropertyAction{System.String,`0},PdfDocuments.BindPropertyAction{System.String,`0})">
-            <summary>
-            Adds a new data column to the grid with the specified header, binding expression, relative width, format, and
-            style settings.
-            </summary>
-            <remarks>Use this method to dynamically configure columns in a data grid, including header text, binding,
-            formatting, and styling. The delegates allow customization based on the model, enabling flexible column
-            definitions.</remarks>
-            <typeparam name="TProperty">The type of the property to bind to the column's data cells.</typeparam>
-            <param name="columnHeader">A delegate that provides the column header text based on the model.</param>
-            <param name="expression">An expression that identifies the property of the item to bind as the column's data source.</param>
-            <param name="relativeWidth">A delegate that determines the relative width of the column based on the model.</param>
-            <param name="format">A delegate that specifies the string format for displaying cell values in the column.</param>
-            <param name="headerStyleName">A delegate that provides the style name to apply to the column header based on the model.</param>
-            <param name="cellStyleName">A delegate that provides the style name to apply to the column's data cells based on the model.</param>
-            <returns>A PdfDataGridColumn<![CDATA[<TModel>]]>; instance representing the newly added data column.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfDataGridSection`2.OnRenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
-            <summary>
-            Renders the grid page content asynchronously using the specified model and layout bounds.
-            </summary>
-            <remarks>This method renders both header and data rows based on the provided model and column definitions.
-            The rendering respects the specified bounds and column widths. Override this method to customize rendering
-            behavior for derived grid types.</remarks>
-            <param name="g">The PDF grid page to render content onto.</param>
-            <param name="m">The model instance providing data for rendering.</param>
-            <param name="bounds">The layout bounds defining the area and columns available for rendering.</param>
-            <returns>A task that represents the asynchronous rendering operation. The task result is <see langword="true"/> if
-            rendering was successful; otherwise, <see langword="false"/>.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfDataGridSection`2.FormattedValue(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfDataGridColumn{`0},`1)">
-            <summary>
-            Returns the formatted string representation of the specified property value for a grid cell.
-            </summary>
-            <remarks>If a string format is defined for the column, it is applied to the property value. Otherwise, the
-            value is converted to a string using default formatting.</remarks>
-            <param name="g">The grid page context used for formatting operations.</param>
-            <param name="m">The model instance associated with the current grid row.</param>
-            <param name="column">The column definition containing formatting and member information.</param>
-            <param name="item">The data item from which the property value is retrieved.</param>
-            <returns>A string containing the formatted value of the property for the specified grid cell.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfDataGridSection`2.OnRenderHeaderColumn(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds,PdfDocuments.PdfStyle{`0},PdfDocuments.PdfTextElement{`0})">
-            <summary>
-            Renders a header column in the PDF grid using the specified model, bounds, style, and text element.
-            </summary>
-            <param name="g">The PDF grid page on which the header column will be rendered.</param>
-            <param name="m">The data model instance used to provide content for the header column.</param>
-            <param name="dataBounds">The bounds within which the header column will be rendered.</param>
-            <param name="dataStyle">The style to apply when rendering the header column.</param>
-            <param name="dataElement">The text element responsible for rendering the header column content.</param>
-        </member>
-        <member name="M:PdfDocuments.PdfDataGridSection`2.OnRenderDataColumn(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds,PdfDocuments.PdfStyle{`0},PdfDocuments.PdfTextElement{`0},`1)">
-            <summary>
-            Renders a data column within the grid using the specified text element, style, and bounds.
-            </summary>
-            <param name="g">The grid page on which the data column will be rendered.</param>
-            <param name="m">The model instance providing data context for rendering.</param>
-            <param name="dataBounds">The bounds that define the area where the data column will be rendered.</param>
-            <param name="dataStyle">The style to apply when rendering the data column.</param>
-            <param name="dataElement">The text element responsible for rendering the content of the data column.</param>
-            <param name="item">The item representing the data to be rendered in the column.</param>
-        </member>
-        <member name="T:PdfDocuments.PdfDataRowsSection`2">
-            <summary>
-            Represents a section in a PDF document that displays a data grid with configurable columns and items, supporting
-            dynamic binding and formatting.
-            </summary>
-            <remarks>Use this class to define tabular data layouts within a PDF section. Columns and items can be bound
-            to model properties, and column formatting, styles, and widths are customizable. Supports both static and dynamic
-            binding scenarios for headers, cell values, and styles.</remarks>
-            <typeparam name="TModel">The type of the PDF model used for binding and rendering section content.</typeparam>
-            <typeparam name="TItem">The type of the items displayed in the data grid rows.</typeparam>
-        </member>
-        <member name="P:PdfDocuments.PdfDataRowsSection`2.DataColumns">
-            <summary>
-            Gets the collection of data columns used to define the structure and content of the grid.
-            </summary>
-            <remarks>Each column in the collection represents a field or property from the model type and controls how
-            data is displayed in the grid. The collection is read-only; to modify the columns, add or remove items from the
-            existing list.</remarks>
-        </member>
-        <member name="P:PdfDocuments.PdfDataRowsSection`2.Items">
-            <summary>
-            Gets or sets the collection of items to be bound to the model.
-            </summary>
-            <remarks>Use this property to provide the set of items that will be displayed or processed in the context
-            of the model. The property supports binding scenarios where the items are dynamically updated or retrieved from
-            external sources.</remarks>
-        </member>
-        <member name="M:PdfDocuments.PdfDataRowsSection`2.AddDataColumn``1(PdfDocuments.BindProperty{System.String,`0},System.Linq.Expressions.Expression{System.Func{`1,``0}},PdfDocuments.BindProperty{System.Double,`0},PdfDocuments.BindProperty{System.String,`0},PdfDocuments.BindProperty{System.String,`0},PdfDocuments.BindProperty{System.String,`0})">
-            <summary>
-            Adds a new data column to the grid with the specified header, binding expression, relative width, format, and
-            style settings.
-            </summary>
-            <remarks>The column is added to the grid's collection of data columns. Use this method to configure column
-            appearance and data binding in a flexible manner.</remarks>
-            <typeparam name="TProperty">The type of the property to bind to the column's data cells.</typeparam>
-            <param name="columnHeader">A bindable property representing the column header text. The value is displayed as the column's header.</param>
-            <param name="expression">An expression that identifies the property of the data item to bind to the column's cells.</param>
-            <param name="relativeWidth">A bindable property specifying the relative width of the column. The value determines the column's proportional
-            size within the grid.</param>
-            <param name="format">A bindable property specifying the string format to apply to the column's cell values. The format is used when
-            rendering cell content.</param>
-            <param name="headerStyleName">A bindable property specifying the style name to apply to the column header. The style controls the appearance of
-            the header cell.</param>
-            <param name="cellStyleName">A bindable property specifying the style name to apply to the column's data cells. The style controls the
-            appearance of the cell content.</param>
-            <returns>A PdfDataGridColumn<![CDATA[<TModel>]]>; instance representing the newly added data column.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfDataRowsSection`2.AddDataColumn``1(PdfDocuments.BindPropertyAction{System.String,`0},System.Linq.Expressions.Expression{System.Func{`1,``0}},PdfDocuments.BindPropertyAction{System.Double,`0},PdfDocuments.BindPropertyAction{System.String,`0},PdfDocuments.BindPropertyAction{System.String,`0},PdfDocuments.BindPropertyAction{System.String,`0})">
-            <summary>
-            Adds a new data column to the grid with the specified header, binding expression, relative width, format, and
-            style settings.
-            </summary>
-            <remarks>Use this method to dynamically configure columns in a data grid, including header text, binding,
-            formatting, and styling. The delegates allow customization based on the model, enabling flexible column
-            definitions.</remarks>
-            <typeparam name="TProperty">The type of the property to bind to the column's data cells.</typeparam>
-            <param name="columnHeader">A delegate that provides the column header text based on the model.</param>
-            <param name="expression">An expression that identifies the property of the item to bind as the column's data source.</param>
-            <param name="relativeWidth">A delegate that determines the relative width of the column based on the model.</param>
-            <param name="format">A delegate that specifies the string format for displaying cell values in the column.</param>
-            <param name="headerStyleName">A delegate that provides the style name to apply to the column header based on the model.</param>
-            <param name="cellStyleName">A delegate that provides the style name to apply to the column's data cells based on the model.</param>
-            <returns>A PdfDataGridColumn<![CDATA[<TModel>]]>; instance representing the newly added data column.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfDataRowsSection`2.OnRenderAsync(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds)">
-            <summary>
-            Renders the grid page content asynchronously using the specified model and layout bounds.
-            </summary>
-            <remarks>This method renders both header and data rows based on the provided model and column definitions.
-            The rendering respects the specified bounds and column widths. Override this method to customize rendering
-            behavior for derived grid types.</remarks>
-            <param name="g">The PDF grid page to render content onto.</param>
-            <param name="m">The model instance providing data for rendering.</param>
-            <param name="bounds">The layout bounds defining the area and columns available for rendering.</param>
-            <returns>A task that represents the asynchronous rendering operation. The task result is <see langword="true"/> if
-            rendering was successful; otherwise, <see langword="false"/>.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfDataRowsSection`2.FormattedValue(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfDataGridColumn{`0},`1)">
-            <summary>
-            Returns the formatted string representation of the specified property value for a grid cell.
-            </summary>
-            <remarks>If a string format is defined for the column, it is applied to the property value. Otherwise, the
-            value is converted to a string using default formatting.</remarks>
-            <param name="g">The grid page context used for formatting operations.</param>
-            <param name="m">The model instance associated with the current grid row.</param>
-            <param name="column">The column definition containing formatting and member information.</param>
-            <param name="item">The data item from which the property value is retrieved.</param>
-            <returns>A string containing the formatted value of the property for the specified grid cell.</returns>
-        </member>
-        <member name="M:PdfDocuments.PdfDataRowsSection`2.OnRenderDataColumn(PdfDocuments.PdfGridPage,`0,PdfDocuments.PdfBounds,PdfDocuments.PdfStyle{`0},PdfDocuments.PdfTextElement{`0},`1)">
-            <summary>
-            Renders a data column within the grid using the specified text element, style, and bounds.
-            </summary>
-            <param name="g">The grid page on which the data column will be rendered.</param>
-            <param name="m">The model instance providing data context for rendering.</param>
-            <param name="dataBounds">The bounds that define the area where the data column will be rendered.</param>
-            <param name="dataStyle">The style to apply when rendering the data column.</param>
-            <param name="dataElement">The text element responsible for rendering the content of the data column.</param>
-            <param name="item">The item representing the data to be rendered in the column.</param>
         </member>
         <member name="T:PdfDocuments.PdfSectionTemplate`1">
             <summary>

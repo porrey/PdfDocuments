@@ -50,19 +50,33 @@ namespace PdfDocuments.Example.Invoice
 
 		protected override Task OnInitializeStylesAsync(IPdfStyleManager<Invoice> styleManager)
 		{
+			#region Report Header
 			//
 			// Build the styles.
 			//
-			this.StyleManager.Add("PageHeader.Section", Style.Create<Invoice>()
-						.UseFont("Open Sans", 48)
-						.UseForegroundColor(ColorPalette.Blue)
-						.UseBorderColor(ColorPalette.Red)
-						.UseBorderWidth(1)
-						.UseTextAlignment(XStringFormats.CenterRight)
-						.UsePadding(0, 0, 2, 0)
-						.UseRelativeHeight(.12)
-						.Build());
+			this.StyleManager.Add("ReportHeader", Style.Create<Invoice>()
+				.UseBorderColor(XColors.Red)
+				.UseBorderWidth(1)
+				.UseMargin(1, 1, 1, 1)
+				.UseRelativeHeight(.12)
+				.Build());
 
+			this.StyleManager.Add("ReportHeader.Logo", Style.Create<Invoice>()
+				.UseHorizontalImageAlignment(PdfHorizontalAlignment.Left)
+				.UseVerticalImageAlignment(PdfVerticalAlignment.Center)
+				.UsePadding(1, 0, 0, 0)
+				.UseImageScale(.23f)
+				.Build());
+
+			this.StyleManager.Add("ReportHeader.Title", Style.Create<Invoice>()
+				.UseFont("Open Sans", 48)
+				.UseForegroundColor(ColorPalette.Blue)
+				.UseTextAlignment(XStringFormats.CenterRight)
+				.UsePadding(0, 0, 2, 0)
+				.Build());
+			#endregion
+
+			#region Invoice Number and date
 			//
 			// Invoice Number and date
 			//
@@ -79,7 +93,7 @@ namespace PdfDocuments.Example.Invoice
 			this.StyleManager.Add("InvoiceNumber.Key", Style.Create<Invoice>()
 						.UseFont("Tinos", 11.75, XFontStyleEx.Bold)
 						.UsePadding(1, 1, 1, 1)
-						.UseForegroundColor(ColorPalette.Gray)
+						.UseForegroundColor(XColors.Black.WithLuminosity(.3))
 						.UseTextAlignment(XStringFormats.CenterRight)
 						.UseRelativeWidths(.5)
 						.Build());
@@ -87,92 +101,183 @@ namespace PdfDocuments.Example.Invoice
 			this.StyleManager.Add("InvoiceNumber.Value", Style.Copy(this.StyleManager.GetStyle("InvoiceNumber.Key"))
 						.UseFont("Tinos", 11.75, XFontStyleEx.Regular)
 						.Build());
+			#endregion
 
+			#region References
 			//
 			// Reference numbers
 			//
 			this.StyleManager.Add("Reference.Section", Style.Create<Invoice>()
-						.UseRelativeHeight(.065)
-						.Build());
+				.UseRelativeHeight(.15)
+				.Build());
 
-			this.StyleManager.Add("Reference.Header.1", Style.Create<Invoice>()
-						.UseFont("Open Sans", 11, XFontStyleEx.Regular)
-						.UsePadding(1, 2, 1, 2)
-						.UseMargin(0, 0, 1, 0)
-						.UseForegroundColor(ColorPalette.White)
-						.UseBackgroundColor(ColorPalette.Blue)
-						.UseTextAlignment(XStringFormats.CenterLeft)
-						.Build());
+			#region Payment Method
+			this.StyleManager.Add("PaymentMethod", Style.Create<Invoice>()
+				.UseRelativeWidths(.333333333)
+				.UseMargin(0, 0, 1, 0)
+				.Build());
 
-			this.StyleManager.Add("Reference.Header.2", Style.Copy(this.StyleManager.GetStyle("Reference.Header.1"))
-						.UseMargin(1, 0, 1, 0)
-						.Build());
+			this.StyleManager.Add("PaymentMethod.Header", Style.Create<Invoice>()
+				.UseFont("Open Sans", 17, XFontStyleEx.Regular)
+				.UseCellPadding(2, 2, 2, 2)
+				.UseForegroundColor(ColorPalette.White)
+				.UseBackgroundColor(ColorPalette.Blue)
+				.UseTextAlignment(XStringFormats.CenterLeft)
+				.UseRelativeHeight(.5)
+				.Build());
 
-			this.StyleManager.Add("Reference.Header.3", Style.Copy(this.StyleManager.GetStyle("Reference.Header.1"))
-						.UseMargin(1, 0, 0, 0)
-						.Build());
+			this.StyleManager.Add("PaymentMethod.Container", Style.Create<Invoice>()
+				.UseRelativeHeight(.5)
+				.Build());
 
-			this.StyleManager.Add("Reference.Body", Style.Create<Invoice>()
-						.UseFont("Open Sans", 11, XFontStyleEx.Regular)
-						.UseBorderColor(ColorPalette.Blue)
-						.UseBorderWidth(1)
-						.UseCellPadding(1, 2, 1, 2)
-						.UseForegroundColor(ColorPalette.Red)
-						.UseTextAlignment(XStringFormats.CenterLeft)
-						.Build());
+			this.StyleManager.Add("PaymentMethod.Body", Style.Create<Invoice>()
+				.UseFont("Open Sans", 17, XFontStyleEx.Regular)
+				.UseBorderColor(ColorPalette.Blue)
+				.UseBorderWidth(1)
+				.UseCellPadding(2, 2, 2, 2)
+				.UseForegroundColor(ColorPalette.Red)
+				.UseTextAlignment(XStringFormats.CenterLeft)
+				.Build());
+			#endregion
 
+			#region Check Number
+			this.StyleManager.Add("CheckNumber", Style.Create<Invoice>()
+				.UseRelativeWidths(.333333333)
+				.Build());
+
+			this.StyleManager.Add("CheckNumber.Header", Style.Create<Invoice>()
+				.UseFont("Open Sans", 17, XFontStyleEx.Regular)
+				.UseCellPadding(2, 2, 2, 2)
+				.UseForegroundColor(ColorPalette.White)
+				.UseBackgroundColor(ColorPalette.Blue)
+				.UseTextAlignment(XStringFormats.CenterLeft)
+				.UseRelativeHeight(.5)
+				.Build());
+
+			this.StyleManager.Add("CheckNumber.Container", Style.Create<Invoice>()
+				.UseRelativeHeight(.5)
+				.Build());
+
+			this.StyleManager.Add("CheckNumber.Body", Style.Create<Invoice>()
+				.UseFont("Open Sans", 17, XFontStyleEx.Regular)
+				.UseBorderColor(ColorPalette.Blue)
+				.UseBorderWidth(1)
+				.UseCellPadding(2, 2, 2, 2)
+				.UseForegroundColor(ColorPalette.Red)
+				.UseTextAlignment(XStringFormats.CenterLeft)
+				.Build());
+			#endregion
+
+			#region Work Order
+			this.StyleManager.Add("WorkOrder", Style.Create<Invoice>()
+				.UseRelativeWidths(.333333333)
+				.UseMargin(1, 0, 0, 0)
+				.Build());
+
+			this.StyleManager.Add("WorkOrder.Header", Style.Create<Invoice>()
+				.UseFont("Open Sans", 17, XFontStyleEx.Regular)
+				.UseCellPadding(2, 2, 2, 2)
+				.UseForegroundColor(ColorPalette.White)
+				.UseBackgroundColor(ColorPalette.Blue)
+				.UseTextAlignment(XStringFormats.CenterLeft)
+				.UseRelativeHeight(.5)
+				.Build());
+
+			this.StyleManager.Add("WorkOrder.Container", Style.Create<Invoice>()
+				.UseRelativeHeight(.5)
+				.Build());
+
+			this.StyleManager.Add("WorkOrder.Body", Style.Create<Invoice>()
+				.UseFont("Open Sans", 17, XFontStyleEx.Regular)
+				.UseBorderColor(ColorPalette.Blue)
+				.UseBorderWidth(1)
+				.UseCellPadding(2, 2, 2, 2)
+				.UseForegroundColor(ColorPalette.Red)
+				.UseTextAlignment(XStringFormats.CenterLeft)
+				.Build());
+			#endregion
+			#endregion
+
+			#region Bill To/From
 			//
-			// Bill to section
+			// Bill To/From section
 			//
-			this.StyleManager.Add("BillTo.Section", Style.Create<Invoice>()
+			this.StyleManager.Add("BillToFrom.Section", Style.Create<Invoice>()
 						.UseMargin(0, 5, 0, 5)
-						.UseRelativeHeight(.16)
+						.UseRelativeHeight(.40)
+						.Build());
+
+			#region Bill To
+			this.StyleManager.Add("BillTo.Frame", Style.Create<Invoice>()
+						.UseMargin(0, 0, 1, 0)
+						.UseRelativeWidths(.5)
+						.Build());
+
+			this.StyleManager.Add("BillTo.Header", Style.Create<Invoice>()
+						.UseFont("Open Sans", 14, XFontStyleEx.Regular)
+						.UseCellPadding(1, 3, 1, 3)
+						.UseBackgroundColor(ColorPalette.Red)
+						.UseForegroundColor(ColorPalette.White)
+						.UseTextAlignment(XStringFormats.CenterLeft)
+						.UseRelativeHeight(.15)
 						.Build());
 
 			this.StyleManager.Add("BillTo.ContentBlock", Style.Create<Invoice>()
 						.UseBorderColor(ColorPalette.Blue)
 						.UseBorderWidth(1)
+						.UseRelativeHeight(.85)
 						.Build());
 
 			this.StyleManager.Add("BillTo.Content", Style.Create<Invoice>()
-						.UseFont("Open Sans", 9.5, XFontStyleEx.Regular)
-						.UsePadding(0, 0, 0, 0)
-						.UseMargin(0, 2, 0, 2)
-						.UseTextAlignment(XStringFormats.CenterLeft)
+						.Build());
+			#endregion
+
+			#region Bill From
+			this.StyleManager.Add("BillFrom.Frame", Style.Create<Invoice>()
+						.UseMargin(1, 0, 0, 0)
+						.UseRelativeWidths(.5)
 						.Build());
 
-			this.StyleManager.Add("BillTo.Header.Left", Style.Create<Invoice>()
-						.UseFont("Open Sans", 9.5, XFontStyleEx.Regular)
-						.UsePadding(1, 3, 1, 3)
-						.UseMargin(0, 2, 1, 2)
+			this.StyleManager.Add("BillFrom.Header", Style.Create<Invoice>()
+						.UseFont("Open Sans", 14, XFontStyleEx.Regular)
+						.UseCellPadding(1, 3, 1, 3)
 						.UseBackgroundColor(ColorPalette.Red)
 						.UseForegroundColor(ColorPalette.White)
 						.UseTextAlignment(XStringFormats.CenterLeft)
+						.UseRelativeHeight(.15)
 						.Build());
 
-			this.StyleManager.Add("BillTo.Header.Right", Style.Copy(this.StyleManager.GetStyle("BillTo.Header.Left"))
-						.UseMargin(1, 2, 0, 2)
+			this.StyleManager.Add("BillFrom.ContentBlock", Style.Create<Invoice>()
+						.UseBorderColor(ColorPalette.Blue)
+						.UseBorderWidth(1)
+						.UseRelativeHeight(.85)
 						.Build());
 
-			this.StyleManager.Add("BillTo.Key", Style.Create<Invoice>()
-						.UseFont("Open Sans", 9.5, XFontStyleEx.Regular)
-						.UsePadding(1, 1, 1, 1)
+			this.StyleManager.Add("BillFrom.Content", Style.Create<Invoice>()
+						.Build());
+			#endregion
+
+			this.StyleManager.Add("BillToFrom.Key", Style.Create<Invoice>()
+						.UseFont("Open Sans", 10.5, XFontStyleEx.Regular)
+						.UseCellPadding(2, 2, 2, 2)
 						.UseForegroundColor(ColorPalette.LightGray)
 						.UseTextAlignment(XStringFormats.CenterRight)
-						.UseRelativeWidths(.3)
 						.Build());
 
-			this.StyleManager.Add("BillTo.Value", Style.Copy(this.StyleManager.GetStyle("BillTo.Key"))
+			this.StyleManager.Add("BillToFrom.Value", Style.Copy(this.StyleManager.GetStyle("BillTo.Key"))
 						.UseFont("Open Sans", 9.5, XFontStyleEx.Bold)
+						.UseCellPadding(2, 2, 2, 2)
 						.UseForegroundColor(ColorPalette.Gray)
 						.UseTextAlignment(XStringFormats.CenterLeft)
 						.Build());
+			#endregion
 
 			//
 			// Invoice details
 			//
 			this.StyleManager.Add("InvoiceDetails.Section", Style.Create<Invoice>()
 						.UseMargin(0, 2, 0, 2)
+						.UseRelativeHeight(.25)
 						.Build());
 
 			this.StyleManager.Add("InvoiceDetails.Header.Item", Style.Create<Invoice>()
@@ -242,7 +347,7 @@ namespace PdfDocuments.Example.Invoice
 						.UseForegroundColor(ColorPalette.Gray)
 						.UseTextAlignment(XStringFormats.CenterLeft)
 						.UseRelativeWidths(.4)
-						.UseRelativeHeight(.05)
+						.UseRelativeHeight(.02)
 						.Build());
 
 			//
@@ -254,18 +359,46 @@ namespace PdfDocuments.Example.Invoice
 						.UseMargin(0, 3, 0, 0)
 						.UseForegroundColor(ColorPalette.Red)
 						.UseTextAlignment(XStringFormats.Center)
-						.UseRelativeHeight(.058)
+						.UseRelativeHeight(.02)
 						.Build());
 
 			//
 			// Footer
 			//
-			this.StyleManager.Add("PageFooter.Section", Style.Create<Invoice>()
-						.UseFont("Open Sans", 8, XFontStyleEx.Regular)
-						.UseRelativeHeight(.035)
-						.UseMargin(0, 1, 0, 1)
-						.UseForegroundColor(ColorPalette.LightGray)
-						.Build());
+			this.StyleManager.Add("Footer", Style.Create<Invoice>()
+				.UseRelativeHeight(.01)
+				.UseMargin(0, 1, 0, 1)
+				.Build());
+
+			this.StyleManager.Add("Footer.TopLeft", Style.Create<Invoice>()
+				.UseFont("Open Sans", 8, XFontStyleEx.Regular)
+				.UsePadding(1, 0, 0, 0)
+				.UseTextAlignment(XStringFormats.CenterLeft)
+				.UseForegroundColor(ColorPalette.LightGray)
+				.Build());
+
+			this.StyleManager.Add("Footer.TopRight", Style.Create<Invoice>()
+				.UseFont("Open Sans", 8, XFontStyleEx.Regular)
+				.UsePadding(0, 0, 1, 0)
+				.UseTextAlignment(XStringFormats.CenterRight)
+				.UseForegroundColor(ColorPalette.LightGray)
+				.Build());
+
+			this.StyleManager.Add("Footer.BottomLeft", Style.Create<Invoice>()
+				.UseFont("Open Sans", 8, XFontStyleEx.Regular)
+				.UseForegroundColor(XColors.Blue)
+				.UsePadding(1, 0, 0, 0)
+				.UseTextAlignment(XStringFormats.CenterLeft)
+				.UseForegroundColor(ColorPalette.LightGray)
+				.Build());
+
+			this.StyleManager.Add("Footer.BottomRight", Style.Create<Invoice>()
+				.UseFont("Open Sans", 8, XFontStyleEx.Regular)
+				.UseForegroundColor(XColors.Red)
+				.UsePadding(0, 0, 1, 0)
+				.UseTextAlignment(XStringFormats.CenterRight)
+				.UseForegroundColor(ColorPalette.LightGray)
+				.Build());
 
 			return Task.CompletedTask;
 		}
@@ -278,9 +411,10 @@ namespace PdfDocuments.Example.Invoice
 				// Page header.
 				//
 				Pdf.ReportHeaderSection<Invoice>()
-				   .WithTitle("INVOICE")
-				   .WithLogo("./Images/logo.jpg")
-				   .WithStyles("PageHeader.Section"),
+					.WithTitle("INVOICE")
+					.WithLogo("./Images/logo.jpg")
+					.WithLogoPosition(PdfLogoPosition.Left)
+					.WithStyles("ReportHeader", "ReportHeader.Logo", "ReportHeader.Title"),
 
 				//
 				// Invoice number and date.
@@ -305,27 +439,30 @@ namespace PdfDocuments.Example.Invoice
 				(
 					Pdf.HeaderContentSection<Invoice>()
 						.WithText("Payment Method")
-						.WithStyles("Reference.Header.1")
+						.WithStyles("PaymentMethod", "PaymentMethod.Header", "PaymentMethod.Container")
 						.WithContentSection(
 							Pdf.TextBlockSection<Invoice>()
 								.WithText((g, m) => m.PaymentMethod)
-								.WithStyles("Reference.Body")),
+								.WithStyles("PaymentMethod.Body")
+						),
 
 					Pdf.HeaderContentSection<Invoice>()
 						.WithText("Check Number")
-						.WithStyles("Reference.Header.2")
+						.WithStyles("CheckNumber", "CheckNumber.Header", "CheckNumber.Container")
 						.WithContentSection(
 							Pdf.TextBlockSection<Invoice>()
 								.WithText((g, m) => m.CheckNumber)
-								.WithStyles("Reference.Body")),
+								.WithStyles("CheckNumber.Body")
+						),
 
 					Pdf.HeaderContentSection<Invoice>()
-						.WithText("Job Number")
-						.WithStyles("Reference.Header.3")
+						.WithText("Work Order")
+						.WithStyles("WorkOrder", "WorkOrder.Header", "WorkOrder.Container")
 						.WithContentSection(
 							Pdf.TextBlockSection<Invoice>()
 								.WithText((g, m) => m.JobNumber)
-								.WithStyles("Reference.Body"))
+								.WithStyles("WorkOrder.Body")
+						)
 				).WithStyles("Reference.Section"),
 
 				//
@@ -335,38 +472,28 @@ namespace PdfDocuments.Example.Invoice
 				(
 					Pdf.HeaderContentSection<Invoice>()
 						.WithText("Bill To")
-						.WithStyles("BillTo.Header.Left")
-						.WithContentSection
-						(
-							Pdf.OverlayStackSection<Invoice>
-							(
-								Pdf.KeyValueSection<Invoice>
-								(
-									new PdfKeyValueItem<Invoice>("Name:", (g, m) => m.BillTo.Name),
-									new PdfKeyValueItem<Invoice>("Address:", (g, m) => m.BillTo.AddressLine),
-									new PdfKeyValueItem<Invoice>("City/State/Zip:", (g, m) => m.BillTo.CityStateZip),
-									new PdfKeyValueItem<Invoice>("Phone:", (g, m) => m.BillTo.Phone)
-								).WithStyles("BillTo.Content", "BillTo.Key", "BillTo.Value")
-							).WithStyles("BillTo.ContentBlock")
-						),
+						.WithContentSection(
+							Pdf.KeyValueSection<Invoice>(
+								new PdfKeyValueItem<Invoice>("Name:", (g, m) => m.BillTo.Name),
+								new PdfKeyValueItem<Invoice>("Address:", (g, m) => m.BillTo.AddressLine),
+								new PdfKeyValueItem<Invoice>("City/State/Zip:", (g, m) => m.BillTo.CityStateZip),
+								new PdfKeyValueItem<Invoice>("Phone:", (g, m) => m.BillTo.Phone)
+							).WithStyles("BillTo.Content", "BillToFrom.Key", "BillToFrom.Value")
+						).WithStyles("BillTo.Frame", "BillTo.Header", "BillTo.ContentBlock"),
 
 					Pdf.HeaderContentSection<Invoice>()
-					   .WithText("From")
-					   .WithStyles("BillTo.Header.Right")
+					   .WithText("Bill From")
 					   .WithContentSection
 					   (
-							Pdf.OverlayStackSection<Invoice>
+							Pdf.KeyValueSection<Invoice>
 							(
-								Pdf.KeyValueSection<Invoice>
-								(
-									new PdfKeyValueItem<Invoice>("Name:", (g, m) => m.BillFrom.Name),
-									new PdfKeyValueItem<Invoice>("Address:", (g, m) => m.BillFrom.AddressLine),
-									new PdfKeyValueItem<Invoice>("City/State/Zip:", (g, m) => m.BillFrom.CityStateZip),
-									new PdfKeyValueItem<Invoice>("Phone:", (g, m) => m.BillFrom.Phone)
-								).WithStyles("BillTo.Content", "BillTo.Key", "BillTo.Value")
-							).WithStyles("BillTo.ContentBlock")
-						)
-				).WithStyles("BillTo.Section"),
+								new PdfKeyValueItem<Invoice>("Name:", (g, m) => m.BillFrom.Name),
+								new PdfKeyValueItem<Invoice>("Address:", (g, m) => m.BillFrom.AddressLine),
+								new PdfKeyValueItem<Invoice>("City/State/Zip:", (g, m) => m.BillFrom.CityStateZip),
+								new PdfKeyValueItem<Invoice>("Phone:", (g, m) => m.BillFrom.Phone)
+							).WithStyles("BillFrom.Content", "BillToFrom.Key", "BillToFrom.Value")
+						).WithStyles("BillFrom.Frame", "BillFrom.Header", "BillFrom.ContentBlock")
+				).WithStyles("BillToFrom.Section"),
 
 				//
 				// Invoice details
@@ -402,7 +529,7 @@ namespace PdfDocuments.Example.Invoice
 					.WithSignatureOptions(new SignatureOptions<Invoice>()
 					{
 						SignatureText = "Approved By",
-						SignatureImage = "./Images/signature.jpg",
+						//SignatureImage = "./Images/signature.jpg",
 						DateLabel = "Date",
 						Date = DateTimeOffset.Now
 					}),
@@ -422,7 +549,7 @@ namespace PdfDocuments.Example.Invoice
 					.WithTopRightText((g, m) => $"Page {g.PageNumber} of {g.Document.PageCount}")
 					.WithBottomLeftText("Copyright Daniel Porrey. All rights reserved.")
 					.WithBottomRightText((g, m) => $"Invoiced: {m.InvoiceDate:D}")
-					.WithStyles("PageFooter.Section")
+					.WithStyles("Footer", "Footer.TopLeft", "Footer.TopRight", "Footer.BottomLeft", "Footer.BottomRight")
 			)
 			.WithStyleManager(this.StyleManager)
 			.WithKey("Report")

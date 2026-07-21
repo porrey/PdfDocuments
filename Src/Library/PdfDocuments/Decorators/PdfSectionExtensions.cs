@@ -185,10 +185,6 @@ namespace PdfDocuments
 			{
 				s1.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
 			}
-			else if (section is PdfDataRowsSection<TModel, TItem> s2)
-			{
-				s2.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
-			}
 
 			return section;
 		}
@@ -217,10 +213,6 @@ namespace PdfDocuments
 			{
 				s1.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
 			}
-			else if (section is PdfDataRowsSection<TModel, TItem> s2)
-			{
-				s2.AddDataColumn(columnHeader, expression, relativeWidth, format, headerStyleName, cellStyleName);
-			}
 
 			return section;
 		}
@@ -241,10 +233,6 @@ namespace PdfDocuments
 			if (section is PdfDataGridSection<TModel, TItem> s1)
 			{
 				s1.Items = items;
-			}
-			else if (section is PdfDataRowsSection<TModel, TItem> s2)
-			{
-				s2.Items = items;
 			}
 
 			return section;

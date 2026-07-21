@@ -113,9 +113,9 @@ namespace PdfDocuments
 
 					this.Children = innerItems;
 					this.Text = string.Empty;
-
-					this.IsInitialized = true;
 				}
+
+				this.IsInitialized = true;
 			}
 
 			return Task.CompletedTask;

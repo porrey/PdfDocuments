@@ -243,7 +243,7 @@ namespace PdfDocuments
 		/// </summary>
 		/// <typeparam name="TModel">The type of the PDF model associated with the section. Must implement the IPdfModel interface.</typeparam>
 		/// <returns>An IPdfSection<![CDATA[<TModel>]]> instance representing the page header section for the specified PDF model type.</returns>
-
+		/// <remarks>Use this method to add a page header section to a PDF document when building or customizing document layouts.</remarks>
 		public static IPdfSection<TModel> PageHeaderSection<TModel>()
 			where TModel : IPdfModel
 		{
@@ -284,18 +284,6 @@ namespace PdfDocuments
 			where TModel : IPdfModel
 		{
 			return new PdfDataGridSection<TModel, TItem>();
-		}
-
-		/// <summary>
-		/// Creates a new PDF section for rendering a data row based on the specified model and item types.
-		/// </summary>
-		/// <typeparam name="TModel">The type of the PDF model. Must implement the IPdfModel interface.</typeparam>
-		/// <typeparam name="TItem">The type of the data item represented in the row.</typeparam>
-		/// <returns>An IPdfSection<![CDATA[<TModel>]]> instance configured to render a data row for the specified item type.</returns>
-		public static IPdfSection<TModel> DataRowsSection<TModel, TItem>()
-			where TModel : IPdfModel
-		{
-			return new PdfDataRowsSection<TModel, TItem>();
 		}
 	}
 }

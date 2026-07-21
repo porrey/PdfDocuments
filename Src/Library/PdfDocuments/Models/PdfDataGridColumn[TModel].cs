@@ -51,12 +51,12 @@ namespace PdfDocuments
 		/// </summary>
 		public virtual BindProperty<string, TModel> ColumnHeader { get; set; }
 
-		/// <summary>
-		/// Gets or sets the relative width of the section as a proportion of its container.
-		/// </summary>
-		/// <remarks>The value typically ranges from 0.0 to 1.0, where 1.0 represents full width. Setting this
-		/// property allows dynamic sizing based on container dimensions.</remarks>
-		public virtual BindProperty<double, TModel> RelativeWidth { get; set; }
+		///// <summary>
+		///// Gets or sets the relative width of the section as a proportion of its container.
+		///// </summary>
+		///// <remarks>The value typically ranges from 0.0 to 1.0, where 1.0 represents full width. Setting this
+		///// property allows dynamic sizing based on container dimensions.</remarks>
+		//public virtual BindProperty<double, TModel> RelativeWidth { get; set; }
 
 		/// <summary>
 		/// Gets or sets the format string used to display the bound value as text.
