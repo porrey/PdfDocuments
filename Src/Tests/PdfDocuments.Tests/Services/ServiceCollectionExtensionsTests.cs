@@ -27,7 +27,7 @@ using Xunit;
 namespace PdfDocuments.Tests.Services
 {
 	[Collection("FontTests")]
-	public class ServiceCollectionExtensionsTests(FontFixture _)
+	public class ServiceCollectionExtensionsTests()
 	{
 		[Fact]
 		public void AddPdfDocuments_RegistersIPdfGeneratorFactory()
@@ -77,7 +77,7 @@ namespace PdfDocuments.Tests.Services
 		public void AddPdfStyleManager_WithInstance_RegistersProvidedInstance()
 		{
 			ServiceCollection services = new();
-			PdfStyleManager<NullModel> customManager = new();
+			PdfStyleManager<NullModel> customManager = [];
 
 			services.AddPdfStyleManager(customManager);
 
@@ -90,7 +90,7 @@ namespace PdfDocuments.Tests.Services
 		public void AddPdfStyleManager_WithInstance_ReturnsTheSameServiceCollection()
 		{
 			ServiceCollection services = new();
-			PdfStyleManager<NullModel> customManager = new();
+			PdfStyleManager<NullModel> customManager = [];
 
 			IServiceCollection result = services.AddPdfStyleManager(customManager);
 
