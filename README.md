@@ -1,4 +1,4 @@
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/porrey/PdfDocuments/.github%2Fworkflows%2Fbuild-and-test.yml?style=for-the-badge&label=Build%20and%20Test) ![GitHub License](https://img.shields.io/github/license/porrey/PdfDocuments?style=for-the-badge) ![.NET](https://img.shields.io/badge/.NET-10-purple?style=for-the-badge)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/porrey/PdfDocuments/.github%2Fworkflows%2Fbuild-and-test.yml?style=for-the-badge&label=Build%20and%20Test) ![GitHub License](https://img.shields.io/github/license/porrey/PdfDocuments?style=for-the-badge) ![.NET](https://img.shields.io/badge/.NET-11-purple?style=for-the-badge)
 
 # PdfDocuments
 High level C# library for the easy creation of PDF documents using **PdfSharp**. Use this library to create beautiful and complex PDFs using a structure similar to XAML with model binding. Objects called **PdfSections** are aligned to a grid by stacking or creating a parent/child hierarchy. The rendering engine flows the sections and aligns them to the grid, creating perfect PDF documents every time.
