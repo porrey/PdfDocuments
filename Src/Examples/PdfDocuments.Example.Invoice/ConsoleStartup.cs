@@ -25,6 +25,7 @@ using Diamond.Core.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PdfDocuments.FontResolver.Folder;
+using PdfSharp;
 using Serilog;
 
 namespace PdfDocuments.Example.Invoice
@@ -59,6 +60,11 @@ namespace PdfDocuments.Example.Invoice
 			Log.Logger = new LoggerConfiguration()
 					  .ReadFrom.Configuration(configuration)
 					  .CreateLogger();
+
+			//
+			// Set the PDFsharp license to AGPL. This is required for using PDFsharp in compliance with its licensing terms.
+			//
+			PdfSharpLicense.SetAgplLicense();
 		}
 
 		/// <summary>

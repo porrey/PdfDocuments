@@ -1,13 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
-		<Version>10.2.2</Version>
-		<FileVersion>10.2.2</FileVersion>
-		<AssemblyVersion>10.2.2</AssemblyVersion>
+		<TargetFramework>net11.0</TargetFramework>
+		<Version>11.0.0</Version>
+		<FileVersion>11.0.0</FileVersion>
+		<AssemblyVersion>11.0.0</AssemblyVersion>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Copyright>Copyright © Daniel Porrey 2021-2026. All Rights Reserved.</Copyright>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="System.Security.Cryptography.Pkcs" Version="11.0.0" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Library\PdfDocuments\PdfDocuments.csproj" />
